@@ -25,18 +25,6 @@ template $NocturneSongQueue: Gtk.Box {
         clicked => $close_selector();
       }
 
-      Gtk.Button remove_el {
-        styles [
-          "error"
-        ]
-        child: Adw.ButtonContent {
-          icon-name: "user-trash-symbolic";
-          label: _("Remove");
-        };
-        tooltip-text: _("Remove");
-        clicked => $remove_selected();
-      }
-
       Gtk.Button play_el {
         child: Adw.ButtonContent {
           icon-name: "media-playback-start-symbolic";
@@ -68,6 +56,17 @@ template $NocturneSongQueue: Gtk.Box {
         };
         tooltip-text: _("Add To Playlist");
         clicked => $add_to_playlist_selected();
+      }
+      Gtk.Button remove_el {
+        styles [
+          "error"
+        ]
+        child: Adw.ButtonContent {
+          icon-name: "user-trash-symbolic";
+          label: _("Remove");
+        };
+        tooltip-text: _("Remove");
+        clicked => $remove_selected();
       }
     };
   }

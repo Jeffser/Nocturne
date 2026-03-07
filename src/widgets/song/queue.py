@@ -18,7 +18,6 @@ class SongQueue(Gtk.Box):
 
     def __init__(self):
         super().__init__()
-        self.set_mode()
 
     def set_mode(self, playing:bool=False):
         self.remove_el.set_visible(playing)
@@ -32,7 +31,14 @@ class SongQueue(Gtk.Box):
             row.suffixes_stack_el.set_visible_child_name('select' if select else 'normal')
             row.check_el.set_active(row == selected_row)
             row.set_activatable(not select and row.id != integration.loaded_models.get('currentSong').songId)
+
+        if select:
+            self.remove_el.set_visible(selected_row.removable)
+            self.play_el.set_visible(not selected_row.draggable)
+            self.play_next_el.set_visible(not selected_row.draggable)
+            self.play_later_el.set_visible(not selected_row.draggable)
         self.toolbar_revealer_el.set_reveal_child(select)
+
 
     def get_selected_rows(self) -> list:
         return [row for row in list(self.list_el) if row.check_el.get_active()]

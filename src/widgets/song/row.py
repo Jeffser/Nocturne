@@ -17,10 +17,14 @@ class SongRow(Adw.ActionRow):
     suffixes_stack_el = Gtk.Template.Child()
     star_el = Gtk.Template.Child()
     check_el = Gtk.Template.Child()
+    play_next_el = Gtk.Template.Child()
+    play_later_el = Gtk.Template.Child()
+    remove_el = Gtk.Template.Child()
 
-    def __init__(self, id:str, draggable:bool=False):
+    def __init__(self, id:str, draggable:bool=False, removable:bool=False):
         self.id = id
         self.draggable = draggable
+        self.removable = removable # used in queue
         integration = get_current_integration()
         integration.verifySong(self.id)
         super().__init__(
@@ -35,8 +39,13 @@ class SongRow(Adw.ActionRow):
         integration.connect_to_model(self.id, 'starred', self.update_starred)
         integration.connect_to_model('currentSong', 'songId', self.current_song_changed)
 
+        self.play_next_el.set_visible(not self.draggable)
+        self.play_later_el.set_visible(not self.draggable)
+        self.remove_el.set_visible(self.removable)
+
     def update_title(self, title:str):
         self.title_el.set_label(title)
+        self.title_el.set_tooltip_text(title)
 
     def update_duration(self, duration:int):
         self.duration_el.set_label(str(timedelta(seconds=duration)))
@@ -152,6 +161,10 @@ class SongRow(Adw.ActionRow):
 
     @Gtk.Template.Callback()
     def add_to_playlist_clicked(self, button):
+        ''
+
+    @Gtk.Template.Callback()
+    def remove_clicked(self, button):
         ''
 
 

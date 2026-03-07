@@ -10,10 +10,6 @@ class PlayingQueuePage(Adw.NavigationPage):
 
     song_list_el = Gtk.Template.Child()
 
-    def __init__(self):
-        super().__init__()
-        self.song_list_el.set_mode(True)
-
     def replace_queue(self, songs:list, current_id:str=None):
         integration = get_current_integration()
         #for row in list(self.song_list_el.list_el):
@@ -24,7 +20,13 @@ class PlayingQueuePage(Adw.NavigationPage):
                 current_id = songs[0]
 
             for song_id in songs:
-                self.song_list_el.list_el.append(SongRow(song_id, draggable=True))
+                self.song_list_el.list_el.append(
+                    SongRow(
+                        song_id,
+                        draggable=True,
+                        removable=True
+                    )
+                )
 
         integration.loaded_models['currentSong'].songId = current_id
 

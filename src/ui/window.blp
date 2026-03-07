@@ -5,21 +5,23 @@ template $NocturneWindow: Adw.ApplicationWindow {
   title: "Nocturne";
   width-request: 250;
 
-  content: Adw.BottomSheet main_bottom_sheet {
-    full-width: false;
-    notify::open => $on_bottomsheet_open();
+  content: Adw.ToastOverlay {
+    child: Adw.BottomSheet main_bottom_sheet {
+      full-width: false;
+      notify::open => $on_bottomsheet_open();
 
-    content: Adw.NavigationView main_navigationview {
-      $NocturneHomePage home_page {}
-    };
+      content: Adw.NavigationView main_navigationview {
+        $NocturneHomePage home_page {}
+      };
 
-    bottom-bar: $NocturnePlayingFooter {};
+      bottom-bar: $NocturnePlayingFooter {};
 
-    sheet: Adw.NavigationView playing_navigationview {
-      vhomogeneous: true;
-      hhomogeneous: true;
-      $NocturnePlayingControlPage {}
-      $NocturnePlayingQueuePage {}
+      sheet: Adw.NavigationView playing_navigationview {
+        vhomogeneous: true;
+        hhomogeneous: true;
+        $NocturnePlayingControlPage {}
+        $NocturnePlayingQueuePage {}
+      };
     };
   };
 }

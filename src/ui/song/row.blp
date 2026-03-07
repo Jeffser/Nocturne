@@ -91,11 +91,11 @@ template $NocturneSongRow: Adw.ActionRow {
               "circular",
               "flat",
             ]
-
             icon-name: "view-more-symbolic";
             valign: center;
 
             popover: Gtk.Popover {
+
               child: Gtk.Box {
                 orientation: vertical;
 
@@ -115,7 +115,7 @@ template $NocturneSongRow: Adw.ActionRow {
                   clicked => $select_clicked();
                 }
 
-                Gtk.Button {
+                Gtk.Button play_next_el {
                   styles [
                     "small",
                     "flat",
@@ -131,7 +131,7 @@ template $NocturneSongRow: Adw.ActionRow {
                   clicked => $play_next_clicked();
                 }
 
-                Gtk.Button {
+                Gtk.Button play_later_el {
                   styles [
                     "small",
                     "flat",
@@ -159,8 +159,22 @@ template $NocturneSongRow: Adw.ActionRow {
                     icon-name: "playlist-symbolic";
                     halign: start;
                   };
-
                   clicked => $add_to_playlist_clicked();
+                }
+
+                Gtk.Button remove_el {
+                  styles [
+                    "small",
+                    "flat",
+                    "button_no_bold",
+                    "error"
+                  ]
+                  child: Adw.ButtonContent {
+                    label: _("Remove");
+                    icon-name: "user-trash-symbolic";
+                    halign: start;
+                  };
+                  clicked => $remove_clicked();
                 }
               };
             };

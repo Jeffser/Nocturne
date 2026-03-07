@@ -47,7 +47,12 @@ class PlaylistPage(Adw.NavigationPage):
     def update_song_list(self, song_list:list):
         self.song_list_el.list_el.remove_all()
         for song_dict in song_list:
-            self.song_list_el.list_el.append(SongRow(song_dict.get('id')))
+            self.song_list_el.list_el.append(
+                SongRow(
+                    song_dict.get('id'),
+                    removable=True
+                )
+            )
 
     def update_song_count(self, songCount:int):
         if songCount == 1:
