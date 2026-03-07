@@ -1,0 +1,81 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneSongQueue: Gtk.Box {
+  orientation: vertical;
+
+  Gtk.Revealer toolbar_revealer_el {
+    transition-type: slide_up;
+
+    child: Adw.WrapBox {
+      styles [
+        "osd",
+        "toolbar"
+      ]
+      line-spacing: 5;
+      child-spacing: 5;
+      margin-bottom: 10;
+
+      Gtk.Button {
+        styles [
+          "circular"
+        ]
+        icon-name: "window-close-symbolic";
+        tooltip-text: _("Close");
+        clicked => $close_selector();
+      }
+
+      Gtk.Button remove_el {
+        styles [
+          "error"
+        ]
+        child: Adw.ButtonContent {
+          icon-name: "user-trash-symbolic";
+          label: _("Remove");
+        };
+        tooltip-text: _("Remove");
+        clicked => $remove_selected();
+      }
+
+      Gtk.Button play_el {
+        child: Adw.ButtonContent {
+          icon-name: "media-playback-start-symbolic";
+          label: _("Play");
+        };
+        tooltip-text: _("Play");
+        clicked => $play_selected();
+      }
+      Gtk.Button play_next_el {
+        child: Adw.ButtonContent {
+          icon-name: "list-high-priority-symbolic";
+          label: _("Play Next");
+        };
+        tooltip-text: _("Play Next");
+        clicked => $play_next_selected();
+      }
+      Gtk.Button play_later_el {
+        child: Adw.ButtonContent {
+          icon-name: "list-low-priority-symbolic";
+          label: _("Play Later");
+        };
+        tooltip-text: _("Play Later");
+        clicked => $play_later_selected();
+      }
+      Gtk.Button {
+        child: Adw.ButtonContent {
+          icon-name: "playlist-symbolic";
+          label: _("Add To Playlist");
+        };
+        tooltip-text: _("Add To Playlist");
+        clicked => $add_to_playlist_selected();
+      }
+    };
+  }
+
+  Gtk.ListBox list_el {
+    styles [
+      "boxed-list"
+    ]
+    selection-mode: none;
+  }
+}

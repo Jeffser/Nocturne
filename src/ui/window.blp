@@ -1,0 +1,23 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneWindow: Adw.ApplicationWindow {
+  title: "Nocturne";
+
+  content: Adw.BottomSheet {
+    full-width: false;
+
+    content: Adw.NavigationView main_navigationview {
+      $NocturneHomePage home_page {}
+    };
+
+    bottom-bar: $NocturnePlayingFooter {};
+
+    sheet: Adw.NavigationView playing_navigationview {
+      vhomogeneous: true;
+      hhomogeneous: true;
+      $NocturnePlayingControlPage {}
+      $NocturnePlayingQueuePage {}
+    };
+  };
+}

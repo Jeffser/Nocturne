@@ -1,0 +1,157 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneHomePage: Adw.NavigationPage {
+  title: _("Home");
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+
+    content: Gtk.ScrolledWindow {
+      propagate-natural-width: true;
+      propagate-natural-height: true;
+
+      child: Adw.Clamp {
+        maximum-size: 2000;
+        tightening-threshold: 800;
+
+        child: Gtk.Box {
+          orientation: vertical;
+          spacing: 10;
+          margin-bottom: 100;
+
+          Gtk.Button {
+            styles [
+              "flat",
+              "title-2"
+            ]
+            label: _("Albums");
+            halign: start;
+            margin-start: 10;
+            margin-end: 10;
+          }
+
+          Gtk.Overlay {
+            [overlay]
+            Adw.Bin {
+              halign: start;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-left"
+              ]
+            }
+
+            [overlay]
+            Adw.Bin {
+              halign: end;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-right"
+              ]
+            }
+
+            child: Adw.Carousel album_list_el {
+              hexpand: true;
+              halign: fill;
+              spacing: 10;
+              allow-long-swipes: true;
+              allow-mouse-drag: true;
+            };
+          }
+
+          Gtk.Separator {}
+
+          Gtk.Button {
+            styles [
+              "flat",
+              "title-2"
+            ]
+            label: _("Artists");
+            halign: start;
+            margin-start: 10;
+            margin-end: 10;
+          }
+
+          Gtk.Overlay {
+            [overlay]
+            Adw.Bin {
+              halign: start;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-left"
+              ]
+            }
+
+            [overlay]
+            Adw.Bin {
+              halign: end;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-right"
+              ]
+            }
+
+            child: Adw.Carousel artist_list_el {
+              hexpand: true;
+              halign: fill;
+              spacing: 10;
+              allow-long-swipes: true;
+              allow-mouse-drag: true;
+            };
+          }
+
+          Gtk.Separator {}
+
+          Gtk.Button {
+            styles [
+              "flat",
+              "title-2"
+            ]
+            label: _("Playlists");
+            halign: start;
+            margin-start: 10;
+            margin-end: 10;
+          }
+
+          Gtk.Overlay {
+            [overlay]
+            Adw.Bin {
+              halign: start;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-left"
+              ]
+            }
+
+            [overlay]
+            Adw.Bin {
+              halign: end;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-right"
+              ]
+            }
+
+            child: Adw.Carousel playlist_list_el {
+              hexpand: true;
+              halign: fill;
+              spacing: 10;
+              allow-long-swipes: true;
+              allow-mouse-drag: true;
+            };
+          }
+
+        };
+
+
+      };
+
+    };
+  };
+}

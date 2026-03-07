@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/jeffser/Nocturne">
+    <file>style.css</file>
+
+    <file alias="icons/scalable/status/format-justify-center-symbolic.svg">icons/format-justify-center-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-playback-pause-symbolic.svg">icons/media-playback-pause-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-playback-start-symbolic.svg">icons/media-playback-start-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-skip-backward-symbolic.svg">icons/media-skip-backward-symbolic.svg</file>
+    <file alias="icons/scalable/status/media-skip-forward-symbolic.svg">icons/media-skip-forward-symbolic.svg</file>
+    <file alias="icons/scalable/status/non-starred-symbolic.svg">icons/non-starred-symbolic.svg</file>
+    <file alias="icons/scalable/status/playlist-shuffle-symbolic.svg">icons/playlist-shuffle-symbolic.svg</file>
+    <file alias="icons/scalable/status/starred-symbolic.svg">icons/starred-symbolic.svg</file>
+    <file alias="icons/scalable/status/sound-symbolic.svg">icons/sound-symbolic.svg</file>
+    <file alias="icons/scalable/status/view-more-symbolic.svg">icons/view-more-symbolic.svg</file>
+    <file alias="icons/scalable/status/playlist-symbolic.svg">icons/playlist-symbolic.svg</file>
+    <file alias="icons/scalable/status/list-high-priority-symbolic.svg">icons/list-high-priority-symbolic.svg</file>
+    <file alias="icons/scalable/status/list-low-priority-symbolic.svg">icons/list-low-priority-symbolic.svg</file>
+    <file alias="icons/scalable/status/external-link-symbolic.svg">icons/external-link-symbolic.svg</file>
+    <file alias="icons/scalable/status/object-select-symbolic.svg">icons/object-select-symbolic.svg</file>
+    <file alias="icons/scalable/status/user-trash-symbolic.svg">icons/user-trash-symbolic.svg</file>
+    <file alias="icons/scalable/status/window-close-symbolic.svg">icons/window-close-symbolic.svg</file>
+    <file alias="icons/scalable/status/list-drag-handle-symbolic.svg">icons/list-drag-handle-symbolic.svg</file>
+    <file alias="icons/scalable/status/speaker-0-symbolic.svg">icons/speaker-0-symbolic.svg</file>
+    <file alias="icons/scalable/status/speaker-1-symbolic.svg">icons/speaker-1-symbolic.svg</file>
+    <file alias="icons/scalable/status/speaker-2-symbolic.svg">icons/speaker-2-symbolic.svg</file>
+    <file alias="icons/scalable/status/speaker-3-symbolic.svg">icons/speaker-3-symbolic.svg</file>
+
+    <file alias="window.ui">ui/window.ui</file>
+
+    <file alias="playing/footer.ui">ui/playing/footer.ui</file>
+    <file alias="playing/control_page.ui">ui/playing/control_page.ui</file>
+    <file alias="playing/queue_page.ui">ui/playing/queue_page.ui</file>
+
+    <file alias="pages/home.ui">ui/pages/home.ui</file>
+
+    <file alias="album/button.ui">ui/album/button.ui</file>
+    <file alias="album/page.ui">ui/album/page.ui</file>
+
+    <file alias="artist/button.ui">ui/artist/button.ui</file>
+    <file alias="artist/page.ui">ui/artist/page.ui</file>
+
+    <file alias="playlist/button.ui">ui/playlist/button.ui</file>
+    <file alias="playlist/page.ui">ui/playlist/page.ui</file>
+
+    <file alias="song/row.ui">ui/song/row.ui</file>
+    <file alias="song/queue.ui">ui/song/queue.ui</file>
+
+    <file preprocess="xml-stripblanks">shortcuts-dialog.ui</file>
+  </gresource>
+</gresources>
+

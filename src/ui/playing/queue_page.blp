@@ -1,0 +1,26 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturnePlayingQueuePage: Adw.NavigationPage {
+  title: _("Queue");
+  tag: "queue";
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      show-end-title-buttons: false;
+      show-start-title-buttons: false;
+    }
+
+    content: Gtk.ScrolledWindow {
+      vexpand: true;
+      hexpand: true;
+
+      child: $NocturneSongQueue song_list_el {
+        styles [
+          "p10"
+        ]
+      };
+    };
+  };
+}
+  

@@ -1,0 +1,217 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturnePlayingControlPage: Adw.NavigationPage {
+  title: _("Playing");
+  tag: "playing";
+  width-request: 340;
+  height-request: 560;
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+      show-start-title-buttons: false;
+      show-end-title-buttons: false;
+    }
+
+    content: Gtk.ScrolledWindow {
+      propagate-natural-height: true;
+      propagate-natural-width: false;
+      hscrollbar-policy: never;
+
+      child: Gtk.Box {
+        orientation: vertical;
+        spacing: 10;
+        styles [
+          "p10"
+        ]
+
+        Gtk.Image cover_el {
+          styles [
+            "card"
+          ]
+          pixel-size: 320;
+          width-request: 320;
+          height-request: 320;
+          overflow: hidden;
+          halign: center;
+          paintable: Adw.SpinnerPaintable {
+            widget: cover_el;
+          };
+        }
+
+        Gtk.Label title_el {
+          wrap: true;
+          wrap-mode: word_char;
+          lines: 2;
+          ellipsize: end;
+          justify: center;
+          styles [
+            "title-1"
+          ]
+        }
+
+        Adw.WrapBox {
+          child-spacing: 5;
+          line-spacing: 5;
+          justify: fill;
+
+          Gtk.Button artist_el {
+            halign: center;
+            hexpand: true;
+            action-name: "app.show_artist";
+            action-target: "''";
+            child: Gtk.Label {
+              ellipsize: end;
+            };
+            styles [
+              "flat",
+              "dimmed",
+              "p0"
+            ]
+          }
+
+          Gtk.Button album_el {
+            halign: center;
+            hexpand: true;
+            action-name: "app.show_album";
+            action-target: "''";
+            child: Gtk.Label {
+              ellipsize: end;
+            };
+            styles [
+              "flat",
+              "dimmed",
+              "p0"
+            ]
+          }
+        }
+
+        Gtk.Scale progress_el {
+          orientation: horizontal;
+          hexpand: true;
+          GestureClick {
+            pressed => $seek_start();
+            stopped => $seek_end();
+          }
+          adjustment: Gtk.Adjustment {
+            lower: 0;
+            upper: 1;
+            value-changed => $progress_bar_changed();
+          };
+          styles [
+            "p0"
+          ]
+        }
+
+        Gtk.Box {
+          orientation: horizontal;
+          spacing: 15;
+          hexpand: true;
+          halign: center;
+
+          Gtk.Button {
+            icon-name: "media-skip-backward-symbolic";
+            valign: center;
+            clicked => $previous_clicked();
+            styles [
+              "circular"
+            ]
+          }
+
+          Gtk.Stack state_stack_el {
+            transition-type: crossfade;
+
+            Gtk.StackPage {
+              name: "play";
+              child: Gtk.Button {
+                icon-name: "media-playback-start-symbolic";
+                valign: center;
+                clicked => $play_clicked();
+                styles [
+                  "circular",
+                  "accent",
+                  "color"
+                ]
+              };
+            }
+
+            Gtk.StackPage {
+              name: "pause";
+              child: Gtk.Button {
+                icon-name: "media-playback-pause-symbolic";
+                valign: center;
+                clicked => $pause_clicked();
+                styles [
+                  "circular",
+                  "accent",
+                  "color"
+                ]
+              };
+            }
+          }
+
+          Gtk.Button {
+            icon-name: "media-skip-forward-symbolic";
+            valign: center;
+            clicked => $next_clicked();
+            styles [
+              "circular"
+            ]
+          }
+        }
+
+        Gtk.Box {
+          orientation: horizontal;
+          halign: center;
+          styles [
+            "toolbar"
+          ]
+
+          Gtk.MenuButton volume_button_el {
+            icon-name: "speaker-2-symbolic";
+            popover: Gtk.Popover {
+              child: Gtk.Box {
+                orientation: horizontal;
+
+                Gtk.Image {
+                  icon-name: "speaker-0-symbolic";
+                }
+
+                Gtk.Scale volume_el {
+                  adjustment: Gtk.Adjustment {
+                    value: 0.5;
+                    lower: 0;
+                    upper: 1;
+                    step-increment: 0.01;
+                  };
+                  orientation: horizontal;
+                  value-changed => $on_volume_changed();
+                  width-request: 150;
+                }
+
+                Gtk.Image {
+                  icon-name: "speaker-3-symbolic";
+                }
+
+              };
+            };
+          }
+
+          Gtk.Button star_el {
+            icon-name: "non-starred-symbolic";
+            action-name: "app.toggle_star";
+          }
+
+          Gtk.Button {
+            icon-name: "view-list-bullet-symbolic";
+            tooltip-text: _("View Queue");
+            clicked => $view_queue();
+          }
+        }
+      };
+    };
+  };
+}

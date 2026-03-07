@@ -1,0 +1,62 @@
+.p0 {
+  padding: 0;
+}
+
+.p10 {
+  padding: 10px;
+}
+
+.button_no_bold label {
+  font-weight: normal;
+}
+
+button.p0, menubutton.p0 > button {
+  padding: 0 5px 0 5px;
+}
+
+avatar {
+  box-shadow: 0 0 0 1px rgba(0,0,6,0.03), 0 1px 3px 1px rgba(0,0,6,0.07), 0 2px 6px 2px rgba(0,0,6,0.03);
+}
+
+scale trough highlight {
+  min-height: 12px;
+  min-width: 12px;
+}
+
+scale trough slider {
+  opacity: 0;
+}
+
+image.album-play-overlay {
+  opacity: 0;
+  transition: opacity .2s;
+}
+
+image.album-play-overlay:hover {
+  opacity: 1;
+}
+
+button:hover image.album-play-cover {
+  filter: blur(2px);
+}
+
+.rounded-corner {
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+  border-top-left-radius: 9px;
+  border-bottom-right-radius: 9px;
+}
+
+.carousel-overlay-right {
+  background: linear-gradient(to left,
+    @window_bg_color 0%,
+    transparent 100%
+  );
+}
+
+.carousel-overlay-left {
+  background: linear-gradient(to right,
+    @window_bg_color 0%,
+    transparent 100%
+  );
+}

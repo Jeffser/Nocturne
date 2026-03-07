@@ -1,0 +1,184 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneArtistPage: Adw.NavigationPage {
+  title: _("Artist");
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {}
+
+    content: Gtk.ScrolledWindow {
+      propagate-natural-width: true;
+      propagate-natural-height: true;
+
+      child: Adw.Clamp {
+        tightening-threshold: 800;
+        maximum-size: 2000;
+
+        child: Gtk.Box {
+          styles [
+            "p10"
+          ]
+          orientation: vertical;
+          spacing: 10;
+          margin-bottom: 100;
+
+          Adw.WrapBox { // Information Container
+            orientation: horizontal;
+            line-spacing: 10;
+            child-spacing: 10;
+            justify: fill;
+            wrap-policy: minimum;
+
+            Adw.Avatar avatar_el {
+              size: 240;
+              valign: start;
+              custom-image: Adw.SpinnerPaintable {
+                widget: avatar_el;
+              };
+            }
+
+            Gtk.Box {
+              orientation: vertical;
+              spacing: 10;
+              valign: center;
+
+              Gtk.Label name_el {
+                styles [
+                  "title-1"
+                ]
+                halign: start;
+                ellipsize: end;
+                valign: center;
+                visible: false;
+              }
+
+              Gtk.Label biography_el {
+                styles [
+                  "document"
+                ]
+                wrap: true;
+                wrap-mode: word_char;
+                ellipsize: end;
+                lines: 4;
+                valign: center;
+                hexpand: true;
+                max-width-chars: 1;
+                visible: false;
+
+                Gtk.GestureClick {
+                  pressed => $on_biography_pressed();
+                }
+              }
+
+              Adw.WrapBox {
+                orientation: horizontal;
+                line-spacing: 10;
+                child-spacing: 10;
+
+                Gtk.Button star_el {
+                  styles [
+                    "circular"
+                  ]
+                  child: Adw.Spinner {};
+                  action-name: "app.toggle_star";
+                }
+
+                Gtk.Button play_shuffle_el {
+                  child: Adw.ButtonContent {
+                    icon-name: "playlist-shuffle-symbolic";
+                    label: _("Shuffle");
+                  };
+                  tooltip-text: _("Shuffle");
+                  action-name: "app.play_shuffle_artist";
+                }
+
+                Gtk.Button play_radio_el {
+                  child: Adw.ButtonContent {
+                    icon-name: "sound-symbolic";
+                    label: _("Radio");
+                  };
+                  tooltip-text: _("Radio");
+                  action-name: "app.play_radio_artist";
+                }
+              }
+            }
+          }
+
+          Gtk.Label album_label_el {
+            styles [
+              "title-2"
+            ]
+            label: _("Albums");
+            ellipsize: end;
+            halign: start;
+          }
+
+          Adw.WrapBox album_list_el {
+            line-spacing: 10;
+            child-spacing: 10;
+            hexpand: true;
+            halign: center;
+
+            Adw.Spinner {
+              hexpand: true;
+              width-request: 32;
+              height-request: 32;
+              margin-top: 10;
+              margin-bottom: 10;
+            }
+          }
+
+          Gtk.Label artist_label_el {
+            styles [
+              "title-2"
+            ]
+            label: _("Similar Artists");
+            ellipsize: end;
+            halign: start;
+          }
+
+          Gtk.Overlay {
+            [overlay]
+            Adw.Bin {
+              halign: start;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-left"
+              ]
+            }
+
+            [overlay]
+            Adw.Bin {
+              halign: end;
+              vexpand: true;
+              width-request: 10;
+              styles [
+                "carousel-overlay-right"
+              ]
+            }
+
+            child: Adw.Carousel artist_list_el {
+              hexpand: true;
+              halign: fill;
+              spacing: 10;
+              allow-long-swipes: true;
+              allow-mouse-drag: true;
+
+              Adw.Spinner {
+                hexpand: true;
+                width-request: 32;
+                height-request: 32;
+                margin-top: 10;
+                margin-bottom: 10;
+              }
+            };
+          }
+
+        };
+      };
+    };
+  };
+}

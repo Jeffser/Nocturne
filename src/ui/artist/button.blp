@@ -1,0 +1,38 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneArtistButton: Gtk.Button {
+  styles [
+    "flat"
+  ]
+  action-name: "app.show_artist";
+
+  child: Gtk.Box {
+    orientation: vertical;
+    spacing: 5;
+    width-request: 240;
+
+    Adw.Avatar avatar_el {
+      size: 240;
+      custom-image: Adw.SpinnerPaintable {
+        widget: avatar_el;
+      };
+    }
+
+    Gtk.Label name_el {
+      styles [
+        "title-3"
+      ]
+      ellipsize: end;
+      max-width-chars: 1;
+    }
+
+    Gtk.Label album_count_el {
+      styles [
+        "dimmed"
+      ]
+      ellipsize: end;
+      max-width-chars: 1;
+    }
+  };
+}

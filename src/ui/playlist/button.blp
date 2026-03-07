@@ -1,0 +1,70 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturnePlaylistButton: Gtk.Box {
+  orientation: vertical;
+  spacing: 5;
+  width-request: 240;
+
+  Gtk.Button play_el {
+    styles [
+      "p0",
+      "flat",
+    ]
+    action-name: "app.play_playlist";
+    overflow: hidden;
+    child: Gtk.Overlay {
+      [overlay]
+      Gtk.Image {
+        icon-name: "media-playback-start-symbolic";
+        icon-size: large;
+        styles [
+          "album-play-overlay",
+          "osd",
+        ]
+      }
+
+      child: Gtk.Image cover_el {
+        styles [
+          "album-play-cover",
+          "card"
+        ]
+        pixel-size: 240;
+        height-request: 240;
+        overflow: hidden;
+        halign: center;
+        paintable: Adw.SpinnerPaintable {
+          widget: cover_el;
+        };
+      };
+    };
+  }
+
+  Gtk.Button name_el {
+    styles [
+      "flat",
+      "p0"
+    ]
+
+    child: Gtk.Box {
+      orientation: vertical;
+      spacing: 5;
+      Gtk.Label name_label_el {
+        styles [
+          "title-3"
+        ]
+        ellipsize: end;
+        max-width-chars: 1;
+      }
+
+      Gtk.Label song_count_label_el {
+        styles [
+          "dimmed"
+        ]
+        ellipsize: end;
+        max-width-chars: 1;
+      }
+    };
+    action-name: "app.show_playlist";
+  }
+}

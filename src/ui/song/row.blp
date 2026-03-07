@@ -1,0 +1,179 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneSongRow: Adw.ActionRow {
+  activatable: true;
+  action-name: "app.play_song";
+
+  Gtk.DropTarget {
+    formats: "NocturneSongRow";
+    drop => $on_drop();
+    actions: move;
+  }
+
+  child: Gtk.Box {
+    styles [
+      "p10",
+    ]
+
+    spacing: 10;
+    margin-top: 5;
+    orientation: horizontal;
+
+    Gtk.Image icon_el {
+      valign: center;
+      visible: false;
+
+      Gtk.DragSource {
+        drag-begin => $on_drag_begin();
+        prepare => $on_drag_prepare();
+        actions: move;
+      }
+    }
+
+    Gtk.Box {
+      orientation: vertical;
+      valign: center;
+      vexpand: true;
+      hexpand: true;
+      spacing: 2;
+
+      Gtk.Label title_el {
+        styles [
+          "heading",
+        ]
+
+        ellipsize: end;
+        halign: start;
+      }
+
+      Adw.WrapBox {
+        halign: start;
+        line-spacing: 2;
+        child-spacing: 2;
+
+        Gtk.Label duration_el {
+          styles [
+            "subtitle"
+          ]
+          ellipsize: end;
+        }
+
+        Adw.Bin artist_container_el {}
+      }
+    }
+
+    Gtk.Stack suffixes_stack_el {
+      transition-type: crossfade;
+
+      Gtk.StackPage {
+        name: "normal";
+
+        child: Gtk.Box {
+          orientation: horizontal;
+          spacing: 10;
+
+          Gtk.Button star_el {
+            styles [
+              "circular",
+            ]
+
+            child: Adw.Spinner {};
+
+            action-name: "app.toggle_star";
+            valign: center;
+          }
+
+          Gtk.MenuButton {
+            styles [
+              "circular",
+              "flat",
+            ]
+
+            icon-name: "view-more-symbolic";
+            valign: center;
+
+            popover: Gtk.Popover {
+              child: Gtk.Box {
+                orientation: vertical;
+
+                Gtk.Button {
+                  styles [
+                    "small",
+                    "flat",
+                    "button_no_bold",
+                  ]
+
+                  child: Adw.ButtonContent {
+                    label: _("Select");
+                    icon-name: "object-select-symbolic";
+                    halign: start;
+                  };
+
+                  clicked => $select_clicked();
+                }
+
+                Gtk.Button {
+                  styles [
+                    "small",
+                    "flat",
+                    "button_no_bold",
+                  ]
+
+                  child: Adw.ButtonContent {
+                    label: _("Play Next");
+                    icon-name: "list-high-priority-symbolic";
+                    halign: start;
+                  };
+
+                  clicked => $play_next_clicked();
+                }
+
+                Gtk.Button {
+                  styles [
+                    "small",
+                    "flat",
+                    "button_no_bold",
+                  ]
+
+                  child: Adw.ButtonContent {
+                    label: _("Play Later");
+                    icon-name: "list-low-priority-symbolic";
+                    halign: start;
+                  };
+
+                  clicked => $play_later_clicked();
+                }
+
+                Gtk.Button {
+                  styles [
+                    "small",
+                    "flat",
+                    "button_no_bold",
+                  ]
+
+                  child: Adw.ButtonContent {
+                    label: _("Add To Playlist");
+                    icon-name: "playlist-symbolic";
+                    halign: start;
+                  };
+
+                  clicked => $add_to_playlist_clicked();
+                }
+              };
+            };
+          }
+        };
+      }
+
+      Gtk.StackPage {
+        name: "select";
+
+        child: Gtk.CheckButton check_el {
+          halign: center;
+          toggled => $check_toggled();
+        };
+      }
+    }
+  };
+}

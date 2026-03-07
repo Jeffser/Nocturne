@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=com.jeffser.Nocturne
+Exec=@bindir@/nocturne --gapplication-service

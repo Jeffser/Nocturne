@@ -1,0 +1,74 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneAlbumButton: Gtk.Box {
+  orientation: vertical;
+  spacing: 5;
+  width-request: 240;
+
+  Gtk.Button play_el {
+    styles [
+      "p0",
+      "flat",
+    ]
+    action-name: "app.play_album";
+    overflow: hidden;
+    width-request: 240;
+    child: Gtk.Overlay {
+      [overlay]
+      Gtk.Image {
+        icon-name: "media-playback-start-symbolic";
+        icon-size: large;
+        styles [
+          "album-play-overlay",
+          "osd",
+        ]
+      }
+
+      child: Gtk.Image cover_el {
+        styles [
+          "album-play-cover",
+          "card"
+        ]
+        pixel-size: 240;
+        height-request: 240;
+        overflow: hidden;
+        halign: center;
+        paintable: Adw.SpinnerPaintable {
+          widget: cover_el;
+        };
+      };
+    };
+  }
+
+  Gtk.Button name_el {
+    styles [
+      "title-3",
+      "flat",
+      "p0"
+    ]
+
+    child: Gtk.Label {
+      ellipsize: end;
+      max-width-chars: 1;
+    };
+
+    action-name: "app.show_album";
+  }
+
+  Gtk.Button artist_el {
+    styles [
+      "dimmed",
+      "flat",
+      "p0"
+    ]
+
+    child: Gtk.Label {
+      ellipsize: end;
+      max-width-chars: 1;
+    };
+
+    action-name: "app.show_artist";
+  }
+
+}

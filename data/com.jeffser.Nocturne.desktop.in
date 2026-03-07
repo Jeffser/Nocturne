@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=nocturne
+Exec=nocturne
+Icon=com.jeffser.Nocturne
+Terminal=false
+Type=Application
+Categories=Utility;
+Keywords=GTK;
+StartupNotify=true
+DBusActivatable=true

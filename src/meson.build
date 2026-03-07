@@ -1,0 +1,74 @@
+pkgdatadir = get_option('prefix') / get_option('datadir') / meson.project_name()
+moduledir = pkgdatadir / 'nocturne'
+gnome = import('gnome')
+
+blueprints = files(
+  'ui/window.blp',
+  'ui/playing/footer.blp',
+  'ui/playing/control_page.blp',
+  'ui/playing/queue_page.blp',
+
+  'ui/pages/home.blp',
+
+  'ui/album/button.blp',
+  'ui/album/page.blp',
+
+  'ui/artist/button.blp',
+  'ui/artist/page.blp',
+
+  'ui/playlist/button.blp',
+  'ui/playlist/page.blp',
+
+  'ui/song/row.blp',
+  'ui/song/queue.blp',
+)
+
+blueprints = custom_target('blueprints',
+  input: blueprints,
+  output: '.',
+  command: [
+    find_program('blueprint-compiler', version: '>= 0.18.0'),
+    'batch-compile',
+    '@OUTPUT@',
+    '@CURRENT_SOURCE_DIR@',
+    '@INPUT@'
+  ],
+)
+
+gnome.compile_resources(
+  'nocturne',
+  'nocturne.gresource.xml',
+  gresource_bundle: true,
+  install: true,
+  install_dir: pkgdatadir,
+  dependencies: blueprints,
+  source_dir: meson.current_source_dir(),
+)
+
+python = import('python')
+
+conf = configuration_data()
+conf.set('PYTHON', python.find_installation('python3').full_path())
+conf.set('VERSION', meson.project_version())
+conf.set('localedir', get_option('prefix') / get_option('localedir'))
+conf.set('pkgdatadir', pkgdatadir)
+
+configure_file(
+  input: 'nocturne.in',
+  output: 'nocturne',
+  configuration: conf,
+  install: true,
+  install_dir: get_option('bindir'),
+  install_mode: 'rwxr-xr-x'
+)
+
+nocturne_sources = [
+  '__init__.py',
+  'main.py',
+  'window.py',
+]
+
+install_data(nocturne_sources, install_dir: moduledir)
+
+subdir('widgets')
+subdir('navidrome')
