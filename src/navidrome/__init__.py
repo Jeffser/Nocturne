@@ -167,8 +167,7 @@ class Navidrome(GObject.Object):
                     self.loaded_models[new_id] = models.Playlist(**playlist_dict)
         return playlist_ids
 
-    def verifyArtist(self, id:str, force_update:bool=False):
-        # Updates and adds additional data for artist (or creates new one if needed)
+    def verifyArtist(self, id:str, force_update:bool=False, update_callback:callable=None):
         def update():
             base_response = self.make_request('getArtist', {'id': id})
             base_artist = base_response.get('artist', {})
@@ -176,6 +175,8 @@ class Navidrome(GObject.Object):
             detail_artist = detail_response.get('artistInfo2', {})
             artist_dict = {**base_artist, **detail_artist}
             self.loaded_models[id].update_data(**artist_dict)
+            if update_callback:
+                update_callback()
 
         if id not in self.loaded_models:
             self.loaded_models[id] = models.Artist(id=id)
@@ -183,12 +184,13 @@ class Navidrome(GObject.Object):
         elif force_update:
             threading.Thread(target=update).start()
 
-    def verifyAlbum(self, id:str, force_update:bool=False):
-        # Updates and adds additional data for album (or creates new one if needed)
+    def verifyAlbum(self, id:str, force_update:bool=False, update_callback:callable=None):
         def update():
             response = self.make_request('getAlbum', {'id': id})
             album_dict = response.get('album', {})
             self.loaded_models[id].update_data(**album_dict)
+            if update_callback:
+                update_callback()
 
         if id not in self.loaded_models:
             self.loaded_models[id] = models.Album(id=id)
@@ -196,12 +198,13 @@ class Navidrome(GObject.Object):
         elif force_update:
             threading.Thread(target=update).start()
 
-    def verifyPlaylist(self, id:str, force_update:bool=False):
-        # Updates and adds additional data for playlist (or creates new one if needed)
+    def verifyPlaylist(self, id:str, force_update:bool=False, update_callback:callable=None):
         def update():
             response = self.make_request('getPlaylist', {'id': id})
             playlist_dict = response.get('playlist', {})
             self.loaded_models[id].update_data(**playlist_dict)
+            if update_callback:
+                update_callback()
 
         if id not in self.loaded_models:
             self.loaded_models[id] = models.Playlist(id=id)
@@ -209,12 +212,13 @@ class Navidrome(GObject.Object):
         elif force_update:
             threading.Thread(target=update).start()
 
-    def verifySong(self, id:str, force_update:bool=False):
-        # Updates and adds additional data for song (or creates new one if needed)
+    def verifySong(self, id:str, force_update:bool=False, update_callback:callable=None):
         def update():
             response = self.make_request('getSong', {'id': id})
             song_dict = response.get('song', {})
             self.loaded_models[id].update_data(**song_dict)
+            if update_callback:
+                update_callback()
 
         if id not in self.loaded_models:
             self.loaded_models[id] = models.Song(id=id)

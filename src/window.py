@@ -69,17 +69,39 @@ class NocturneWindow(Adw.ApplicationWindow):
         else:
             queue_page.replace_queue([model_id])
 
+    def play_album(self, action, model_id:GLib.Variant):
+        model_id = model_id.unpack()
+        integration = navidrome.get_current_integration()
+        album = integration.loaded_models.get(model_id)
+
+        def on_update_finish():
+            queue_page = self.playing_navigationview.find_page('queue')
+            queue_page.replace_queue([s.get('id') for s in album.song])
+
+        if album:
+            integration.verifyAlbum(album.id, force_update=True, update_callback=on_update_finish)
+
+    def play_playlist(self, action, model_id:GLib.Variant):
+        model_id = model_id.unpack()
+        integration = navidrome.get_current_integration()
+        playlist = integration.loaded_models.get(model_id)
+
+        def on_update_finish():
+            queue_page = self.playing_navigationview.find_page('queue')
+            queue_page.replace_queue([s.get('id') for s in playlist.entry])
+
+        if playlist:
+            integration.verifyPlaylist(playlist.id, force_update=True, update_callback=on_update_finish)
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
         """
         Actions to implement:
 
-        play_album
-        play_playlist
-        play_shuffle_artist
-        play_radio_artist
-        play_shuffle_album
+        play_artist_shuffle
+        play_artist_radio
+        play_album_suffle
         play_song_next
         play_song_later
         add_song_to_playlist
@@ -91,6 +113,18 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.get_application().create_action(
             name="play_song",
             callback=self.play_song,
+            parameter_type=GLib.VariantType.new('s')
+        )
+
+        self.get_application().create_action(
+            name="play_album",
+            callback=self.play_album,
+            parameter_type=GLib.VariantType.new('s')
+        )
+
+        self.get_application().create_action(
+            name="play_playlist",
+            callback=self.play_playlist,
             parameter_type=GLib.VariantType.new('s')
         )
 

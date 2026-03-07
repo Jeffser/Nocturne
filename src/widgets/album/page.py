@@ -16,6 +16,8 @@ class AlbumPage(Adw.NavigationPage):
     star_el = Gtk.Template.Child()
     song_list_el = Gtk.Template.Child()
 
+    play_el = Gtk.Template.Child()
+
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
@@ -25,6 +27,7 @@ class AlbumPage(Adw.NavigationPage):
         )
 
         self.star_el.set_action_target_value(GLib.Variant.new_string(self.id))
+        self.play_el.set_action_target_value(GLib.Variant.new_string(self.id))
 
         integration.connect_to_model(self.id, 'name', self.update_name)
         integration.connect_to_model(self.id, 'artist', self.update_artist)

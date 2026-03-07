@@ -8,7 +8,7 @@ template $NocturnePlaylistButton: Gtk.Box {
 
   Gtk.Button play_el {
     styles [
-      "p0",
+      "force_p0",
       "flat",
     ]
     action-name: "app.play_playlist";
@@ -26,13 +26,12 @@ template $NocturnePlaylistButton: Gtk.Box {
 
       child: Gtk.Image cover_el {
         styles [
-          "album-play-cover",
           "card"
         ]
         pixel-size: 240;
         height-request: 240;
         overflow: hidden;
-        halign: center;
+        hexpand: true;
         paintable: Adw.SpinnerPaintable {
           widget: cover_el;
         };

@@ -12,21 +12,18 @@ class PlayingQueuePage(Adw.NavigationPage):
 
     def replace_queue(self, songs:list, current_id:str=None):
         integration = get_current_integration()
-        #for row in list(self.song_list_el.list_el):
-            #self.song_list_el.list_el.remove(row)
-
+        for row in list(self.song_list_el.list_el):
+            GLib.idle_add(self.song_list_el.list_el.remove, row)
         if len(songs) > 0:
             if current_id is None:
                 current_id = songs[0]
 
             for song_id in songs:
-                self.song_list_el.list_el.append(
+                GLib.idle_add(self.song_list_el.list_el.append,
                     SongRow(
                         song_id,
                         draggable=True,
                         removable=True
                     )
                 )
-
-        integration.loaded_models['currentSong'].songId = current_id
-
+        GLib.idle_add(integration.loaded_models['currentSong'].set_property, 'songId', current_id)

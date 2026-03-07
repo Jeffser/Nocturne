@@ -1,4 +1,4 @@
-.p0 {
+.p0, button.force_p0, menubutton.force_p0 > button {
   padding: 0;
 }
 
@@ -34,10 +34,6 @@ image.album-play-overlay {
 
 image.album-play-overlay:hover {
   opacity: 1;
-}
-
-button:hover image.album-play-cover {
-  filter: blur(2px);
 }
 
 .rounded-corner {
