@@ -33,7 +33,7 @@ button.active_appearance_button:disabled {
   filter: none;
 }
 
-sidebar > scrolledwindow > viewport > *,
+sidebar scrolledwindow > viewport > *,
 navigation-view-page > toolbarview > scrolledwindow > viewport > * {
   padding-bottom: 80px;
 }

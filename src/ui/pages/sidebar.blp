@@ -6,7 +6,16 @@ template $NocturneMainSidebar: Adw.NavigationPage {
   title: "Nocturne";
   child: Adw.ToolbarView {
     [top]
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      [end]
+      MenuButton {
+        primary: true;
+        icon-name: "open-menu-symbolic";
+        tooltip-text: _("Menu");
+        menu-model: primary_menu;
+      }
+
+    }
 
     content: Adw.Sidebar sidebar {
       Adw.SidebarSection {
@@ -72,6 +81,30 @@ template $NocturneMainSidebar: Adw.NavigationPage {
           tooltip: _("Playlists");
         }
       }
+
+      Adw.SidebarSection {
+        Adw.SidebarItem {
+          title: _("User");
+          icon-name: "person-symbolic";
+        }
+      }
     };
   };
+}
+
+menu primary_menu {
+  section {
+    item {
+      label: _("Preferences");
+      action: "app.preferences";
+    }
+    item {
+      label: _("Keyboard Shortcuts");
+      action: "app.shortcuts";
+    }
+    item {
+      label: _("About Nocturne");
+      action: "app.about";
+    }
+  }
 }
