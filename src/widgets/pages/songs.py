@@ -17,7 +17,7 @@ class SongsPage(Adw.NavigationPage):
 
     def reload(self):
         if len(list(self.list_el.list_el)) == 0:
-            GLib.idle_add(self.on_search_activate, self.search_entry)
+            GLib.idle_add(self.on_search, self.search_entry)
 
     def search(self):
         if self.searching:
@@ -42,7 +42,7 @@ class SongsPage(Adw.NavigationPage):
         self.searching = False
 
     @Gtk.Template.Callback()
-    def on_search_activate(self, search_entry):
+    def on_search(self, search_entry):
         self.offset = 0
         for row in list(self.list_el.list_el):
             row.set_visible(False)

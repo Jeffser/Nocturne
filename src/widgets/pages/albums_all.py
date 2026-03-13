@@ -1,13 +1,13 @@
-# artist.py
+# albums_all.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gio
 from ...navidrome import get_current_integration, models
-from ..artist import ArtistRow
+from ..album import AlbumRow
 import threading
 
-@Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/artists.ui')
-class ArtistsPage(Adw.NavigationPage):
-    __gtype_name__ = 'NocturneArtistsPage'
+@Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/albums_all.ui')
+class AlbumsAllPage(Adw.NavigationPage):
+    __gtype_name__ = 'NocturneAlbumsAllPage'
 
     search_entry = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
@@ -27,15 +27,15 @@ class ArtistsPage(Adw.NavigationPage):
         integration = get_current_integration()
         search_results = integration.search(
             query=query,
-            artistCount=30,
-            artistOffset=self.offset
+            albumCount=30,
+            albumOffset=self.offset
         )
-        for artist_id in search_results.get('artist'):
-            results = [row for row in list(self.list_el) if row.id == artist_id]
+        for album_row in search_results.get('album'):
+            results = [row for row in list(self.list_el) if row.id == album_row]
             if len(results) > 0:
                 GLib.idle_add(results[0].set_visible, True)
             else:
-                row = ArtistRow(artist_id)
+                row = AlbumRow(album_row)
                 GLib.idle_add(self.list_el.append, row)
         self.end_stack.set_visible_child_name('end' if max(self.offset, 30) > len([row for row in list(self.list_el) if row.get_visible()]) else 'loading')
         self.offset += 30
@@ -47,7 +47,7 @@ class ArtistsPage(Adw.NavigationPage):
         for row in list(self.list_el):
             row.set_visible(False)
         threading.Thread(target=self.search).start()
-            
+
     @Gtk.Template.Callback()
     def scroll_edge_reached(self, scrolledwindow, pos):
         if pos == Gtk.PositionType.BOTTOM:

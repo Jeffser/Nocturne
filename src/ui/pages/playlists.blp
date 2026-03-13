@@ -20,7 +20,7 @@ template $NocturnePlaylistsPage: Adw.NavigationPage {
       title-widget: Gtk.SearchEntry {
         hexpand: true;
         placeholder-text: _("Playlists");
-        search-changed => $on_search_changed();
+        search-changed => $on_search();
       };
     }
 
@@ -35,27 +35,12 @@ template $NocturnePlaylistsPage: Adw.NavigationPage {
           orientation: vertical;
           spacing: 5;
 
-          Gtk.ListBox list_el {
-            styles [
-              "boxed-list"
-            ]
+          $NocturneWrapbox list_el {
             margin-top: 10;
             margin-bottom: 10;
             margin-start: 10;
             margin-end: 10;
-            selection-mode: none;
             valign: start;
-          }
-
-          Gtk.Label {
-            styles [
-              "dimmed"
-            ]
-            label: _("Reached End of List");
-            halign: center;
-            wrap: true;
-            wrap-mode: word_char;
-            justify: center;
           }
         }
       };

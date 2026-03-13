@@ -1,0 +1,122 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneAlbumRow: Adw.ActionRow {
+  action-name: "app.show_album";
+  activatable: true;
+
+  [prefix]
+  Gtk.Image cover_el {
+    styles [
+      "card"
+    ]
+    pixel-size: 48;
+    height-request: 48;
+    width-request: 48;
+    margin-top: 10;
+    margin-bottom: 10;
+    overflow: hidden;
+    valign: center;
+    halign: center;
+    paintable: Adw.SpinnerPaintable {
+      widget: cover_el;
+    };
+  }
+
+  [suffix]
+  Gtk.MenuButton {
+    styles [
+      "circular",
+      "flat",
+    ]
+    icon-name: "view-more-symbolic";
+    valign: center;
+
+    popover: Gtk.Popover {
+      child: Gtk.Box {
+        orientation: vertical;
+
+        Gtk.Button play_el {
+          styles [
+            "small",
+            "flat",
+            "button_no_bold"
+          ]
+          child: Adw.ButtonContent {
+            icon-name: "media-playback-start-symbolic";
+            label: _("Play");
+            halign: start;
+          };
+          tooltip-text: _("Play");
+          action-name: "app.play_album";
+          clicked => $option_selected();
+        }
+
+        Gtk.Button play_shuffle_el {
+          styles [
+            "small",
+            "flat",
+            "button_no_bold"
+          ]
+          child: Adw.ButtonContent {
+            icon-name: "playlist-shuffle-symbolic";
+            label: _("Shuffle");
+            halign: start;
+          };
+          tooltip-text: _("Shuffle");
+          action-name: "app.play_album_shuffle";
+          clicked => $option_selected();
+        }
+
+        Gtk.Button play_next_el {
+          styles [
+            "small",
+            "flat",
+            "button_no_bold"
+          ]
+          child: Adw.ButtonContent {
+            icon-name: "list-high-priority-symbolic";
+            label: _("Play Next");
+            halign: start;
+          };
+          tooltip-text: _("Play Next");
+          action-name: "app.play_album_next";
+          clicked => $option_selected();
+        }
+
+        Gtk.Button play_later_el {
+          styles [
+            "small",
+            "flat",
+            "button_no_bold"
+          ]
+          child: Adw.ButtonContent {
+            icon-name: "list-low-priority-symbolic";
+            label: _("Play Later");
+            halign: start;
+          };
+          tooltip-text: _("Play Later");
+          action-name: "app.play_album_later";
+          clicked => $option_selected();
+        }
+
+        Gtk.Button add_playlist_el {
+          styles [
+            "small",
+            "flat",
+            "button_no_bold"
+          ]
+          child: Adw.ButtonContent {
+            icon-name: "playlist-symbolic";
+            label: _("Add To Playlist");
+            halign: start;
+          };
+          tooltip-text: _("Add To Playlist");
+          action-name: "app.add_album_to_playlist";
+          clicked => $option_selected();
+        }
+
+      };
+    };
+  }
+}

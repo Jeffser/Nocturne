@@ -34,8 +34,7 @@ SIDEBAR_MENU = [
             { # Item
                 'title': _("All"),
                 'icon-name': "music-queue-symbolic",
-                'page-tag': 'albums',
-                'page-type': 'all'
+                'page-tag': 'albums-all'
             },
             { # Item
                 'title': _("Random"),

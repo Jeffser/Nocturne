@@ -1,15 +1,15 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $NocturneSongsPage: Adw.NavigationPage {
-  title: _("Songs");
-  tag: "songs";
+template $NocturneAlbumsAllPage: Adw.NavigationPage {
+  title: _("Albums");
+  tag: "albums-all";
   child: Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
       title-widget: Gtk.SearchEntry search_entry {
         hexpand: true;
-        placeholder-text: _("Songs");
+        placeholder-text: _("Albums");
         search-changed => $on_search();
       };
     }
@@ -26,7 +26,7 @@ template $NocturneSongsPage: Adw.NavigationPage {
           orientation: vertical;
           spacing: 5;
 
-          $NocturneSongQueue list_el {
+          Gtk.ListBox list_el {
             styles [
               "boxed-list"
             ]
@@ -34,6 +34,7 @@ template $NocturneSongsPage: Adw.NavigationPage {
             margin-bottom: 10;
             margin-start: 10;
             margin-end: 10;
+            selection-mode: none;
             valign: start;
           }
           Gtk.Stack end_stack {

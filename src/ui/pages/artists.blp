@@ -10,7 +10,7 @@ template $NocturneArtistsPage: Adw.NavigationPage {
       title-widget: Gtk.SearchEntry search_entry {
         hexpand: true;
         placeholder-text: _("Artists");
-        activate => $on_search_activate();
+        search-changed => $on_search();
       };
     }
 

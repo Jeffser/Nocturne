@@ -52,9 +52,11 @@
     <file alias="pages/artists.ui">ui/pages/artists.ui</file>
     <file alias="pages/playlists.ui">ui/pages/playlists.ui</file>
     <file alias="pages/songs.ui">ui/pages/songs.ui</file>
+    <file alias="pages/albums_all.ui">ui/pages/albums_all.ui</file>
 
     <file alias="album/button.ui">ui/album/button.ui</file>
     <file alias="album/page.ui">ui/album/page.ui</file>
+    <file alias="album/row.ui">ui/album/row.ui</file>
 
     <file alias="artist/button.ui">ui/artist/button.ui</file>
     <file alias="artist/page.ui">ui/artist/page.ui</file>

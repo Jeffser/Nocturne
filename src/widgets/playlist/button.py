@@ -37,6 +37,7 @@ class PlaylistButton(Gtk.Box):
     def update_name(self, name:str):
         self.name_el.set_tooltip_text(name)
         self.name_label_el.set_label(name)
+        self.set_name(name)
 
     def update_song_count(self, songCount:int):
         if songCount == 1:

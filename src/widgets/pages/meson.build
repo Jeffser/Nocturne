@@ -7,6 +7,7 @@ widgets = [
   'artists.py',
   'playlists.py',
   'songs.py',
+  'albums_all.py',
 ]
 
 install_data(widgets, install_dir: moduledir)
