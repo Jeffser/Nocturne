@@ -30,8 +30,8 @@ class PlaylistPage(Adw.NavigationPage):
         self.song_list_el.set_header(_("Songs"), "music-note-symbolic")
 
         context_dict = CONTEXT_PLAYLIST.copy()
-        del context_dict[_('Edit')]
-        del context_dict[_('Delete')]
+        del context_dict['edit']
+        del context_dict['delete']
         context_buttons = get_context_buttons_list(context_dict, self.id)
         for btn in context_buttons:
             self.context_wrap_el.append(btn)
@@ -47,8 +47,13 @@ class PlaylistPage(Adw.NavigationPage):
     def update_cover(self, coverArt:str=None):
         def update():
             integration = get_current_integration()
-            paintable = integration.getCoverArt(self.id, 480)
-            GLib.idle_add(self.cover_el.set_from_paintable, paintable)
+            paintable = integration.getCoverArt(self.id)
+            if paintable:
+                GLib.idle_add(self.cover_el.set_from_paintable, paintable)
+                GLib.idle_add(self.cover_el.set_pixel_size, 240)
+            else:
+                GLib.idle_add(self.cover_el.set_from_icon_name, "playlist-symbolic")
+                GLib.idle_add(self.cover_el.set_pixel_size, -1)
         threading.Thread(target=update).start()
 
     def update_name(self, name:str):

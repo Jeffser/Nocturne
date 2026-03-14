@@ -32,8 +32,13 @@ class PlaylistButton(Gtk.Box):
     def update_cover(self, coverArt:str=None):
         def update():
             integration = get_current_integration()
-            paintable = integration.getCoverArt(self.id, 480)
-            GLib.idle_add(self.cover_el.set_from_paintable, paintable)
+            paintable = integration.getCoverArt(self.id)
+            if paintable:
+                GLib.idle_add(self.cover_el.set_from_paintable, paintable)
+                GLib.idle_add(self.cover_el.set_pixel_size, 240)
+            else:
+                GLib.idle_add(self.cover_el.set_from_icon_name, "playlist-symbolic")
+                GLib.idle_add(self.cover_el.set_pixel_size, -1)
         threading.Thread(target=update).start()
 
     def update_name(self, name:str):

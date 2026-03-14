@@ -344,13 +344,15 @@ class PlayingControlPage(Adw.NavigationPage):
         integration = get_current_integration()
         song_id = integration.loaded_models.get('currentSong').songId
         if song_id:
-            raw_bytes, paintable = integration.getCoverArtWithBytes(song_id, 480)
-
-            if isinstance(paintable, Gdk.MemoryTexture):
-                GLib.idle_add(self.cover_el.set_paintable, paintable)
+            raw_bytes, paintable = integration.getCoverArtWithBytes(song_id)
+            if raw_bytes:
                 threading.Thread(target=self.update_palette, args=(raw_bytes,)).start()
+            if paintable:
+                GLib.idle_add(self.cover_el.set_paintable, paintable)
+                GLib.idle_add(self.cover_el.set_visible, True)
             else:
                 GLib.idle_add(self.cover_el.set_paintable, None)
+                GLib.idle_add(self.cover_el.set_visible, False)
 
     def update_starred(self, starred:str):
         if starred:

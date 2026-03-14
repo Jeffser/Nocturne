@@ -43,11 +43,13 @@ class PlayingFooter(Gtk.Overlay):
         integration = get_current_integration()
         song_id = integration.loaded_models.get('currentSong').songId
         if song_id:
-            paintable = integration.getCoverArt(song_id, 480)
-            if isinstance(paintable, Gdk.MemoryTexture):
+            paintable = integration.getCoverArt(song_id)
+            if paintable:
                 GLib.idle_add(self.cover_el.set_from_paintable, paintable)
+                GLib.idle_add(self.cover_el.set_pixel_size, 48)
             else:
-                GLib.idle_add(self.cover_el.set_from_paintable, None)
+                GLib.idle_add(self.cover_el.set_from_icon_name, 'music-note-symbolic')
+                GLib.idle_add(self.cover_el.set_pixel_size, -1)
 
     @Gtk.Template.Callback()
     def play_clicked(self, button):

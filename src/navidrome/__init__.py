@@ -75,8 +75,8 @@ class Navidrome(GObject.Object):
         query_string = "&".join([f"{k}={v}" for k, v in params.items()])
         return '{}/rest/stream?{}'.format(self.base_url.strip('/'), query_string)
 
-    def getRadioCoverArtWithBytes(self, id:str=None, size:int=480) -> tuple:
-        # returns bytes, Gdk.Paintable
+    def getRadioCoverArtWithBytes(self, id:str=None) -> tuple:
+        # returns bytes, Gdk.Paintable or None, None
         if id:
             model = self.loaded_models[id]
             homepage_url = ""
@@ -104,23 +104,15 @@ class Navidrome(GObject.Object):
                         except Exception as e:
                             pass
 
-        theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
-        return b'', theme.lookup_icon(
-            'sound-symbolic',
-            None,
-            size,
-            1,
-            Gtk.TextDirection.NONE,
-            0
-        )
+        return None, None
 
-    def getRadioCoverArt(self, id:str=None, size:int=480) -> Gdk.Paintable:
+    def getRadioCoverArt(self, id:str=None) -> Gdk.Paintable:
         # Returns a paintable at the specified size, should be used directly in GTK without modifications
         # It also returns a pretty icon as a fallback if it fails for some reason
         return self.getRadioCoverArtWithBytes(id, size)[1]
 
-    def getCoverArtWithBytes(self, id:str=None, size:int=480) -> tuple:
-        # returns bytes, Gdk.Paintable
+    def getCoverArtWithBytes(self, id:str=None) -> tuple:
+        # returns bytes, Gdk.Paintable or None, None
         if id:
             model = self.loaded_models[id]
             if isinstance(model, models.Song) and model.isRadio:
@@ -134,7 +126,7 @@ class Navidrome(GObject.Object):
             params = {
                 **self.get_base_params(),
                 'id': coverArtId,
-                'size': size
+                'size': 480
             }
             response = requests.get(self.get_url('getCoverArt'), params=params)
             response_bytes = response.content if response.status_code == 200 else b''
@@ -148,20 +140,12 @@ class Navidrome(GObject.Object):
                 except Exception as e:
                     pass
 
-        theme = Gtk.IconTheme.get_for_display(Gdk.Display.get_default())
-        return b'', theme.lookup_icon(
-            'image-missing-symbolic',
-            None,
-            size,
-            1,
-            Gtk.TextDirection.NONE,
-            0
-        )
+        return None, None
 
-    def getCoverArt(self, id:str=None, size:int=480) -> Gdk.Paintable:
+    def getCoverArt(self, id:str=None) -> Gdk.Paintable:
         # Returns a paintable at the specified size, should be used directly in GTK without modifications
         # It also returns a pretty icon as a fallback if it fails for some reason
-        return self.getCoverArtWithBytes(id, size)[1]
+        return self.getCoverArtWithBytes(id)[1]
 
     def ping(self) -> bool:
         try:

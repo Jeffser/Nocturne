@@ -29,8 +29,8 @@ class ArtistButton(Gtk.Button):
     def update_cover(self, coverArt:str=None):
         def update():
             integration = get_current_integration()
-            paintable = integration.getCoverArt(self.id, 480)
-            if isinstance(paintable, Gdk.MemoryTexture):
+            paintable = integration.getCoverArt(self.id)
+            if paintable:
                 GLib.idle_add(self.avatar_el.set_custom_image, paintable)
             else:
                 GLib.idle_add(self.avatar_el.set_custom_image, None)

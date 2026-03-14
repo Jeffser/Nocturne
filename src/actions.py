@@ -23,16 +23,20 @@ def __show_custom_toast(window, model_id:str, title_property:str, subtitle:str, 
     if icon_name:
         custom_widget.set_icon_name(icon_name)
     else:
+        paintable = integration.getCoverArt(model_id)
         album_art = Gtk.Image(
             css_classes=['card'],
-            pixel_size=48,
             height_request=48,
             width_request=48,
             overflow=Gtk.Overflow.HIDDEN,
             halign=Gtk.Align.CENTER,
             valign=Gtk.Align.CENTER,
-            paintable=integration.getCoverArt(model_id)
         )
+        if paintable:
+            album_art.set_from_paintable(paintable)
+            album_art.set_pixel_size(48)
+        else:
+            album_art.set_from_icon_name("music-note-symbolic")
         custom_widget.add_prefix(album_art)
     toast = Adw.Toast(
         custom_title=custom_widget,
