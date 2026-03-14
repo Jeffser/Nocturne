@@ -92,19 +92,6 @@ class ArtistPage(Adw.NavigationPage):
             album_buttons.append(button)
         self.album_wrapbox.set_widgets(album_buttons)
 
-        return
-        for el in list(self.album_list_el):
-            self.album_list_el.remove(el)
-
-        for album_dict in album_list:
-            button = AlbumButton(album_dict.get('id'))
-            button.artist_el.set_visible(False)
-            button.set_halign(Gtk.Align.CENTER)
-            button.name_el.remove_css_class('title-3')
-            self.album_list_el.prepend(button)
-
-        self.album_list_el.set_visible(album_list)
-
     def update_artist_list(self, artist_list:list):
         artists = [a.get('id') for a in artist_list]
         GLib.idle_add(self.artist_carousel.set_widgets, [ArtistButton(id) for id in artists])
