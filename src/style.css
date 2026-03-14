@@ -93,6 +93,10 @@ sheet .sidebar-pane {
   background: color-mix(in srgb, var(--sidebar-bg-color) 10%, transparent);
 }
 
+toast {
+  margin-bottom: 84px;
+}
+
 @media (prefers-color-scheme: light) {
   sheet list.boxed-list {
     background-color: rgba(255,255,255,0.2);

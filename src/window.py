@@ -42,6 +42,7 @@ class NocturneWindow(Adw.ApplicationWindow):
     main_sidebar = Gtk.Template.Child()
     main_stack = Gtk.Template.Child()
     footer = Gtk.Template.Child()
+    toast_overlay = Gtk.Template.Child()
 
     @Gtk.Template.Callback()
     def close_request(self, window):

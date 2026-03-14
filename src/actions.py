@@ -4,7 +4,7 @@ from . import navidrome
 import random, threading
 from datetime import datetime, UTC
 from . import widgets as Widgets
-from gi.repository import Gio, Adw, Gtk
+from gi.repository import Gio, Adw, Gtk, GLib
 
 # -- HELPER --
 
@@ -13,6 +13,33 @@ def __show_page(window, page):
     window.main_bottom_sheet.set_open(False)
     window.main_split_view.set_show_content(True)
     window.main_navigationview.push(page)
+
+def __show_custom_toast(window, model_id:str, title_property:str, subtitle:str, icon_name:str=None):
+    integration = navidrome.get_current_integration()
+    custom_widget = Adw.ActionRow(
+        title=integration.loaded_models.get(model_id).get_property(title_property),
+        subtitle=subtitle
+    )
+    album_art = Gtk.Image(
+        css_classes=['card'],
+        pixel_size=48,
+        height_request=48,
+        width_request=48,
+        overflow=Gtk.Overflow.HIDDEN,
+        halign=Gtk.Align.CENTER,
+        valign=Gtk.Align.CENTER
+    )
+    if icon_name:
+        album_art.set_from_icon_name(icon_name)
+    else:
+        album_art.set_from_paintable(integration.getCoverArt(model_id))
+
+    custom_widget.add_prefix(album_art)
+    toast = Adw.Toast(
+        custom_title=custom_widget,
+        timeout=2
+    )
+    GLib.idle_add(window.toast_overlay.add_toast, toast)
 
 # -- MISC --
 
@@ -64,31 +91,19 @@ def add_radio(window):
         selection_mode=Gtk.SelectionMode.NONE,
         css_classes=['boxed-list']
     )
-    name_el = Adw.EntryRow(
-        title=_("Name")
-    )
+    name_el = Adw.EntryRow(title=_("Name"))
     list_box.append(name_el)
-    stream_el = Adw.EntryRow(
-        title=_("Stream Url")
-    )
+    stream_el = Adw.EntryRow(title=_("Stream Url"))
     list_box.append(stream_el)
-    homepage_el = Adw.EntryRow(
-        title=_("Homepage Url")
-    )
+    homepage_el = Adw.EntryRow(title=_("Homepage Url"))
     list_box.append(homepage_el)
 
     dialog = Adw.AlertDialog(
         heading=_("Add Radio Station"),
         extra_child=list_box
     )
-    dialog.add_response(
-        "cancel",
-        _("Cancel")
-    )
-    dialog.add_response(
-        "save",
-        _("Save")
-    )
+    dialog.add_response("cancel", _("Cancel"))
+    dialog.add_response("save", _("Save"))
     dialog.set_response_appearance("save", Adw.ResponseAppearance.SUGGESTED)
     dialog.choose(window, None, response, name_el, stream_el, homepage_el)
 
@@ -104,9 +119,17 @@ def play_song(window, model_id:str):
 
 def play_song_next(window, model_id:str):
     window.queue_page.play_next([model_id])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'title', _("Playing Next"))
+    ).start()
 
 def play_song_later(window, model_id:str):
     window.queue_page.play_later([model_id])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'title', _("Playing Later"))
+    ).start()
 
 # -- ALBUM --
 
@@ -128,6 +151,10 @@ def play_album_next(window, model_id:str):
     if album:
         integration.verifyAlbum(album.id, force_update=True, use_threading=False)
         window.queue_page.play_next([s.get('id') for s in album.song])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'name', _("Playing Next"))
+    ).start()
 
 def play_album_later(window, model_id:str):
     integration = navidrome.get_current_integration()
@@ -136,6 +163,10 @@ def play_album_later(window, model_id:str):
     if album:
         integration.verifyAlbum(album.id, force_update=True, use_threading=False)
         window.queue_page.play_later([s.get('id') for s in album.song])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'name', _("Playing Later"))
+    ).start()
 
 def play_album_shuffle(window, model_id:str):
     integration = navidrome.get_current_integration()
@@ -167,6 +198,10 @@ def play_playlist_next(window, model_id:str):
     if playlist:
         integration.verifyPlaylist(playlist.id, force_update=True, use_threading=False)
         window.queue_page.play_next([s.get('id') for s in playlist.entry])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'name', _("Playing Next"))
+    ).start()
 
 def play_playlist_later(window, model_id:str):
     integration = navidrome.get_current_integration()
@@ -175,6 +210,10 @@ def play_playlist_later(window, model_id:str):
     if playlist:
         integration.verifyPlaylist(playlist.id, force_update=True, use_threading=False)
         window.queue_page.play_later([s.get('id') for s in playlist.entry])
+    threading.Thread(
+        target=__show_custom_toast,
+        args=(window, model_id, 'name', _("Playing Later"))
+    ).start()
 
 def play_playlist_shuffle(window, model_id:str):
     integration = navidrome.get_current_integration()
