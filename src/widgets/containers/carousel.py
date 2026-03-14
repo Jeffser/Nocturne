@@ -24,10 +24,11 @@ class Carousel(Gtk.Box):
 
     def set_widgets(self, widgets:list):
         def scroll_to_middle():
-            middle_index = int((self.list_el.get_n_pages()-1)/2)
-            page = self.list_el.get_nth_page(max(0, middle_index))
-            if page:
-                self.list_el.scroll_to(page, True)
+            if self.list_el.get_n_pages() > 0:
+                middle_index = int((self.list_el.get_n_pages()-1)/2)
+                page = self.list_el.get_nth_page(max(0, middle_index))
+                if page:
+                    self.list_el.scroll_to(page, True)
 
         GLib.idle_add(self.set_visible, len(widgets) > 0)
         if self.list_el.get_n_pages() > 0:

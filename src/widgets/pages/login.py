@@ -25,6 +25,9 @@ class LoginPage(Adw.NavigationPage):
     def verify_login(self, ip:str, user:str):
         integration = Navidrome(ip, user)
         if integration.ping():
+            settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+            settings.set_string('integration-ip', ip)
+            settings.set_string('integration-user', user)
             set_current_integration(integration)
             GLib.idle_add(self.login_success)
         else:

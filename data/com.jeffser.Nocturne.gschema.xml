@@ -16,7 +16,13 @@
 	  <key name="integration-user" type="s">
 	    <default>''</default>
 	  </key>
-	  <key name="elements-per-home-section" type="i">
+	  <key name="n-songs-home" type="i">
+	    <default>12</default>
+	  </key>
+	  <key name="n-albums-home" type="i">
+	    <default>12</default>
+	  </key>
+	  <key name="n-artists-home" type="i">
 	    <default>12</default>
 	  </key>
 	</schema>

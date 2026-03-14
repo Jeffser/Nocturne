@@ -8,30 +8,40 @@ template $NocturneHomePage: Adw.NavigationPage {
     [top]
     Adw.HeaderBar {}
 
-    content: Gtk.ScrolledWindow {
-      propagate-natural-width: true;
-      propagate-natural-height: true;
+    content: Gtk.Stack main_stack {
+      Gtk.StackPage {
+        name: "content";
+        child: Gtk.ScrolledWindow {
+          propagate-natural-width: true;
+          propagate-natural-height: true;
 
-      child: Adw.Clamp {
-        maximum-size: 2000;
-        tightening-threshold: 800;
+          child: Adw.Clamp {
+            maximum-size: 2000;
+            tightening-threshold: 800;
 
-        child: Gtk.Box {
-          orientation: vertical;
-          spacing: 10;
+            child: Gtk.Box {
+              orientation: vertical;
+              spacing: 10;
 
-          $NocturneWrapbox song_wrapbox {}
+              $NocturneWrapbox song_wrapbox {}
 
-          $NocturneCarousel album_carousel {}
+              $NocturneCarousel album_carousel {}
 
-          $NocturneCarousel artist_carousel {}
+              $NocturneCarousel artist_carousel {}
 
-          $NocturneCarousel playlist_carousel {}
+              $NocturneCarousel playlist_carousel {}
+            };
+          };
         };
+      }
 
-
-      };
-
+      Gtk.StackPage {
+        name: "no-content";
+        child: Adw.StatusPage {
+          icon-name: "sad-computer-symbolic";
+          title: _("No Elements Found");
+        };
+      }
     };
   };
 }
