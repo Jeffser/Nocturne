@@ -379,6 +379,17 @@ def remove_songs_from_playlist(window, song_list:str):
         playlist_id,
         songIndexToRemove=song_list
     )
+    if result:
+        if len(song_list) > 1:
+            threading.Thread(
+                target=__show_custom_toast,
+                args=(window, playlist_id, "name", _("{} Songs Removed").format(len(song_list)))
+            ).start()
+        else:
+            threading.Thread(
+                target=__show_custom_toast,
+                args=(window, playlist_id, "name", _("Song Removed"))
+            ).start()
 
 # -- ARTIST --
 
