@@ -36,6 +36,7 @@ class PlayingControlPage(Adw.NavigationPage):
 
         self.is_seeking = False
         self.player = Player(self)
+        GLib.idle_add(self.setup_sidebar_button_connection)
 
     def setup(self):
         integration = get_current_integration()
@@ -263,4 +264,5 @@ class PlayingControlPage(Adw.NavigationPage):
             stream_url = integration.get_stream_url(songId)
             self.player.gst.set_property('uri', stream_url)
             self.player.gst.set_state(Gst.State.PLAYING)
+
 
