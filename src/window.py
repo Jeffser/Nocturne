@@ -139,5 +139,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.set_property('default-width', settings.get_value('default-width').unpack())
         self.set_property('default-height', settings.get_value('default-height').unpack())
+        if settings.get_value('player-blur-bg').unpack():
+            self.add_css_class('player-blur')
 
         GLib.idle_add(self.setup_sidebar)

@@ -199,20 +199,20 @@ class PlayingControlPage(Adw.NavigationPage):
         palette = ColorThief(img_io).get_palette(quality=10, color_count=2)
         css = f"""
         @media (prefers-color-scheme: dark) {{
-            .dynamic-accent-bg > * {{
+            window.dynamic-accent-bg bottom-sheet#main-bottom-sheet sheet > stack {{
                 background-image: linear-gradient(
                     to bottom right,
-                    rgba({','.join([str(c) for c in palette[0]])},0.25),
-                    rgba({','.join([str(c) for c in palette[1]])},0.25)
+                    rgba({','.join([str(c) for c in palette[0]])},0.3),
+                    rgba({','.join([str(c) for c in palette[1]])},0.3)
                 );
             }}
         }}
         @media (prefers-color-scheme: light) {{
-            .dynamic-accent-bg > * {{
+            window.dynamic-accent-bg bottom-sheet#main-bottom-sheet sheet > stack {{
                 background-image: linear-gradient(
                     to bottom right,
-                    rgba({','.join([str(c) for c in palette[0]])},0.40),
-                    rgba({','.join([str(c) for c in palette[1]])},0.40)
+                    rgba({','.join([str(c) for c in palette[0]])},0.3),
+                    rgba({','.join([str(c) for c in palette[1]])},0.3)
                 );
             }}
         }}
@@ -221,8 +221,8 @@ class PlayingControlPage(Adw.NavigationPage):
         }}
         """
 
-        stack_el = self.get_ancestor(Gtk.Stack)
-        stack_el.add_css_class('dynamic-accent-bg')
+        self.get_ancestor(Gtk.Stack).get_parent().set_overflow(Gtk.Overflow.HIDDEN)
+        self.get_root().add_css_class('dynamic-accent-bg')
         provider = Gtk.CssProvider()
         provider.load_from_string(css)
         Gtk.StyleContext.add_provider_for_display(

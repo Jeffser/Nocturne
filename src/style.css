@@ -90,8 +90,13 @@ image.album-play-overlay:hover {
   );
 }
 
-sheet .sidebar-pane {
+bottom-sheet#main-bottom-sheet sheet .sidebar-pane {
   background: color-mix(in srgb, var(--sidebar-bg-color) 10%, transparent);
+}
+
+window.player-blur bottom-sheet#main-bottom-sheet sheet.background {
+  backdrop-filter: blur(10px);
+  background: color-mix(in srgb, var(--window-bg-color) 90%, transparent);
 }
 
 toast {
@@ -99,7 +104,7 @@ toast {
 }
 
 @media (prefers-color-scheme: light) {
-  sheet list.boxed-list {
+  bottom-sheet#main-bottom-sheet sheet list.boxed-list {
     background-color: rgba(255,255,255,0.2);
   }
 }

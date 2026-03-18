@@ -11,6 +11,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
 
     context_button_el = Gtk.Template.Child()
     dynamic_bg_el = Gtk.Template.Child()
+    blur_bg_el = Gtk.Template.Child()
     restore_el = Gtk.Template.Child()
 
     hp_songs_el = Gtk.Template.Child()
@@ -32,6 +33,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
         settings.bind(
             "use-dynamic-background",
             self.dynamic_bg_el,
+            "active",
+            Gio.SettingsBindFlags.DEFAULT
+        )
+        settings.bind(
+            "player-blur-bg",
+            self.blur_bg_el,
             "active",
             Gio.SettingsBindFlags.DEFAULT
         )
@@ -68,18 +75,25 @@ class NocturnePreferences(Adw.PreferencesDialog):
         )
 
     @Gtk.Template.Callback()
-    def on_dynamic_bg_toggled(self, row):
-        if row.get_active():
-            stack_el = self.get_root().playing_page.get_ancestor(Gtk.Stack)
-            stack_el.remove_css_class('dynamic-accent-bg')
-        else:
-            if integration := get_current_integration():
-                if song_id := integration.loaded_models.get('currentSong').get_property('songId'):
-                    if song_model := integration.loaded_models.get(song_id):
-                        if raw_bytes := song_model.get_property('gdkPaintableBytes'):
-                            thread = threading.Thread(
-                                target=self.get_root().playing_page.update_palette,
-                                args=(raw_bytes,)
-                            )
-                            GLib.idle_add(thread.start)
+    def on_dynamic_bg_toggled(self, row, gparam):
+        if self.get_root():
+            if row.get_active():
+                if integration := get_current_integration():
+                    if song_id := integration.loaded_models.get('currentSong').get_property('songId'):
+                        if song_model := integration.loaded_models.get(song_id):
+                            if raw_bytes := song_model.get_property('gdkPaintableBytes'):
+                                thread = threading.Thread(
+                                    target=self.get_root().playing_page.update_palette,
+                                    args=(raw_bytes,)
+                                )
+                                GLib.idle_add(thread.start)
+            else:
+                self.get_root().remove_css_class('dynamic-accent-bg')
                             
+    @Gtk.Template.Callback()
+    def on_blur_bg_toggled(self, row, gparam):
+        if self.get_root():
+            if row.get_active():
+                self.get_root().add_css_class('player-blur')
+            else:
+                self.get_root().remove_css_class('player-blur')

@@ -16,7 +16,12 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
       Adw.SwitchRow dynamic_bg_el {
         title: _("Use Dynamic Background in Player");
         subtitle: _("Generate a gradient background based on the current song cover art");
-        activated => $on_dynamic_bg_toggled();
+        notify::active => $on_dynamic_bg_toggled();
+      }
+      Adw.SwitchRow blur_bg_el {
+        title: _("Blur Background in Player (Experimental)");
+        subtitle: _("Make background of player slightly transparent and blur the backdrop");
+        notify::active => $on_blur_bg_toggled();
       }
     }
     Adw.PreferencesGroup {

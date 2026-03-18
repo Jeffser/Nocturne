@@ -22,6 +22,9 @@
 	  <key name="use-dynamic-background" type="b">
 	    <default>true</default>
 	  </key>
+	  <key name="player-blur-bg" type="b">
+	    <default>false</default>
+	  </key>
 	  <key name="restore-session" type="b">
 	    <default>true</default>
 	  </key>
