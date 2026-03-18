@@ -5,6 +5,7 @@ gnome = import('gnome')
 blueprints = files(
   'ui/window.blp',
   'ui/shortcuts-dialog.blp',
+  'ui/preferences.blp',
 
   'ui/playing/footer.blp',
   'ui/playing/control_page.blp',
@@ -87,6 +88,7 @@ nocturne_sources = [
   'window.py',
   'actions.py',
   'constants.py',
+  'preferences.py',
 ]
 
 install_data(nocturne_sources, install_dir: moduledir)

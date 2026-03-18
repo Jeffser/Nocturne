@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="nocturne">
 	<schema id="com.jeffser.Nocturne" path="/com/jeffser/Nocturne/">
-	  <key name="auto-play" type="b">
-	    <default>false</default>
-	  </key>
 	  <key name="default-width" type="i">
 	    <default>800</default>
 	  </key>
@@ -16,6 +13,18 @@
 	  <key name="integration-user" type="s">
 	    <default>''</default>
 	  </key>
+	  <key name="auto-play" type="b">
+	    <default>false</default>
+	  </key>
+	  <key name="show-context-button" type="b">
+	    <default>true</default>
+	  </key>
+	  <key name="use-dynamic-background" type="b">
+	    <default>true</default>
+	  </key>
+	  <key name="restore-session" type="b">
+	    <default>true</default>
+	  </key>
 	  <key name="n-songs-home" type="i">
 	    <default>12</default>
 	  </key>
@@ -25,8 +34,8 @@
 	  <key name="n-artists-home" type="i">
 	    <default>12</default>
 	  </key>
-	  <key name="show-context-button" type="b">
-	    <default>true</default>
+	  <key name="n-playlists-home" type="i">
+	    <default>12</default>
 	  </key>
 	</schema>
 </schemalist>

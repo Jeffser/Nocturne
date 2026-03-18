@@ -45,7 +45,8 @@ class LoginPage(Adw.NavigationPage):
         root.lyrics_page.setup()
 
         threading.Thread(target=root.main_navigationview.find_page('home').reload).start()
-        GLib.idle_add(root.playing_page.player.restore_play_queue)
+        if Gio.Settings(schema_id="com.jeffser.Nocturne").get_value("restore-session").unpack():
+            GLib.idle_add(root.playing_page.player.restore_play_queue)
 
     @Gtk.Template.Callback()
     def login_button_clicked(self, button):

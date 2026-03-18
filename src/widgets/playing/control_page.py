@@ -236,7 +236,7 @@ class PlayingControlPage(Adw.NavigationPage):
         song_id = integration.loaded_models.get('currentSong').get_property('songId')
         if song_id:
             raw_bytes, paintable = integration.getCoverArtWithBytes(song_id)
-            if raw_bytes:
+            if raw_bytes and Gio.Settings(schema_id="com.jeffser.Nocturne").get_value("use-dynamic-background").unpack():
                 threading.Thread(target=self.update_palette, args=(raw_bytes,)).start()
             if paintable:
                 GLib.idle_add(self.cover_el.set_paintable, paintable)

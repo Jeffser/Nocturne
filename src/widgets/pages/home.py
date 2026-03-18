@@ -24,6 +24,7 @@ class HomePage(Adw.NavigationPage):
         max_songs = settings.get_value('n-songs-home').unpack()
         max_albums = settings.get_value('n-albums-home').unpack()
         max_artists = settings.get_value('n-artists-home').unpack()
+        max_playlists = settings.get_value('n-playlists-home').unpack()
 
         # -- Songs --
         self.song_wrapbox.set_header(
@@ -64,7 +65,7 @@ class HomePage(Adw.NavigationPage):
             icon_name="playlist-symbolic",
             page_tag="playlists"
         )
-        playlists = integration.getPlaylists()
+        playlists = integration.getPlaylists()[:max_playlists]
         GLib.idle_add(self.playlist_carousel.set_widgets, [PlaylistButton(id) for id in playlists])
 
         n_elements = sum([len(s) for s in (songs, albums, artists, playlists)])

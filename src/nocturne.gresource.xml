@@ -39,9 +39,11 @@
     <file alias="icons/scalable/status/open-menu-symbolic.svg">icons/open-menu-symbolic.svg</file>
     <file alias="icons/scalable/status/person-symbolic.svg">icons/person-symbolic.svg</file>
     <file alias="icons/scalable/status/document-edit-symbolic.svg">icons/document-edit-symbolic.svg</file>
+    <file alias="icons/scalable/status/preferences-system-symbolic.svg">icons/preferences-system-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
+    <file alias="preferences.ui">ui/preferences.ui</file>
 
     <file alias="playing/footer.ui">ui/playing/footer.ui</file>
     <file alias="playing/control_page.ui">ui/playing/control_page.ui</file>

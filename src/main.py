@@ -27,7 +27,7 @@ gi.require_version('Gst', '1.0')
 
 from gi.repository import Gtk, Gio, Adw
 from .window import NocturneWindow
-
+from .preferences import NocturnePreferences
 
 class NocturneApplication(Adw.Application):
     __gtype_name__ = 'NocturneApplication'
@@ -39,7 +39,7 @@ class NocturneApplication(Adw.Application):
                          resource_base_path='/com/jeffser/Nocturne')
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
-        self.create_action('preferences', self.on_preferences_action)
+        self.create_action('preferences', self.on_preferences_action, ['<control>comma'])
 
     def do_activate(self):
         win = self.props.active_window
@@ -59,7 +59,7 @@ class NocturneApplication(Adw.Application):
         about.present(self.props.active_window)
 
     def on_preferences_action(self, widget, _):
-        print('app.preferences action activated')
+        NocturnePreferences().present(self.props.active_window)
 
     def create_action(self, name, callback, shortcuts=None, parameter_type=None):
         action = Gio.SimpleAction.new(name, parameter_type)

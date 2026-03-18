@@ -1,0 +1,76 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturnePreferencesDialog: Adw.PreferencesDialog {
+
+  Adw.PreferencesPage {
+    title: _("General");
+    icon-name: "preferences-system-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Interface");
+      Adw.SwitchRow context_button_el {
+        title: _("Show Context Button in Rows");
+        subtitle: _("The menu can also be shown by right clicking / long pressing");
+      }
+      Adw.SwitchRow dynamic_bg_el {
+        title: _("Use Dynamic Background in Player");
+        subtitle: _("Generate a gradient background based on the current song cover art");
+        activated => $on_dynamic_bg_toggled();
+      }
+    }
+    Adw.PreferencesGroup {
+      title: _("Startup");
+      Adw.SwitchRow restore_el {
+        title: _("Restore Session");
+        subtitle: _("Retrieve previous queue from server");
+      }
+    }
+  }
+
+  Adw.PreferencesPage {
+    title: _("Homepage");
+    icon-name: "user-home-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Sections");
+      description: _("Reload homepage to see changes");
+      Adw.SpinRow hp_songs_el {
+        title: _("Songs");
+        subtitle: _("Max ammount of songs to be shown");
+        adjustment: Gtk.Adjustment {
+          lower: 0;
+          upper: 25;
+          value: 1;
+        };
+      }
+      Adw.SpinRow hp_albums_el {
+        title: _("Albums");
+        subtitle: _("Max ammount of albums to be shown");
+        adjustment: Gtk.Adjustment {
+          lower: 0;
+          upper: 25;
+          value: 1;
+        };
+      }
+      Adw.SpinRow hp_artists_el {
+        title: _("Artists");
+        subtitle: _("Max ammount of artists to be shown");
+        adjustment: Gtk.Adjustment {
+          lower: 0;
+          upper: 25;
+          value: 1;
+        };
+      }
+      Adw.SpinRow hp_playlists_el {
+        title: _("Playlists");
+        subtitle: _("Max ammount of playlists to be shown");
+        adjustment: Gtk.Adjustment {
+          lower: 0;
+          upper: 25;
+          value: 1;
+        };
+      }
+    }
+  }
+}
