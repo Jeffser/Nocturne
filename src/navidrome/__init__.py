@@ -154,7 +154,7 @@ class Integration(GObject.Object):
         except Exception:
             return False
 
-    def getAlbumList(self, list_type:str="random", size:int=10, offset:int=0) -> list:
+    def getAlbumList(self, list_type:str="recent", size:int=10, offset:int=0) -> list:
         # list_type = random, newest, frequent, recent, starred, alphabeticalByName, alphabeticalByArtist
         # returns a list of IDs
         params = {
