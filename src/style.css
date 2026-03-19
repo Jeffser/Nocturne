@@ -96,7 +96,7 @@ bottom-sheet#main-bottom-sheet sheet .sidebar-pane {
 
 window.player-blur bottom-sheet#main-bottom-sheet sheet.background {
   backdrop-filter: blur(10px);
-  background: color-mix(in srgb, var(--window-bg-color) 90%, transparent);
+  background: color-mix(in srgb, var(--window-bg-color) 85%, transparent);
 }
 
 toast {

@@ -38,7 +38,8 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
                     )
                 )
         integration.loaded_models.get('currentSong').set_property('songId', current_id)
-        threading.Thread(target=self.generate_auto_play_queue).start()
+        if Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('auto-play').unpack():
+            threading.Thread(target=self.generate_auto_play_queue).start()
 
     def play_next(self, songs:list):
         integration = get_current_integration()
