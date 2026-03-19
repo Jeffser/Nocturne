@@ -29,11 +29,9 @@ NAVIDROME_ENV = {
 }
 
 def get_navidrome_path() -> str | None:
-    # only applies for flatpak and snap
     NAVIDROME_PATH = os.path.join(BASE_NAVIDROME_DIR, 'navidrome')
-    if IN_FLATPAK or IN_SNAP:
-        if os.path.isfile(NAVIDROME_PATH):
-            return NAVIDROME_PATH
+    if os.path.isfile(NAVIDROME_PATH):
+        return NAVIDROME_PATH
 
 def get_navidrome_env() -> dict:
     return {
