@@ -1,6 +1,6 @@
 # constants.py
 
-import os
+import os, subprocess, json
 
 IN_FLATPAK = bool(os.getenv("FLATPAK_ID"))
 IN_SNAP = bool(os.getenv("FLATPAK_ID"))
@@ -17,6 +17,41 @@ def get_xdg_home(env, default):
 DATA_DIR = get_xdg_home("XDG_DATA_HOME", "~/.local/share")
 CONFIG_DIR = get_xdg_home("XDG_CONFIG_HOME", "~/.config")
 CACHE_DIR = get_xdg_home("XDG_CACHE_HOME", "~/.cache")
+
+BASE_NAVIDROME_DIR = os.path.join(DATA_DIR, "navidrome")
+os.makedirs(BASE_NAVIDROME_DIR, exist_ok=True)
+NAVIDROME_ENV = {
+    "ND_MUSICFOLDER": subprocess.check_output(["xdg-user-dir", "MUSIC"], text=True).strip() or os.path.expanduser("~/Music"),
+    "ND_DATAFOLDER": BASE_NAVIDROME_DIR,
+    "ND_PORT": "4534",
+    "ND_LOGLEVEL": "ERROR",
+    "ND_ENABLEINSIGHTSCOLLECTOR": "false"
+}
+
+def get_navidrome_path() -> str | None:
+    # only applies for flatpak and snap
+    NAVIDROME_PATH = os.path.join(BASE_NAVIDROME_DIR, 'navidrome')
+    if IN_FLATPAK or IN_SNAP:
+        if os.path.isfile(NAVIDROME_PATH):
+            return NAVIDROME_PATH
+
+def get_navidrome_env() -> dict:
+    return {
+        **os.environ.copy(),
+        **NAVIDROME_ENV
+    }
+
+def check_if_navidrome_ready() -> bool:
+    # checks if admin has already been created
+    navidrome_path = get_navidrome_path()
+    if navidrome_path:
+        try:
+            output = subprocess.check_output([navidrome_path, "user", "list", "-f", "json", "-n", "--loglevel", "error"], stderr=subprocess.STDOUT, env=get_navidrome_env()).strip()
+            output_json = json.loads(output)
+            return len(output_json) > 0
+        except Exception as e:
+            pass
+    return False
 
 SIDEBAR_MENU = [
     { # Section

@@ -4,21 +4,31 @@ using Adw 1;
 template $NocturneLoginPage: Adw.NavigationPage {
   title: _("Login");
   child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
     [top]
-    Adw.HeaderBar {}
+    Adw.HeaderBar {
+      show-title: false;
+    }
 
     content: Adw.StatusPage {
-      icon-name: "com.jeffser.Nocturne";
-      title: _("Login to Navidrome");
+      title: _("Login");
       child: Gtk.ListBox {
         styles [
-          "boxed-list-separate"
+          "boxed-list"
         ]
         valign: center;
         halign: center;
+        selection-mode: none;
+
+        Adw.SwitchRow use_integrated_el { // Only show if navidrome in path
+          title: _("Use Integrated Instance");
+          subtitle: _("Navidrome Server");
+        }
 
         Adw.EntryRow url_el {
           title: _("Url");
+          visible: bind use_integrated_el.active inverted;
         }
 
         Adw.EntryRow user_el {

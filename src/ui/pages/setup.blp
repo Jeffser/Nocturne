@@ -1,0 +1,77 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneSetupPage: Adw.NavigationPage {
+  title: _("Setup");
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+    }
+
+    content: Gtk.Stack main_stack {
+      Gtk.StackPage {
+        name: "confirmation";
+        child: Adw.StatusPage {
+          icon-name: "folder-download-symbolic";
+          title: _("Navidrome Download");
+          description: _("Nocturne will download Navidrome automatically");
+          child: Gtk.Button {
+            label: _("Download (~20 mb)");
+            tooltip-text: _("Download");
+            clicked => $download_clicked();
+            halign: center;
+          };
+        };
+      }
+
+      Gtk.StackPage {
+        name: "downloading";
+        child: Adw.StatusPage downloading_status_page {
+          icon-name: "folder-download-symbolic";
+          title: _("Downloading");
+          child: Gtk.ProgressBar progressbar_el {
+            pulse-step: 0.1;
+            halign: center;
+          };
+        };
+      }
+
+      Gtk.StackPage {
+        name: "error";
+        child: Adw.StatusPage {
+          icon-name: "sad-computer-symbolic";
+          title: _("An Error Ocurred");
+          description: _("Please try again later");
+        };
+      }
+
+      Gtk.StackPage {
+        name: "success";
+        child: Adw.StatusPage {
+          icon-name: "check-plain-symbolic";
+          title: _("Download Successful");
+          description: _("Before continuing make sure you create an admin account and also make sure all your tracks are inside your music directory");
+          child: Gtk.Box {
+            orientation: vertical;
+            spacing: 10;
+            halign: center;
+            Gtk.LinkButton {
+              uri: "http://127.0.0.1:4534";
+              label: _("Instance Page");
+              activate-link => $link_visited();
+            }
+            Gtk.Button continue_button {
+              label: _("Continue");
+              tooltip-text: _("Continue");
+              sensitive: false;
+              clicked => $continue_clicked();
+            }
+          };
+        };
+      }
+    };
+  };
+}

@@ -26,6 +26,14 @@ template $NocturneWindow: Adw.ApplicationWindow {
         child: Adw.Spinner {};
       }
       Gtk.StackPage {
+        name: "welcome";
+        child: $NocturneWelcomePage welcome_page {};
+      }
+      Gtk.StackPage {
+        name: "setup";
+        child: $NocturneSetupPage setup_page {};
+      }
+      Gtk.StackPage {
         name: "login";
         child: $NocturneLoginPage login_page {};
       }

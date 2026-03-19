@@ -25,7 +25,7 @@ def store_password(password:str):
 
 def get_hashed_password() -> tuple:
     # returns salt, hashed password
-    attributes = {"type": password}
+    attributes = {"type": "password"}
 
     password = Secret.password_lookup_sync(
         BASE_SCHEMA,

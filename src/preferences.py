@@ -19,6 +19,8 @@ class NocturnePreferences(Adw.PreferencesDialog):
     hp_artists_el = Gtk.Template.Child()
     hp_playlists_el = Gtk.Template.Child()
 
+    instance_el = Gtk.Template.Child()
+
     def __init__(self):
         super().__init__()
 
@@ -73,6 +75,22 @@ class NocturnePreferences(Adw.PreferencesDialog):
             "value",
             Gio.SettingsBindFlags.DEFAULT
         )
+
+        if integration := get_current_integration():
+            self.instance_el.set_visible(True)
+            response = integration.make_request('ping')
+            self.instance_el.set_title(integration.username.title())
+            self.instance_el.set_action_target_value(GLib.Variant('s', integration.base_url))
+
+            if response.get('status') == 'ok':
+                self.instance_el.set_subtitle('{} | {} {}'.format(integration.base_url, response.get('type'), response.get('serverVersion')))
+                self.instance_el.remove_css_class('error')
+            else:
+                self.instance_el.set_subtitle('{} | {}'.format(integration.base_url, _("Offline")))
+                self.instance_el.add_css_class('error')
+        else:
+            self.instance_el.set_visible(False)
+
 
     @Gtk.Template.Callback()
     def on_dynamic_bg_toggled(self, row, gparam):

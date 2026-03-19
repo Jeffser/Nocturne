@@ -10,6 +10,8 @@ widgets = [
   'albums.py',
   'albums_all.py',
   'radios.py',
+  'welcome.py',
+  'setup.py',
 ]
 
 install_data(widgets, install_dir: moduledir)

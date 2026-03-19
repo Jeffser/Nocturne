@@ -44,6 +44,7 @@ class NocturneWindow(Adw.ApplicationWindow):
     main_stack = Gtk.Template.Child()
     footer = Gtk.Template.Child()
     toast_overlay = Gtk.Template.Child()
+    login_page = Gtk.Template.Child()
 
     @Gtk.Template.Callback()
     def close_request(self, window):
@@ -100,6 +101,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.replace_root_page)
         self.create_action(actions.visit_url)
         self.create_action(actions.toggle_star)
+        self.create_action(actions.logout, parameter_type=None)
 
         self.create_action(actions.play_radio)
         self.create_action(actions.add_radio, parameter_type=None)

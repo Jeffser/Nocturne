@@ -40,6 +40,8 @@
     <file alias="icons/scalable/status/person-symbolic.svg">icons/person-symbolic.svg</file>
     <file alias="icons/scalable/status/document-edit-symbolic.svg">icons/document-edit-symbolic.svg</file>
     <file alias="icons/scalable/status/preferences-system-symbolic.svg">icons/preferences-system-symbolic.svg</file>
+    <file alias="icons/scalable/status/network-server-symbolic.svg">icons/network-server-symbolic.svg</file>
+    <file alias="icons/scalable/status/check-plain-symbolic.svg">icons/check-plain-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
@@ -58,6 +60,8 @@
     <file alias="pages/albums.ui">ui/pages/albums.ui</file>
     <file alias="pages/albums_all.ui">ui/pages/albums_all.ui</file>
     <file alias="pages/radios.ui">ui/pages/radios.ui</file>
+    <file alias="pages/welcome.ui">ui/pages/welcome.ui</file>
+    <file alias="pages/setup.ui">ui/pages/setup.ui</file>
 
     <file alias="album/button.ui">ui/album/button.ui</file>
     <file alias="album/page.ui">ui/album/page.ui</file>

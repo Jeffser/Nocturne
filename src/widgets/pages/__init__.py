@@ -8,3 +8,5 @@ from .songs import SongsPage
 from .albums import AlbumsPage
 from .albums_all import AlbumsAllPage
 from .radios import RadiosPage
+from .welcome import WelcomePage
+from .setup import SetupPage

@@ -39,7 +39,7 @@ class NocturneApplication(Adw.Application):
                          resource_base_path='/com/jeffser/Nocturne')
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
-        self.create_action('preferences', self.on_preferences_action, ['<control>comma'])
+        self.create_action('preferences', self.on_preferences_action)
 
     def do_activate(self):
         win = self.props.active_window

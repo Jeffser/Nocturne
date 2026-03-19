@@ -64,6 +64,19 @@ def toggle_star(window, model_id:str):
             if integration.star(model.get_property('id')):
                 model.set_property('starred', datetime.now(UTC).isoformat(timespec='microseconds').replace('+00:00', 'Z'))
 
+def logout(window):
+    if window.login_page.navidrome_proc:
+        window.login_page.navidrome_proc.terminate()
+        window.login_page.navidrome_proc = None
+    settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+    settings.set_string('integration-user', '')
+    GLib.idle_add(window.queue_page.replace_queue, [])
+    GLib.idle_add(window.main_stack.set_visible_child_name, 'login')
+    GLib.idle_add(window.login_page.load_defaults)
+    dialogs = window.get_dialogs()
+    if len(dialogs) > 0:
+        dialogs[0].close()
+
 # -- RADIO --
 
 def play_radio(window, model_id:str):

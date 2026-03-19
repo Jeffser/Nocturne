@@ -78,4 +78,36 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
       }
     }
   }
+
+  Adw.PreferencesPage {
+    title: _("Server");
+    icon-name: "network-server-symbolic";
+
+    Adw.PreferencesGroup {
+      title: _("Session");
+
+      Adw.ActionRow instance_el {
+        title: _("User");
+        activatable: true;
+        action-name: "app.visit_url";
+        use-markup: false;
+        [suffix]
+        Gtk.Image {
+          valign: center;
+          icon-name: "external-link-symbolic";
+          accessibility {
+            label: "External link";
+          }
+        }
+      }
+      Adw.ButtonRow {
+        title: _("Logout");
+        styles [
+          "destructive-action"
+        ]
+        action-name: "app.logout";
+      }
+
+    }
+  }
 }

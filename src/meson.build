@@ -20,6 +20,8 @@ blueprints = files(
   'ui/pages/albums.blp',
   'ui/pages/albums_all.blp',
   'ui/pages/radios.blp',
+  'ui/pages/welcome.blp',
+  'ui/pages/setup.blp',
 
   'ui/album/button.blp',
   'ui/album/page.blp',

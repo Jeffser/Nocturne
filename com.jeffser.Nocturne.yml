@@ -10,7 +10,7 @@ finish-args:
   - '--device=dri'
   - '--socket=wayland'
   - '--socket=pulseaudio'
-  - '--filesystem=home'
+  - '--filesystem=xdg-music:ro'
 cleanup:
   - /include
   - /lib/pkgconfig

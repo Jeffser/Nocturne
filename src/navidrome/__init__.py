@@ -6,8 +6,8 @@ from . import secret, models
 import requests, random, threading, favicon, io
 from PIL import Image
 
-class Navidrome(GObject.Object):
-    __gtype_name__ = 'NocturneNavidrome'
+class Integration(GObject.Object):
+    __gtype_name__ = 'NocturneIntegration'
 
     base_url = GObject.Property(type=str)
     username = GObject.Property(type=str)
@@ -39,9 +39,12 @@ class Navidrome(GObject.Object):
             **self.get_base_params(),
             **params
         }
-        response = requests.get(self.get_url(action), params=params)
-        if response.status_code == 200:
-            return response.json().get('subsonic-response', {})
+        try:
+            response = requests.get(self.get_url(action), params=params)
+            if response.status_code == 200:
+                return response.json().get('subsonic-response', {})
+        except Exception:
+            pass
         return {}
 
     # ----------- #
@@ -151,7 +154,7 @@ class Navidrome(GObject.Object):
         except Exception:
             return False
 
-    def getAlbumList(self, list_type:str="frequent", size:int=10, offset:int=0) -> list:
+    def getAlbumList(self, list_type:str="random", size:int=10, offset:int=0) -> list:
         # list_type = random, newest, frequent, recent, starred, alphabeticalByName, alphabeticalByArtist
         # returns a list of IDs
         params = {
@@ -178,12 +181,15 @@ class Navidrome(GObject.Object):
         response = self.make_request('getArtists')
 
         artist_dicts = []
-        for index in response.get('artists').get('index', []):
+        for index in response.get('artists', {}).get('index', []):
             artist_dicts.extend(index.get('artist', []))
+
+        if len(artist_dicts) == 0:
+            return []
 
         if size != -1:
             # randomize the dicts
-            artist_dicts = random.sample(artist_dicts, size)
+            artist_dicts = random.sample(artist_dicts, min(size, len(artist_dicts)))
 
         artist_ids = []
         for artist_dict in artist_dicts:

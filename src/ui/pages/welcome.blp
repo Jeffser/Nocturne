@@ -1,0 +1,37 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneWelcomePage: Adw.NavigationPage {
+  title: _("Welcome");
+  child: Adw.ToolbarView {
+    extend-content-to-top-edge: true;
+
+    [top]
+    Adw.HeaderBar {
+      show-title: false;
+    }
+
+    content: Adw.StatusPage {
+      icon-name: "com.jeffser.Nocturne";
+      title: _("Welcome to Nocturne");
+      description: _("Nocturne is powered by a Subsonic compatible instance, if you do not have one Nocturne can automatically set up a Navidrome instance for you!");
+      child: Adw.WrapBox {
+        child-spacing: 10;
+        line-spacing: 10;
+        justify: fill;
+        justify-last-line: true;
+        halign: center;
+        Gtk.Button {
+          label: _("Use Existing Instance");
+          tooltip-text: _("Use Existing Instance");
+          clicked => $existing_clicked();
+        }
+        Gtk.Button {
+          label: _("Setup Navidrome");
+          tooltip-text: _("Setup Navidrome");
+          clicked => $setup_clicked();
+        }
+      };
+    };
+  };
+}
