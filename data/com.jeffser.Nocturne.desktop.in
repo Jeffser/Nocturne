@@ -1,10 +1,12 @@
 [Desktop Entry]
-Name=nocturne
+Name=Nocturne
 Exec=nocturne
 Icon=com.jeffser.Nocturne
 Terminal=false
 Type=Application
+Categories=AudioVideo;Audio;Utility
 Categories=Utility;
 Keywords=GTK;
 StartupNotify=true
 DBusActivatable=true
+X-Purism-FormFactor=Workstation;Mobile;

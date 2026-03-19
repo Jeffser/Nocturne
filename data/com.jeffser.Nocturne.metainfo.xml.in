@@ -5,14 +5,41 @@
   <project_license>GPL-3.0-or-later</project_license>
 
   <name>Nocturne</name>
-  <summary>Keep the summary shorter, between 10 and 35 characters</summary>
+  <summary>Bring your music library together</summary>
   <description>
-    <p>No description</p>
+    <p>A modern Navidrome / Subsonic client</p>
+    <p>Features</p>
+    <ul>
+      <li>Exploration by songs, artists, albums, radios and playlists</li>
+      <li>Playlist management</li>
+      <li>Mpris integration</li>
+      <li>Integrated Navidrome instance management</li>
+      <li>Cool interface</li>
+      <li>Automatic lyrics fetching</li>
+    </ul>
   </description>
 
-  <developer id="tld.vendor">
-    <name>Developer name</name>
+  <developer id="com.jeffser">
+    <name>Jeffry Samuel Eduarte Rojas</name>
   </developer>
+
+  <provides>
+    <binary>nocturne</binary>
+  </provides>
+  <icon type="stock">com.jeffser.Nocturne</icon>
+  <categories>
+    <category>AudioVideo</category>
+    <category>Audio</category>
+    <category>Utility</category>
+  </categories>
+  <requires>
+    <display_length compare="ge">360</display_length>
+  </requires>
+  <recommends>
+    <control>keyboard</control>
+    <control>pointing</control>
+    <control>touch</control>
+  </recommends>
 
   <!-- Required: Should be a link to the upstream homepage for the component -->
   <url type="homepage">https://example.org/</url>
@@ -34,16 +61,13 @@
   <url type="contribute">https://example.org/contribute</url>
 
   <translation type="gettext">nocturne</translation>
-  <!-- All graphical applications having a desktop file must have this tag in the MetaInfo.
-     If this is present, appstreamcli compose will pull icons, keywords and categories from the desktop file. -->
   <launchable type="desktop-id">com.jeffser.Nocturne.desktop</launchable>
-  <!-- Use the OARS website (https://hughsie.github.io/oars/generate.html) to generate these and make sure to use oars-1.1 -->
   <content_rating type="oars-1.1" />
 
   <!-- Applications should set a brand color in both light and dark variants like so -->
   <branding>
-    <color type="primary" scheme_preference="light">#ff00ff</color>
-    <color type="primary" scheme_preference="dark">#993d3d</color>
+    <color type="primary" scheme_preference="light">#c98bf5</color>
+    <color type="primary" scheme_preference="dark">#630f78</color>
   </branding>
 
   <screenshots>
