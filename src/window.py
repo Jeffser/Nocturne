@@ -105,6 +105,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.visit_url)
         self.create_action(actions.toggle_star)
         self.create_action(actions.logout, parameter_type=None)
+        self.create_action(actions.show_external_file_warning, parameter_type=None)
 
         self.create_action(actions.play_radio)
         self.create_action(actions.add_radio, parameter_type=None)

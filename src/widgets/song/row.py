@@ -17,6 +17,7 @@ class SongRow(Adw.ActionRow):
     title_el = Gtk.Template.Child()
     duration_el = Gtk.Template.Child()
     artist_container_el = Gtk.Template.Child()
+    external_file_el = Gtk.Template.Child()
     suffixes_stack_el = Gtk.Template.Child()
     star_el = Gtk.Template.Child()
     check_el = Gtk.Template.Child()
@@ -39,6 +40,7 @@ class SongRow(Adw.ActionRow):
         integration.connect_to_model(self.id, 'duration', self.update_duration)
         integration.connect_to_model(self.id, 'starred', self.update_starred)
         integration.connect_to_model(self.id, 'homePageUrl', self.update_homepage) # for radios
+        integration.connect_to_model(self.id, 'isExternalFile', self.update_is_external)
         integration.connect_to_model('currentSong', 'songId', self.current_song_changed)
 
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
@@ -48,6 +50,10 @@ class SongRow(Adw.ActionRow):
             "visible",
             Gio.SettingsBindFlags.DEFAULT
         )
+
+    def update_is_external(self, isExternalFile:bool):
+        self.external_file_el.set_visible(isExternalFile)
+        self.star_el.set_visible(not isExternalFile)
 
     def generate_context_menu(self) -> ContextContainer:
         integration = get_current_integration()
@@ -62,7 +68,7 @@ class SongRow(Adw.ActionRow):
             del context_dict["edit"]
             del context_dict["delete"]
 
-        if not model or model.get_property('isRadio'):
+        if not model or model.get_property('isRadio') or model.get_property('isExternalFile'):
             del context_dict["add-to-playlist"]
             del context_dict["edit-lyrics"]
         if self.removable:
@@ -83,6 +89,8 @@ class SongRow(Adw.ActionRow):
         self.duration_el.set_visible(duration != 0)
 
     def update_artists(self, artists:list):
+        integration = get_current_integration()
+        model = integration.loaded_models.get(self.id)
         if len(artists) == 1:
             button = Gtk.Button(
                 action_name = 'app.show_artist',
@@ -95,6 +103,7 @@ class SongRow(Adw.ActionRow):
                 css_classes = ['p0', 'flat'],
                 tooltip_text=artists[0].get('name')
             )
+            self.artist_container_el.set_sensitive(not model.get_property('isExternalFile'))
             self.artist_container_el.set_child(button)
         elif len(artists) > 1:
             menu = Gio.Menu()
@@ -102,10 +111,11 @@ class SongRow(Adw.ActionRow):
                 item = Gio.MenuItem.new(
                     label=artist.get('name')
                 )
-                item.set_action_and_target_value(
-                    'app.show_artist',
-                    GLib.Variant.new_string(artist.get('id'))
-                )
+                if not model.get_property('isExternalFile'):
+                    item.set_action_and_target_value(
+                        'app.show_artist',
+                        GLib.Variant.new_string(artist.get('id'))
+                    )
                 menu.append_item(item)
 
             button = Gtk.MenuButton(
@@ -118,6 +128,7 @@ class SongRow(Adw.ActionRow):
                 menu_model = menu,
                 tooltip_text=_("Multiple Artists")
             )
+            self.artist_container_el.set_sensitive(True)
             self.artist_container_el.set_child(button)
 
     def update_starred(self, starred:str):

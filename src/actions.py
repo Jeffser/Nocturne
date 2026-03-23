@@ -78,6 +78,14 @@ def logout(window):
     if len(dialogs) > 0:
         dialogs[0].close()
 
+def show_external_file_warning(window):
+    dialog = Adw.AlertDialog(
+        heading=_("External File"),
+        body=_("This track was loaded from an external file, this means it will have less features compared to a track inside the library")
+    )
+    dialog.add_response('close', _('Close'))
+    dialog.choose(window, None, lambda *_: None, None)
+
 # -- RADIO --
 
 def play_radio(window, model_id:str):

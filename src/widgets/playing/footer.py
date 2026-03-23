@@ -26,11 +26,13 @@ class PlayingFooter(Gtk.Overlay):
         song = integration.loaded_models.get(song_id)
         if song:
             self.title_el.set_label(song.get_property('title'))
-            if len(song.get_property('artists')) > 0:
-                self.artist_el.set_label(song.get_property('artists')[0].get('name'))
-            elif song.get_property('isRadio') and song.get_property('homePageUrl'):
-                self.artist_el.set_label(urlparse(song.get_property('homePageUrl')).netloc.capitalize())
-            self.artist_el.set_visible(len(song.get_property('artists')) > 0 or (song.get_property('isRadio') and song.get_property('homePageUrl')))
+            self.artist_el.set_label(song.get_property('artist'))
+            if song.get_property('isRadio'):
+                if song.get_property('homePageUrl'):
+                    self.artist_el.set_label(urlparse(song.get_property('homePageUrl')).netloc.capitalize())
+                else:
+                    self.artist_el.set_label("")
+            self.artist_el.set_visible(self.artist_el.get_label())
             threading.Thread(target=self.update_cover_art).start()
 
     def position_changed(self, positionSeconds:float):

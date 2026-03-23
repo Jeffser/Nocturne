@@ -70,8 +70,10 @@ class Navidrome(GObject.Object):
     def get_stream_url(self, song_id:str) -> str:
         # streams are handled by gst not requests
         model = self.loaded_models.get(song_id)
-        if model.isRadio:
-            return model.streamUrl
+        if model.get_property('isRadio'):
+            return model.get_property('streamUrl')
+        elif model.get_property('isExternalFile'):
+            return 'file://{}'.format(model.get_property('path'))
         params = self.get_base_params()
         params['id'] = song_id
         query_string = "&".join([f"{k}={v}" for k, v in params.items()])

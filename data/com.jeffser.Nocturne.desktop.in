@@ -1,11 +1,12 @@
 [Desktop Entry]
 Name=Nocturne
-Exec=nocturne
+TryExec=nocturne
+Exec=nocturne %U
 Icon=com.jeffser.Nocturne
 Terminal=false
 Type=Application
+MimeType=audio/mpeg;audio/wav;audio/x-aac;audio/x-aiff;audio/x-ape;audio/x-flac;audio/x-m4a;audio/x-m4b;audio/x-mp1;audio/x-mp2;audio/x-mp3;audio/x-mpg;audio/x-mpeg;audio/x-mpegurl;audio/x-opus+ogg;audio/x-pn-aiff;audio/x-pn-au;audio/x-pn-wav;audio/x-speex;audio/x-vorbis;audio/x-vorbis+ogg;audio/x-wavpack;inode/directory;
 Categories=AudioVideo;Audio;Utility
-Categories=Utility;
 Keywords=GTK;
 StartupNotify=true
 DBusActivatable=true

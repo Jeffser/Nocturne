@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import requests, random, threading, favicon, io, pathlib, re, json, os, time, uuid
 from PIL import Image
 from mutagen import File
-from ..constants import MUSIC_DIR, LOCAL_DATA_DIR
+from ..constants import MUSIC_DIR, LOCAL_DATA_DIR, get_song_info_from_file
 
 class Local(GObject.Object):
     __gtype_name__ = 'NocturneIntegrationLocal'
@@ -39,70 +39,10 @@ class Local(GObject.Object):
         for file_path in path_obj.rglob("*"):
             if file_path.suffix.lower() in self.supported_extensions:
                 try:
-                    audio = File(file_path)
-                    if audio is None:
-                        continue
-
                     # Making Song Model
-                    song = {
-                        'path': file_path,
-                        'duration': audio.info.length if hasattr(audio, 'info') else 0,
-                        'title': "",
-                        'album': "",
-                        'artist': "",
-                        'artists': []
-                    }
-
-                    if file_path.suffix.lower() == '.mp3':
-                        # ID3 Mapping
-                        song['title'] = str(audio.get('TIT2', file_path.name.removesuffix(file_path.suffix)))
-                        song['album'] = str(audio.get('TALB'))
-                        artists = [artist.strip() for artist in str(audio.get('TPE1')).split(';')]
-                        if len(artists) > 0:
-                            song['artist'] = artists[0]
-                            for artist in artists:
-                                artist_id = "ARTIST:{}".format(artist)
-                                song['artists'].append({
-                                    'id': artist_id,
-                                    'name': artist,
-                                    'starred': star_dict.get(artist_id)
-                                })
-                    else:
-                        # Vorbis/FLAC/MP4 Mapping
-                        if 'title' in audio:
-                            song["title"] = audio.get('title', [file_path.name.removesuffix(file_path.suffix)])[0]
-                        else:
-                            song["title"] = audio.get('©nam', [file_path.name.removesuffix(file_path.suffix)])[0]
-
-                        if 'album' in audio:
-                            song["album"] = audio.get('album', [""])[0]
-                        else:
-                            song["album"] = audio.get('©alb', [""])[0]
-
-
-                        if 'artist' in audio:
-                            artist_list = audio.get('artist', [])
-                        else:
-                            artist_list = audio.get('©ART', [])
-
-                        artists = [artist.strip() for artist in artist_list[1:] + (artist_list[0].split(';') if len(artist_list) > 0 else [])]
-                        if len(artists) > 0:
-                            song['artist'] = artists[0]
-                            for artist in artists:
-                                artist_id = "ARTIST:{}".format(artist)
-                                song['artists'].append({
-                                    'id': artist_id,
-                                    'name': artist,
-                                    'starred': star_dict.get(artist_id)
-                                })
-
-                    song["artistId"] = "ARTIST:{}".format(song.get("artist")) if song.get('artist') else ""
-                    song["albumId"] = "ALBUM:{}".format(song.get("album")) if song.get('album') else ""
-
-                    song_id = "SONG:{}-{}".format(file_path.name.removesuffix(file_path.suffix), song.get('duration'))
-                    song["id"] = song_id
-                    song["starred"] = star_dict.get(song_id)
-
+                    song = get_song_info_from_file(file_path, star_dict)
+                    if not song:
+                        continue
                     self.loaded_models[song.get('id')] = models.Song(**song)
 
                     # Making Album Model
@@ -611,3 +551,4 @@ class Local(GObject.Object):
 
         with open(SCROBBLEFILE, 'w') as f:
             json.dump(scrobble_dict, f, ensure_ascii=False)
+

@@ -162,17 +162,19 @@ class PlayingControlPage(Adw.NavigationPage):
             self.negative_progress_el.set_visible(not model.get_property('isRadio'))
 
             # Artist
-            if len(model.get_property('artists')) > 0:
-                self.artist_el.get_child().set_label(model.get_property('artists')[0].get('name'))
-                self.artist_el.set_action_target_value(GLib.Variant.new_string(model.get_property('artists')[0].get('id')))
-                self.artist_el.set_tooltip_text(model.get_property('artists')[0].get('name'))
-            self.artist_el.set_visible(model.get_property('artists'))
+            self.artist_el.get_child().set_label(model.get_property("artist"))
+            self.artist_el.set_tooltip_text(model.get_property("artist"))
+            self.artist_el.set_action_target_value(GLib.Variant.new_string(model.get_property("artistId")))
+            self.artist_el.set_visible(self.artist_el.get_child().get_label())
 
             # Album
             self.album_el.get_child().set_label(model.get_property('album'))
-            self.album_el.set_action_target_value(GLib.Variant.new_string(model.get_property('albumId')))
             self.album_el.set_tooltip_text(model.get_property('album'))
-            self.album_el.set_visible(model.get_property('album'))
+            self.album_el.set_action_target_value(GLib.Variant.new_string(model.get_property('albumId')))
+            self.album_el.set_visible(self.album_el.get_child().get_label())
+
+            # External File
+            self.album_el.get_ancestor(Adw.WrapBox).set_sensitive(not model.get_property('isExternalFile'))
 
             # Progressbar
             self.progress_el.get_adjustment().set_upper(model.get_property('duration'))

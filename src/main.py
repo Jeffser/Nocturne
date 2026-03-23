@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import sys
+import sys, pathlib
 import gi
 
 gi.require_version('Gtk', '4.0')
@@ -25,9 +25,11 @@ gi.require_version('Adw', '1')
 gi.require_version('Secret', '1')
 gi.require_version('Gst', '1.0')
 
-from gi.repository import Gtk, Gio, Adw
+from gi.repository import Gtk, Gio, Adw, GLib
 from .window import NocturneWindow
 from .preferences import NocturnePreferences
+from .constants import get_song_info_from_file
+from .navidrome import get_current_integration, models
 
 class NocturneApplication(Adw.Application):
     __gtype_name__ = 'NocturneApplication'
@@ -35,8 +37,9 @@ class NocturneApplication(Adw.Application):
 
     def __init__(self, version):
         self.version = version
+        self.external_songs = []
         super().__init__(application_id='com.jeffser.Nocturne',
-                         flags=Gio.ApplicationFlags.DEFAULT_FLAGS,
+                         flags=Gio.ApplicationFlags.DEFAULT_FLAGS | Gio.ApplicationFlags.HANDLES_OPEN,
                          resource_base_path='/com/jeffser/Nocturne')
         self.create_action('quit', lambda *_: self.quit(), ['<control>q'])
         self.create_action('about', self.on_about_action)
@@ -47,6 +50,24 @@ class NocturneApplication(Adw.Application):
         if not win:
             win = NocturneWindow(application=self)
         win.present()
+
+    def do_open(self, files, n_files, hint):
+        self.external_songs = []
+        integration = get_current_integration()
+        for file in files:
+            audio_info = get_song_info_from_file(pathlib.Path(file.get_path()), is_external_file=True)
+            if audio_info:
+                self.external_songs.append(models.Song(**audio_info))
+                if integration:
+                    integration.loaded_models[audio_info.get('id')] = self.external_songs[-1]
+
+        win = self.props.active_window
+        if win and integration:
+            target_value = GLib.Variant('as', [a.id for a in self.external_songs])
+            win.activate_action('app.play_songs', target_value)
+            self.external_songs = []
+        else:
+            self.do_activate()
 
     def on_about_action(self, *args):
         about = Adw.AboutDialog(

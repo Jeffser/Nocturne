@@ -1,6 +1,7 @@
 # constants.py
 
 import os, subprocess, json
+from mutagen import File
 
 IN_FLATPAK = bool(os.getenv("FLATPAK_ID"))
 IN_SNAP = bool(os.getenv("FLATPAK_ID"))
@@ -70,6 +71,73 @@ def get_display_time(seconds:float, show_ms:bool=False) -> str:
     else:
         # Format MM:SS.ms
         return f"{minutes:02.0f}:{seconds_str}"
+
+def get_song_info_from_file(file_path:str, star_dict:dict={}, is_external_file:bool=False) -> dict | None:
+    audio = File(file_path)
+    if audio is None:
+        return None
+
+    song = {
+        'id': "SONG:{}-{}".format(file_path.name.removesuffix(file_path.suffix), audio.info.length if hasattr(audio, 'info') else 0),
+        'path': file_path,
+        'duration': audio.info.length if hasattr(audio, 'info') else 0,
+        'title': "",
+        'album': "",
+        'artist': "",
+        'artists': [],
+        'isExternalFile': is_external_file
+    }
+
+    if file_path.suffix.lower() == '.mp3':
+        # ID3 Mapping
+        song['title'] = audio.get('TIT2', file_path.name.removesuffix(file_path.suffix))
+        song['album'] = str(audio.get('TALB') or '')
+        artists = [artist.strip() for artist in str(audio.get('TPE1') or '').split(';')]
+        if len(artists) > 0:
+            song['artist'] = artists[0]
+            for artist in artists:
+                artist_id = "ARTIST:{}".format(artist)
+                song['artists'].append({
+                    'id': artist_id,
+                    'name': artist,
+                    'starred': star_dict.get(artist_id)
+                })
+    else:
+        # Vorbis/FLAC/MP4 Mapping
+        if 'title' in audio:
+            song["title"] = audio.get('title', [file_path.name.removesuffix(file_path.suffix)])[0]
+        else:
+            song["title"] = audio.get('©nam', [file_path.name.removesuffix(file_path.suffix)])[0]
+
+        if 'album' in audio:
+            song["album"] = audio.get('album', [""])[0]
+        else:
+            song["album"] = audio.get('©alb', [""])[0]
+
+
+        if 'artist' in audio:
+            artist_list = audio.get('artist', [])
+        else:
+            artist_list = audio.get('©ART', [])
+
+        artists = [artist.strip() for artist in artist_list[1:] + (artist_list[0].split(';') if len(artist_list) > 0 else [])]
+        if len(artists) > 0:
+            song['artist'] = artists[0]
+            for artist in artists:
+                artist_id = "ARTIST:{}".format(artist)
+                song['artists'].append({
+                    'id': artist_id,
+                    'name': artist,
+                    'starred': star_dict.get(artist_id)
+                })
+
+    if not is_external_file:
+        song["artistId"] = "ARTIST:{}".format(song.get("artist")) if song.get('artist') else ""
+        song["albumId"] = "ALBUM:{}".format(song.get("album")) if song.get('album') else ""
+
+    song["starred"] = star_dict.get(song.get('id'))
+
+    return song
 
 SIDEBAR_MENU = [
     { # Section

@@ -134,6 +134,7 @@ class Song(GObject.Object):
     artistId = GObject.Property(type=str)
     artists = GObject.Property(type=GObject.TYPE_PYOBJECT) # list
     starred = GObject.Property(type=str)
+    isExternalFile = GObject.Property(type=bool, default=False)
 
     # --RADIO--
     isRadio = GObject.Property(type=bool, default=False)
