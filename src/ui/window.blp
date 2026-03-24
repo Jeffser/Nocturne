@@ -54,8 +54,15 @@ template $NocturneWindow: Adw.ApplicationWindow {
               child: Adw.ToolbarView {
                 [top]
                 Adw.HeaderBar {
+                  [start]
+                  Gtk.Button {
+                    icon-name: "media-playlist-shuffle-symbolic";
+                    tooltip-text: _("Play Random Queue");
+                    action-name: "app.play_random_queue";
+                  }
+
                   [end]
-                  MenuButton {
+                  Gtk.MenuButton {
                     primary: true;
                     icon-name: "open-menu-symbolic";
                     tooltip-text: _("Menu");

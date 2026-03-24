@@ -280,6 +280,10 @@ def save_lyrics(window, lyric_dict:dict):
         args=(window, lyric_dict.get('id'), "title", _("Lyrics Saved"))
     ).start()
 
+def play_random_queue(window):
+    integration = get_current_integration()
+    window.queue_page.replace_queue(integration.getRandomSongs())
+
 # -- ALBUM --
 
 def show_album(window, model_id:str):
