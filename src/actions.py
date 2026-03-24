@@ -1,6 +1,6 @@
 # actions.py
 
-from . import navidrome
+from .integrations import get_current_integration
 import random, threading, os
 from datetime import datetime, UTC
 from . import widgets as Widgets
@@ -16,7 +16,7 @@ def __show_page(window, page):
     window.main_navigationview.push(page)
 
 def __show_custom_toast(window, model_id:str, title_property:str, subtitle:str, icon_name:str=None):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     custom_widget = Adw.ActionRow(
         title=integration.loaded_models.get(model_id).get_property(title_property) if model_id else title_property,
         subtitle=subtitle
@@ -55,7 +55,7 @@ def visit_url(window, url:str):
     Gio.AppInfo.launch_default_for_uri(url, None)
 
 def toggle_star(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     if model_id in integration.loaded_models:
         model = integration.loaded_models.get(model_id)
         if model.get_property('starred'):
@@ -90,13 +90,13 @@ def show_external_file_warning(window):
 
 def play_radio(window, model_id:str):
     if model_id in window.queue_page.song_list_el.get_all_ids():
-        integration = navidrome.get_current_integration()
+        integration = get_current_integration()
         integration.loaded_models.get('currentSong').set_property('songId', model_id)
     else:
         window.queue_page.replace_queue([model_id])
 
 def update_radio(window, id:str=""):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     model = integration.loaded_models.get(id) if id else None
 
     def response(dialog, task, name_el, stream_el, homepage_el, id:str):
@@ -105,7 +105,7 @@ def update_radio(window, id:str=""):
             stream = stream_el.get_text()
             homepage = homepage_el.get_text()
             if name and stream and homepage:
-                integration = navidrome.get_current_integration()
+                integration = get_current_integration()
                 if id:
                     result = integration.updateInternetRadioStation(
                         id,
@@ -168,7 +168,7 @@ def add_radio(window):
     update_radio(window)
 
 def delete_radio(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     model = integration.loaded_models.get(model_id)
 
     def response(dialog, task, id):
@@ -201,7 +201,7 @@ def delete_radio(window, model_id:str):
 
 def play_song(window, model_id:str):
     if model_id in window.queue_page.song_list_el.get_all_ids():
-        integration = navidrome.get_current_integration()
+        integration = get_current_integration()
         integration.loaded_models.get('currentSong').set_property('songId', model_id)
     else:
         window.queue_page.replace_queue([model_id])
@@ -258,7 +258,7 @@ def save_lyrics(window, lyric_dict:dict):
     # content:str
     # is_synced:bool
 
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     model = integration.loaded_models.get(lyric_dict.get('id'))
     file_name_without_ext = '{}|{}|{}|{}'.format(
         model.get_property('title'),
@@ -286,7 +286,7 @@ def show_album(window, model_id:str):
     __show_page(window, Widgets.AlbumPage(model_id))
 
 def play_album(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     album = integration.loaded_models.get(model_id)
 
     if album:
@@ -294,7 +294,7 @@ def play_album(window, model_id:str):
         window.queue_page.replace_queue([s.get('id') for s in album.get_property('song')])
 
 def play_album_next(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     album = integration.loaded_models.get(model_id)
 
     if album:
@@ -306,7 +306,7 @@ def play_album_next(window, model_id:str):
     ).start()
 
 def play_album_later(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     album = integration.loaded_models.get(model_id)
 
     if album:
@@ -318,7 +318,7 @@ def play_album_later(window, model_id:str):
     ).start()
 
 def play_album_shuffle(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     album = integration.loaded_models.get(model_id)
 
     if album:
@@ -333,7 +333,7 @@ def show_playlist(window, model_id:str):
     __show_page(window, Widgets.PlaylistPage(model_id))
 
 def play_playlist(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     playlist = integration.loaded_models.get(model_id)
 
     if playlist:
@@ -341,7 +341,7 @@ def play_playlist(window, model_id:str):
         window.queue_page.replace_queue([s.get('id') for s in playlist.get_property('entry')])
 
 def play_playlist_next(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     playlist = integration.loaded_models.get(model_id)
 
     if playlist:
@@ -353,7 +353,7 @@ def play_playlist_next(window, model_id:str):
     ).start()
 
 def play_playlist_later(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     playlist = integration.loaded_models.get(model_id)
 
     if playlist:
@@ -365,7 +365,7 @@ def play_playlist_later(window, model_id:str):
     ).start()
 
 def play_playlist_shuffle(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     playlist = integration.loaded_models.get(model_id)
 
     if playlist:
@@ -375,7 +375,7 @@ def play_playlist_shuffle(window, model_id:str):
         window.queue_page.replace_queue(song_list)
 
 def update_playlist(window, model_id:str=None):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     model = integration.loaded_models.get(model_id) if model_id else None
 
     def response(dialog, task, name_el, id:str):
@@ -427,7 +427,7 @@ def remove_songs_from_playlist(window, data:dict):
     playlist_id = data.get('playlist', "")
     song_list = data.get('indexes', [])
 
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     result = integration.updatePlaylist(
         playlist_id,
         songIndexToRemove=song_list
@@ -453,14 +453,14 @@ def prompt_add_song_to_playlist(window, model_id:str):
     dialog.present(window)
 
 def prompt_add_album_to_playlist(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     integration.verifyAlbum(model_id, force_update=True, use_threading=False)
     model = integration.loaded_models.get(model_id)
     dialog = Widgets.playlist.PlaylistDialog([s.get('id') for s in model.get_property('song')])
     dialog.present(window)
 
 def add_songs_to_playlist(window, data):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     dialogs = window.get_dialogs()
     if len(dialogs) > 0:
         dialogs[0].close()
@@ -511,7 +511,7 @@ def add_songs_to_playlist(window, data):
         ).start()
 
 def delete_playlist(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     model = integration.loaded_models.get(model_id)
 
     def show_toast(model):
@@ -540,7 +540,7 @@ def show_artist(window, model_id:str):
     __show_page(window, Widgets.ArtistPage(model_id))
 
 def play_shuffle_artist(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     def run():
         integration.verifyArtist(model_id, force_update=True, use_threading=False)
         model = integration.loaded_models.get(model_id)
@@ -556,7 +556,7 @@ def play_shuffle_artist(window, model_id:str):
     threading.Thread(target=run).start()
 
 def play_radio_artist(window, model_id:str):
-    integration = navidrome.get_current_integration()
+    integration = get_current_integration()
     def run():
         songs = integration.getSimilarSongs(model_id)
         if len(songs) > 0:

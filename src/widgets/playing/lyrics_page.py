@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GObject, GLib, Gio, Pango, Gst
 from ..song import SongRow
-from ...navidrome import models, get_current_integration, get_lyrics
+from ...integrations import models, get_current_integration, get_lyrics
 from ...constants import DATA_DIR
 import threading, os
 
@@ -103,3 +103,4 @@ class PlayingLyricsPage(Gtk.Stack):
     def lyric_download_requested(self, button):
         integration = get_current_integration()
         self.song_changed(integration.loaded_models.get('currentSong').get_property('songId'), True)
+

@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, Gdk, GLib, Pango
 from ..song import SongRow
-from ...navidrome import get_current_integration, models
+from ...integrations import get_current_integration, models
 from ...constants import CONTEXT_ALBUM
 from ..containers import get_context_buttons_list
 import threading, uuid

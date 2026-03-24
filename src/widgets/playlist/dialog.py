@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GLib
 from .selector_row import PlaylistSelectorRow
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 import re
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playlist/dialog.ui')

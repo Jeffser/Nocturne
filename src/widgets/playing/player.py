@@ -8,7 +8,7 @@ from mpris_server.server import Server
 from mpris_server import Metadata, ValidMetadata, Track, Position, Volume, Rate, PlayState, DbusObj, MetadataObj, ActivePlaylist, PlaylistEntry, MprisInterface
 
 from ...constants import MPRIS_COVER_PATH
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ..lyrics import LyricsDialog
 from urllib.parse import urlparse
 import threading, os

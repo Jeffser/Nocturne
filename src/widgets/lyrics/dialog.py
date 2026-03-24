@@ -1,7 +1,7 @@
 # dialog.py
 
 from gi.repository import Gtk, Adw, GLib, Gdk, Gio, Gst
-from ...navidrome import get_current_integration, get_lyrics
+from ...integrations import get_current_integration, get_lyrics
 from ...constants import DATA_DIR, get_display_time
 from ..playing.lyrics_page import LyricData
 import threading, os
@@ -202,3 +202,4 @@ class LyricsDialog(Adw.Dialog):
 
         get_current_integration().loaded_models.get('currentSong').set_property('playbackMode', self.playback_mode_backup)
         self.close()
+

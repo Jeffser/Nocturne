@@ -1,7 +1,7 @@
 # queue.py
 
 from gi.repository import Gtk, Adw, Gdk, GLib, Pango
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 import threading, uuid
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/queue.ui')

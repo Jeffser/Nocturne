@@ -1,7 +1,7 @@
 # row.py
 
 from gi.repository import Gtk, Adw, GLib, Gdk, Gio
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ...constants import CONTEXT_ALBUM
 from ..containers import ContextContainer
 import threading

@@ -29,7 +29,7 @@ from gi.repository import Gtk, Gio, Adw, GLib
 from .window import NocturneWindow
 from .preferences import NocturnePreferences
 from .constants import get_song_info_from_file
-from .navidrome import get_current_integration, models
+from .integrations import get_current_integration, models
 
 class NocturneApplication(Adw.Application):
     __gtype_name__ = 'NocturneApplication'

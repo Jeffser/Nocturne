@@ -1,7 +1,7 @@
 # selector_row.py
 
 from gi.repository import Gtk, Adw, GLib, Gdk
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playlist/selector_row.ui')

@@ -1,7 +1,7 @@
 # control_page.py
 
 from gi.repository import Gtk, Adw, Gdk, GLib, GObject, Gst, Gio
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ...constants import MPRIS_COVER_PATH, get_display_time
 import threading, random, io, colorsys, os
 from datetime import datetime
@@ -276,6 +276,7 @@ class PlayingControlPage(Adw.NavigationPage):
             stream_url = integration.get_stream_url(songId)
             self.player.gst.set_property('uri', stream_url)
             self.player.gst.set_state(Gst.State.PLAYING)
+
 
 
 

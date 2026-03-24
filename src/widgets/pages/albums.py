@@ -1,7 +1,7 @@
 # albums.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gio
-from ...navidrome import get_current_integration, models
+from ...integrations import get_current_integration, models
 from ..album import AlbumButton
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/albums.ui')

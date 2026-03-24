@@ -99,4 +99,4 @@ nocturne_sources = [
 install_data(nocturne_sources, install_dir: moduledir)
 
 subdir('widgets')
-subdir('navidrome')
+subdir('integrations')

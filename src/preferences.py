@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GLib, Gst, Gio, GObject
 
-from .navidrome import get_current_integration
+from .integrations import get_current_integration
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/preferences.ui')

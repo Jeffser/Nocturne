@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, Gdk, GLib, Pango, Gio
 from .queue import SongQueue
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ..containers import ContextContainer
 from ...constants import CONTEXT_SONG, get_display_time
 import threading, uuid, cairo
@@ -247,5 +247,6 @@ class SongRow(Adw.ActionRow):
         )
         popover.set_parent(self)
         popover.popup()
+
 
 

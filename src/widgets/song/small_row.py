@@ -1,7 +1,7 @@
 # small_row.py
 
 from gi.repository import Gtk, Adw, Gdk, GLib
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ..containers import ContextContainer
 from ...constants import CONTEXT_SONG
 import threading

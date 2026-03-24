@@ -1,7 +1,7 @@
 # home.py
 
 from gi.repository import Gtk, Adw, GLib, Gst, Gio
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ..album import AlbumButton
 from ..artist import ArtistButton
 from ..playlist import PlaylistButton

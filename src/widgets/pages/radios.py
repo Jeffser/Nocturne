@@ -1,7 +1,7 @@
 # radios.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gio
-from ...navidrome import get_current_integration, models
+from ...integrations import get_current_integration, models
 from ..song import SongRow
 import re
 

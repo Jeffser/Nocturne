@@ -1,4 +1,4 @@
-moduledir = get_option('prefix') / get_option('datadir') / meson.project_name() / 'nocturne' / 'navidrome'
+moduledir = get_option('prefix') / get_option('datadir') / meson.project_name() / 'nocturne' / 'integrations'
 
 widgets = [
   '__init__.py',

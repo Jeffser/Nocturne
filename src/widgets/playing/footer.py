@@ -1,7 +1,7 @@
 # footer.py
 
 from gi.repository import Gtk, Adw, Gdk, GLib, GObject
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 import threading
 from urllib.parse import urlparse
 

@@ -1,7 +1,7 @@
 # page.py
 
 from gi.repository import Gtk, Adw, Gdk, GLib, Pango
-from ...navidrome import get_current_integration
+from ...integrations import get_current_integration
 from ...constants import CONTEXT_ARTIST
 from ..containers import get_context_buttons_list
 from ..album import AlbumButton

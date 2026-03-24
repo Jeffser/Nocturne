@@ -1,7 +1,7 @@
 # playlists.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gio
-from ...navidrome import get_current_integration, models
+from ...integrations import get_current_integration, models
 from ..playlist import PlaylistRow
 import re
 

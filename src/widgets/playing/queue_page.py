@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GObject, GLib, Gio
 from ..song import SongRow
-from ...navidrome import models, get_current_integration
+from ...integrations import models, get_current_integration
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/queue_page.ui')

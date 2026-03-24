@@ -19,7 +19,8 @@
 
 from gi.repository import Gtk, Adw, GLib, Gst, Gio, GObject
 
-from . import navidrome, actions
+from . import actions
+from .integrations import get_current_integration
 from .constants import SIDEBAR_MENU
 import threading
 
@@ -49,7 +50,7 @@ class NocturneWindow(Adw.ApplicationWindow):
     @Gtk.Template.Callback()
     def close_request(self, window):
         if not self.get_hide_on_close():
-            integration = navidrome.get_current_integration()
+            integration = get_current_integration()
             if integration:
                 id_list = self.queue_page.song_list_el.get_all_ids()
                 current_song = integration.loaded_models.get('currentSong')
@@ -159,3 +160,4 @@ class NocturneWindow(Adw.ApplicationWindow):
             self.add_css_class('player-blur')
 
         GLib.idle_add(self.setup_sidebar)
+

@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, Gio, GLib
 from ...constants import get_navidrome_path
-from ...navidrome import set_current_integration, Local
+from ...integrations import set_current_integration, Local
 import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/welcome.ui')

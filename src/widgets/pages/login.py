@@ -1,7 +1,7 @@
 # login.py
 
 from gi.repository import Gtk, Adw, Gio, GLib
-from ...navidrome import secret, set_current_integration, Navidrome, Local
+from ...integrations import secret, set_current_integration, Navidrome, Local
 from ...constants import get_navidrome_path, check_if_navidrome_ready, get_navidrome_env
 import threading, subprocess
 
