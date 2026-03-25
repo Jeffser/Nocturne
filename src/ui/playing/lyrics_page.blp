@@ -96,17 +96,28 @@ template $NocturnePlayingLyricsPage: Gtk.Stack {
         spacing: 10;
         halign: center;
 
-        Gtk.Button {
+        Gtk.Box {
           styles [
-            "accent"
+            "linked"
           ]
-          halign: center;
-          tooltip-text: _("Download");
-          child: Adw.ButtonContent {
-            icon-name: "folder-download-symbolic";
-            label: _("Download");
-          };
-          clicked => $lyric_download_requested();
+          Gtk.Button {
+            styles [
+              "accent"
+            ]
+            halign: center;
+            tooltip-text: _("Download");
+            child: Adw.ButtonContent {
+              icon-name: "folder-download-symbolic";
+              label: _("Download");
+            };
+            clicked => $lyric_download_requested();
+          }
+          Gtk.Button {
+            icon-name: "globe-symbolic";
+            action-name: "app.visit_url";
+            action-target: "'https://lrclib.net'";
+            tooltip-text: _("Lyrics are Provided by LRCLIB");
+          }
         }
 
         Gtk.Button {
@@ -120,11 +131,6 @@ template $NocturnePlayingLyricsPage: Gtk.Stack {
             label: _("Load Lyrics File");
           };
           clicked => $lyric_load_requested();
-        }
-
-        Gtk.LinkButton {
-          uri: "https://lrclib.net";
-          label: _("Provided by LRCLIB");
         }
       };
     };
