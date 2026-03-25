@@ -71,6 +71,7 @@ scale trough slider {
 image.album-play-overlay {
   opacity: 0;
   transition: opacity .2s;
+  border-radius: 9px;
 }
 
 image.album-play-overlay:hover {
