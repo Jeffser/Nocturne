@@ -1,6 +1,6 @@
 id: com.jeffser.Nocturne
 runtime: org.gnome.Platform
-runtime-version: 'master'
+runtime-version: '50'
 sdk: org.gnome.Sdk
 command: nocturne
 finish-args:
