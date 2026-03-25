@@ -51,7 +51,7 @@ class NocturneApplication(Adw.Application):
             win = NocturneWindow(application=self)
         win.present()
 
-    def do_open(self, files, n_files, hint):
+    def do_open(self, files, n_files=None, hint=None):
         self.external_songs = []
         integration = get_current_integration()
         for file in files:

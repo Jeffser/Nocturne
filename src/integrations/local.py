@@ -267,7 +267,7 @@ class Local(GObject.Object):
             album_list = [id for id, model in self.loaded_models.items() if id.startswith('ALBUM:') and model.starred]
         else:
             album_list = [id for id in list(self.loaded_models) if id.startswith('ALBUM:')]
-        return album_list[offset:size]
+        return [id for id in album_list if id in self.loaded_models][offset:size]
 
     def getArtists(self, size:int=10) -> list:
         return [id for id in list(self.loaded_models) if id.startswith('ARTIST:')][:size]
@@ -345,8 +345,20 @@ class Local(GObject.Object):
     def savePlayQueue(self, id_list:list, current:str, position:int) -> bool:
         QUEUEFILE = os.path.join(LOCAL_DATA_DIR, 'queue.json')
 
+        final_id_list = []
+        for id in id_list:
+            if model := self.loaded_models.get(id):
+                if not model.isExternalFile:
+                    final_id_list.append(id)
+
+        if current not in final_id_list:
+            if len(final_id_list) > 0:
+                current = final_id_list[0]
+            else:
+                current = ""
+
         queue_dict = {
-            'id': id_list,
+            'id': final_id_list,
             'current': current,
             'position': position
         }
@@ -556,6 +568,8 @@ class Local(GObject.Object):
         if not id:
             return
         if model := self.loaded_models.get(id):
+            if model.isExternalFile:
+                return
             SCROBBLEFILE = os.path.join(LOCAL_DATA_DIR, 'scrobble.json')
             try:
                 with open(SCROBBLEFILE, 'r') as f:

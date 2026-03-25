@@ -48,6 +48,11 @@ template $NocturneWindow: Adw.ApplicationWindow {
           show-drag-handle: false;
           reveal-bottom-bar: false;
           accessible-role: navigation;
+          Gtk.DropTarget {
+            formats: "GFile";
+            drop => $on_drop();
+            actions: copy;
+          }
 
           content: Adw.NavigationSplitView main_split_view {
             show-content: true;

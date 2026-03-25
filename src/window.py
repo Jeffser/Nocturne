@@ -164,4 +164,6 @@ class NocturneWindow(Adw.ApplicationWindow):
 
         GLib.idle_add(self.setup_sidebar)
 
-
+    @Gtk.Template.Callback()
+    def on_drop(self, drop_target, file, x, y):
+        self.get_application().do_open([file])

@@ -73,16 +73,17 @@ template $NocturneSongRow: Adw.ActionRow {
           ellipsize: end;
         }
 
-        Adw.Bin artist_container_el {}
-
         Gtk.Button external_file_el {
           action-name: "app.show_external_file_warning";
           tooltip-text: _("External File");
           icon-name: "paper-symbolic";
           styles [
-            "p0"
+            "p0",
+            "flat"
           ]
         }
+
+        Adw.Bin artist_container_el {}
       }
     }
 
