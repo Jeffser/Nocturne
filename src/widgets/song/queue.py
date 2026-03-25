@@ -18,10 +18,6 @@ class SongQueue(Gtk.Box):
     play_later_el = Gtk.Template.Child()
     playlist_id:str = ""
 
-    def __init__(self):
-        super().__init__()
-        GLib.idle_add(self.main_stack.set_overflow, Gtk.Overflow.VISIBLE)
-
     def set_header(self, label:str, icon_name:str, page_tag:str=None):
         self.header_button.set_tooltip_text(label)
         self.header_button.get_child().set_label(label)
