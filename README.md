@@ -27,3 +27,9 @@
 HomePage | Song Queue | Lyrics | Song List | Album Page
 :------------------:|:-----------------:|:----------------:|:---------------------------:|:--------------------:
 ![screenie1](https://jeffser.com/images/nocturne/screenie1.png) | ![screenie2](https://jeffser.com/images/nocturne/screenie2.png) | ![screenie3](https://jeffser.com/images/nocturne/screenie3.png) | ![screenie4](https://jeffser.com/images/nocturne/screenie4.png) | ![screenie5](https://jeffser.com/images/nocturne/screenie5.png)
+
+## Translators
+
+Language                | Contributors
+:-----------------------|:-----------
+Spanish              | [Jeffry Samuel](https://github.com/jeffser)

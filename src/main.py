@@ -28,7 +28,7 @@ gi.require_version('Gst', '1.0')
 from gi.repository import Gtk, Gio, Adw, GLib
 from .window import NocturneWindow
 from .preferences import NocturnePreferences
-from .constants import get_song_info_from_file
+from .constants import get_song_info_from_file, TRANSLATORS
 from .integrations import get_current_integration, models
 
 class NocturneApplication(Adw.Application):
@@ -79,7 +79,10 @@ class NocturneApplication(Adw.Application):
             license="GPL-3.0-or-later",
             support_url="https://github.com/Jeffser/Nocturne/discussions",
             version=self.version,
-            website="https://jeffser.com/nocturne"
+            website="https://jeffser.com/nocturne",
+            developers=['Jeffser https://jeffser.com'],
+            designers=['Jeffser https://jeffser.com'],
+            translator_credits='\n'.join(TRANSLATORS)
         )
         about.present(self.props.active_window)
 
