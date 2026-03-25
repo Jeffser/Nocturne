@@ -109,6 +109,19 @@ template $NocturnePlayingLyricsPage: Gtk.Stack {
           clicked => $lyric_download_requested();
         }
 
+        Gtk.Button {
+          styles [
+            "flat"
+          ]
+          halign: center;
+          tooltip-text: _("Load Lyrics File");
+          child: Adw.ButtonContent {
+            icon-name: "paper-symbolic";
+            label: _("Load Lyrics File");
+          };
+          clicked => $lyric_load_requested();
+        }
+
         Gtk.LinkButton {
           uri: "https://lrclib.net";
           label: _("Provided by LRCLIB");

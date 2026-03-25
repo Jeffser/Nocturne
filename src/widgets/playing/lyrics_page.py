@@ -104,3 +104,43 @@ class PlayingLyricsPage(Gtk.Stack):
         integration = get_current_integration()
         self.song_changed(integration.loaded_models.get('currentSong').get_property('songId'), True)
 
+    def copy_lyrics_lrc(self, dialog, task, model):
+        if model:
+            if source_file := dialog.open_finish(task):
+                lyrics_dir = os.path.join(DATA_DIR, 'lyrics')
+                os.makedirs(lyrics_dir, exist_ok=True)
+                file_name_without_ext = '{}|{}|{}|{}'.format(
+                    model.get_property('title'),
+                    model.get_property('artist'),
+                    model.get_property('album') or model.get_property('title'),
+                    model.get_property('duration')
+                )
+                lrc_path = os.path.join(lyrics_dir, file_name_without_ext+'.lrc')
+                destination_file = Gio.File.new_for_path(lrc_path)
+
+                source_file.copy_async(
+                    destination_file,
+                    Gio.FileCopyFlags.OVERWRITE,
+                    GLib.PRIORITY_DEFAULT,
+                    None,
+                    None,
+                    lambda *_: self.song_changed(model.get_property('id'), False)
+                )
+
+
+    @Gtk.Template.Callback()
+    def lyric_load_requested(self, button):
+        integration = get_current_integration()
+        if model := integration.loaded_models.get(integration.loaded_models.get('currentSong').get_property('songId')):
+            file_filter = Gtk.FileFilter(
+                name=_("LRC File")
+            )
+            file_filter.add_mime_type('text/x-lrc')
+            file_filter.add_mime_type('application/x-lrc')
+            file_filter.add_suffix('lrc')
+            file_filter_list = Gio.ListStore.new(Gtk.FileFilter)
+            file_filter_list.append(file_filter)
+
+            Gtk.FileDialog(
+                filters=file_filter_list
+            ).open(self.get_root(), None, self.copy_lyrics_lrc, model)
