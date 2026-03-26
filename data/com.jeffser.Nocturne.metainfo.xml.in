@@ -82,9 +82,27 @@
   </screenshots>
 
   <releases>
+    <release version="0.3.0" date="2026-03-25">
+      <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.3.0</url>
+      <description translate="no">
+        <p>New</p>
+        <ul>
+          <li>Added blur effect to album buttons</li>
+          <li>Improvements to lyrics editor</li>
+          <li>Added option to load lrc files directly</li>
+          <li>Added Spanish translation</li>
+          <li>Made startup sequence faster</li>
+        </ul>
+        <p>Fixes</p>
+        <ul>
+          <li>Added fallback for systems with no keyrings</li>
+          <li>Fixed buggy appearance of carousels</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.2.0" date="2026-03-24">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.2.0</url>
-      <description>
+      <description translate="no">
         <p>New</p>
         <ul>
           <li>Added screen to indicate when no lyrics are found inside editor</li>
@@ -108,7 +126,7 @@
     </release>
     <release version="0.1.0" date="2026-03-24">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.1.0</url>
-      <description>
+      <description translate="no">
         <p>First release of Nocturne, please report any bugs or features you might want to see in the next version</p>
       </description>
     </release>
