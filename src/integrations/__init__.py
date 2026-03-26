@@ -2,6 +2,7 @@
 
 from .navidrome import Navidrome
 from .local import Local
+from .base import Base
 from . import models, secret
 from ..constants import DATA_DIR
 import os, requests

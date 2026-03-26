@@ -2,10 +2,11 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio, GdkPixbuf
 from . import secret, models, local
+from .base import Base
 import requests, random, threading, favicon, io
 from PIL import Image
 
-class Navidrome(GObject.Object):
+class Navidrome(Base):
     __gtype_name__ = 'NocturneIntegrationNavidrome'
 
     base_url = GObject.Property(type=str)
@@ -15,9 +16,6 @@ class Navidrome(GObject.Object):
         super().__init__()
         self.base_url = base_url
         self.username = username
-        self.loaded_models = {
-            'currentSong': models.CurrentSong()
-        }
 
     def get_base_params(self) -> dict:
         salt, token = secret.get_hashed_password()
@@ -47,26 +45,6 @@ class Navidrome(GObject.Object):
         return {}
 
     # ----------- #
-
-    def connect_to_model(self, id:str, parameter:str, callback:callable, use_gtk_thread:bool=True) -> str:
-        use_gtk_thread = True
-        # returns connection id so it can be disconnected if needed, mostly used by currentSong
-        connection_id = ""
-        if id in self.loaded_models:
-            if use_gtk_thread:
-                connection_id = self.loaded_models[id].connect(
-                    'notify::{}'.format(parameter),
-                    lambda *_, parameter=parameter, id=id: GLib.idle_add(callback, self.loaded_models[id].get_property(parameter))
-                )
-                GLib.idle_add(callback, self.loaded_models[id].get_property(parameter))
-            else:
-                connection_id = self.loaded_models[id].connect(
-                    'notify::{}'.format(parameter),
-                    lambda *_, parameter=parameter, id=id: callback(self.loaded_models[id].get_property(parameter))
-                )
-                callback(self.loaded_models[id].get_property(parameter))
-
-        return connection_id
 
     def get_stream_url(self, song_id:str) -> str:
         # streams are handled by gst not requests

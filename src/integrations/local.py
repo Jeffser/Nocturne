@@ -2,22 +2,21 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio, GdkPixbuf
 from . import secret, models
+from .base import Base
 from datetime import datetime, timezone
 import requests, random, threading, favicon, io, pathlib, re, json, os, time, uuid
 from PIL import Image
 from mutagen import File
 from ..constants import MUSIC_DIR, LOCAL_DATA_DIR, get_song_info_from_file
 
-class Local(GObject.Object):
+class Local(Base):
     __gtype_name__ = 'NocturneIntegrationLocal'
 
     music_dir = GObject.Property(type=str, default=MUSIC_DIR)
     supported_extensions = ('.mp3', '.flac', '.m4a', '.ogg', '.wav')
 
     def __init__(self):
-        self.loaded_models = {
-            'currentSong': models.CurrentSong()
-        }
+        super().__init__()
         self.update_loaded_models()
 
     def update_loaded_models(self):
@@ -130,22 +129,7 @@ class Local(GObject.Object):
     # ----------- #
 
     def connect_to_model(self, id:str, parameter:str, callback:callable, use_gtk_thread:bool=True) -> str:
-        # returns connection id so it can be disconnected if needed, mostly used by currentSong
-        connection_id = ""
-        if id in self.loaded_models:
-            if use_gtk_thread:
-                connection_id = self.loaded_models[id].connect(
-                    'notify::{}'.format(parameter),
-                    lambda *_, parameter=parameter, id=id: GLib.idle_add(callback, self.loaded_models[id].get_property(parameter))
-                )
-                GLib.idle_add(callback, self.loaded_models[id].get_property(parameter))
-            else:
-                connection_id = self.loaded_models[id].connect(
-                    'notify::{}'.format(parameter),
-                    lambda *_, parameter=parameter, id=id: callback(self.loaded_models[id].get_property(parameter))
-                )
-                callback(self.loaded_models[id].get_property(parameter))
-
+        connection_id = super().connect_to_model(id, parameter, callback, use_gtk_thread)
         if parameter == "coverArt":
             self.getCoverArt(id)
         return connection_id
@@ -382,8 +366,8 @@ class Local(GObject.Object):
         return True
 
     def getSimilarSongs(self, id:str, count:int=20) -> list:
-        # not implemented
-        return []
+        # out of the scope of Local
+        return self.getRandomSongs(count)
 
     def getRandomSongs(self, size:int=20) -> list:
         songs = [id for id in list(self.loaded_models) if id.startswith('SONG:')]
