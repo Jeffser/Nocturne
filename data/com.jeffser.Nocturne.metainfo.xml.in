@@ -85,8 +85,9 @@
     <release version="0.3.1" date="2026-03-26">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.3.1</url>
       <description translate="no">
-        <p>Fix</p>
+        <p>Fixes</p>
         <ul>
+          <li>Improvements to performance</li>
           <li>Fixed fallback for systems with no keyrings</li>
         </ul>
       </description>
