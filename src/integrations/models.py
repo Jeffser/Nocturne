@@ -15,7 +15,7 @@ class Album(GObject.Object):
     duration = GObject.Property(type=int)
     artists = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     song = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
-    starred = GObject.Property(type=str)
+    starred = GObject.Property(type=bool, default=False)
     path = GObject.Property(type=str) # For use in Local
 
     def __init__(self, **kwargs):
@@ -41,7 +41,7 @@ class Artist(GObject.Object):
     name = GObject.Property(type=str)
     albumCount = GObject.Property(type=int)
     album = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
-    starred = GObject.Property(type=str)
+    starred = GObject.Property(type=bool, default=False)
     biography = GObject.Property(type=str)
     similarArtist = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     path = GObject.Property(type=str) # For use in Local
@@ -100,7 +100,7 @@ class Song(GObject.Object):
     albumId = GObject.Property(type=str)
     artistId = GObject.Property(type=str)
     artists = GObject.Property(type=GObject.TYPE_PYOBJECT) # list
-    starred = GObject.Property(type=str)
+    starred = GObject.Property(type=bool, default=False)
     isExternalFile = GObject.Property(type=bool, default=False)
 
     # --RADIO--

@@ -4,7 +4,6 @@ from gi.repository import Gtk, Adw, Gdk, GLib, GObject, Gst, Gio
 from ...integrations import get_current_integration
 from ...constants import MPRIS_COVER_PATH, get_display_time
 import threading, random, io, colorsys, os
-from datetime import datetime
 from PIL import Image
 from colorthief import ColorThief
 from urllib.parse import urlparse
@@ -262,12 +261,11 @@ class PlayingControlPage(Adw.NavigationPage):
                 if os.path.isfile(MPRIS_COVER_PATH):
                     os.remove(MPRIS_COVER_PATH)
 
-    def update_starred(self, starred:str):
+    def update_starred(self, starred:bool):
         if starred:
             self.star_el.add_css_class('accent')
             self.star_el.set_icon_name('starred-symbolic')
-            local_dt = datetime.fromisoformat(starred).astimezone()
-            self.star_el.set_tooltip_text(local_dt.strftime("%Y-%m-%d %H:%M:%S"))
+            self.star_el.set_tooltip_text(_('Starred'))
         else:
             self.star_el.remove_css_class('accent')
             self.star_el.set_icon_name('non-starred-symbolic')

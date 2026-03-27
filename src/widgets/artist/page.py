@@ -7,7 +7,6 @@ from ..containers import get_context_buttons_list
 from ..album import AlbumButton
 from .button import ArtistButton
 import threading, uuid
-from datetime import datetime
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/artist/page.ui')
 class ArtistPage(Adw.NavigationPage):
@@ -67,12 +66,11 @@ class ArtistPage(Adw.NavigationPage):
         self.biography_el.set_label(biography)
         self.biography_el.get_parent().set_visible(biography)
 
-    def update_starred(self, starred:str):
+    def update_starred(self, starred:bool):
         if starred:
             self.star_el.add_css_class('accent')
             self.star_el.set_icon_name('starred-symbolic')
-            local_dt = datetime.fromisoformat(starred).astimezone()
-            self.star_el.set_tooltip_text(local_dt.strftime("%Y-%m-%d %H:%M:%S"))
+            self.star_el.set_tooltip_text(_('Starred'))
         else:
             self.star_el.remove_css_class('accent')
             self.star_el.set_icon_name('non-starred-symbolic')

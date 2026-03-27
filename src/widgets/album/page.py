@@ -6,7 +6,6 @@ from ...integrations import get_current_integration, models
 from ...constants import CONTEXT_ALBUM
 from ..containers import get_context_buttons_list
 import threading, uuid
-from datetime import datetime, UTC
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/album/page.ui')
 class AlbumPage(Adw.NavigationPage):
@@ -62,12 +61,11 @@ class AlbumPage(Adw.NavigationPage):
     def update_artist_id(self, artistId:str):
         self.artist_el.set_action_target_value(GLib.Variant.new_string(artistId))
 
-    def update_starred(self, starred:str):
+    def update_starred(self, starred:bool):
         if starred:
             self.star_el.add_css_class('accent')
             self.star_el.set_icon_name('starred-symbolic')
-            local_dt = datetime.fromisoformat(starred).astimezone()
-            self.star_el.set_tooltip_text(local_dt.strftime("%Y-%m-%d %H:%M:%S"))
+            self.star_el.set_tooltip_text(_('Starred'))
         else:
             self.star_el.remove_css_class('accent')
             self.star_el.set_icon_name('non-starred-symbolic')

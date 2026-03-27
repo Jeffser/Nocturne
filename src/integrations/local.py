@@ -61,7 +61,7 @@ class Local(Base):
                                 'artist': song.get('artist'),
                                 'artistId': song.get('artistId'),
                                 'song': [{'id': song.get('id')}],
-                                'starred': star_dict.get(song.get('albumId'))
+                                'starred': song.get('albumId') in star_dict
                             }
                             self.loaded_models[album.get('id')] = models.Album(**album)
 
@@ -75,7 +75,7 @@ class Local(Base):
                                     'name': a_dict.get('name'),
                                     'album': [],
                                     'albumCount': 0,
-                                    'starred': star_dict.get(a_dict.get('id'))
+                                    'starred': a_dict.get('id') in star_dict
                                 }
                                 self.loaded_models[artist.get('id')] = models.Artist(**artist)
 

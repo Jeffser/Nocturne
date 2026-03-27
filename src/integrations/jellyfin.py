@@ -195,7 +195,7 @@ class Jellyfin(Base):
                 duration=duration,
                 artists=[{"id": art.get("Id"), "name": art.get("Name")} for art in artists],
                 song=[{"id": song.get("Id"), "name": song.get("Name")} for song in songs],
-                starred=_("Starred") if album.get("UserData", {}).get("IsFavorite", False) else ""
+                starred=album.get("UserData", {}).get("IsFavorite", False)
             )
             self.loaded_models[album.get("Id")] = album_model
             id_list.append(album.get("Id"))
@@ -231,7 +231,7 @@ class Jellyfin(Base):
                 name=artist.get('Name'),
                 albumCount=len(albums),
                 album=[{'id': alb.get("Id"), 'name': alb.get("Name")} for alb in albums],
-                starred=_("Starred") if artist.get("UserData", {}).get("IsFavorite", False) else "",
+                starred=artist.get("UserData", {}).get("IsFavorite", False),
                 biography=artist.get("Overview", ""),
                 similarArtist=[{'id': art.get("Id"), 'name': art.get("Name")} for art in artist.get("SimilarItems", [])]
             )
@@ -299,7 +299,7 @@ class Jellyfin(Base):
                 name=artist.get("Name"),
                 albumCount=len(albums),
                 album=[{"id": alb.get("Id"), "name": alb.get("Name")} for alb in albums],
-                starred=_("Starred") if artist.get("UserData", {}).get("IsFavorite", False) else "",
+                starred=artist.get("UserData", {}).get("IsFavorite", False),
                 biography=artist.get("Overview", ""),
                 similarArtists=[{"id": art.get("Id"), "name": art.get("Name")} for art in artist.get("SimilarItems", [])]
             )
@@ -344,7 +344,7 @@ class Jellyfin(Base):
                 duration=duration,
                 artists=[{"id": art.get("Id"), "name": art.get("Name")} for art in album.get("ArtistItems", [])],
                 song=[{"id": song.get("Id"), "name": song.get("Name")} for song in songs],
-                starred=_("Starred") if album.get("UserData", {}).get("IsFavorite", False) else ""
+                starred=album.get("UserData", {}).get("IsFavorite", False)
             )
 
         if id not in self.loaded_models or force_update:
@@ -419,7 +419,7 @@ class Jellyfin(Base):
                 artistId=song.get("ArtistItems", [{}])[0].get("Id"),
                 duration=duration,
                 artists=[{"id": art.get("Id"), "name": art.get("Name")} for art in song.get("ArtistItems", [])],
-                starred=_("Starred") if song.get("UserData", {}).get("IsFavorite", False) else "",
+                starred=song.get("UserData", {}).get("IsFavorite", False)
             )
 
         if id not in self.loaded_models or force_update:

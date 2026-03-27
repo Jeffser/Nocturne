@@ -6,7 +6,6 @@ from ...integrations import get_current_integration
 from ..containers import ContextContainer
 from ...constants import CONTEXT_SONG, get_display_time
 import threading, uuid, cairo
-from datetime import datetime
 from urllib.parse import urlparse
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/row.ui')
@@ -131,12 +130,11 @@ class SongRow(Adw.ActionRow):
             self.artist_container_el.set_sensitive(True)
             self.artist_container_el.set_child(button)
 
-    def update_starred(self, starred:str):
+    def update_starred(self, starred:bool):
         if starred:
             self.star_el.add_css_class('accent')
             self.star_el.set_icon_name('starred-symbolic')
-            local_dt = datetime.fromisoformat(starred).astimezone()
-            self.star_el.set_tooltip_text(local_dt.strftime("%Y-%m-%d %H:%M:%S"))
+            self.star_el.set_tooltip_text(_('Starred'))
         else:
             self.star_el.remove_css_class('accent')
             self.star_el.set_icon_name('non-starred-symbolic')
