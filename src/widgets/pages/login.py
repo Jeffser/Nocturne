@@ -24,7 +24,6 @@ class LoginPage(Adw.NavigationPage):
     def setup_page(self, integration):
         self.integration = integration
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
-        saved_ip = settings.get_value('integration-ip').unpack()
         saved_user = settings.get_value('integration-user').unpack()
         saved_directory = settings.get_value('integration-library-dir').unpack()
 
@@ -35,7 +34,7 @@ class LoginPage(Adw.NavigationPage):
 
         # Url
         self.url_el.set_visible('url' in metadata.get('entries'))
-        self.url_el.set_text(saved_ip)
+        self.url_el.set_text(metadata.get("default-url", ""))
 
         # User
         self.user_el.set_visible('user' in metadata.get('entries'))

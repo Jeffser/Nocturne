@@ -12,10 +12,11 @@ class Jellyfin(Base):
     login_page_metadata = {
         'icon-name': "music-note-symbolic",
         'title': "Jellyfin",
-        'entries': ["url", "user", "password"]
+        'entries': ["url", "user", "password"],
+        'default-url': "http://127.0.0.1:8096"
     }
     button_metadata = {
-        'title': "Jellyfin",
+        'title': _("Jellyfin (Experimental)"),
         'subtitle': _("Use an existing Jellyfin instance")
     }
     limitations = ('no-edit-radio','no-restore-queue')

@@ -13,7 +13,8 @@ class Navidrome(Base):
     login_page_metadata = {
         'icon-name': "music-note-symbolic",
         'title': _("Navidrome"),
-        'entries': ['url', 'user', 'password']
+        'entries': ['url', 'user', 'password'],
+        'default-url': "http://127.0.0.1:4533"
     }
     button_metadata = {
         'title': _("External Server"),

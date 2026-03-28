@@ -78,7 +78,7 @@ class ArtistPage(Adw.NavigationPage):
 
     def update_album_list(self, album_list:list):
         if album_list:
-            albums = [a.get('id') for a in album_list]
+            albums = [a.get('id') for a in album_list if isinstance(a, dict)]
             album_buttons = []
             for album in albums:
                 button = AlbumButton(album)
