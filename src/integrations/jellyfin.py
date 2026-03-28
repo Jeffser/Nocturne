@@ -2,9 +2,9 @@
 
 from gi.repository import Gtk, GLib, GObject, Gdk, Gio, GdkPixbuf
 from . import secret, models, local
-from ..constants import get_pc_name, JELLYFIN_DATA_DIR
+from ..constants import JELLYFIN_DATA_DIR
 from .base import Base
-import requests, subprocess, random, threading, base64, os, json
+import requests, subprocess, random, threading, base64, os, json, platform
 
 class Jellyfin(Base):
     __gtype_name__ = 'NocturneIntegrationJellyfin'
@@ -27,15 +27,11 @@ class Jellyfin(Base):
     url = GObject.Property(type=str)
     user = GObject.Property(type=str)
 
-    AUTH_HEADER = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="1.0.0"'.format(get_pc_name(), str(random.randint(1000, 9999)))
+    AUTH_HEADER = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="1.0.0"'.format(platform.node(), str(hash(platform.node())))
 
     # Loaded by API
     accessToken = GObject.Property(type=str)
     userId = GObject.Property(type=str)
-
-    def get_base_params(self) -> dict:
-        #TODO
-        return {}
 
     def get_base_header(self) -> dict:
         headers = {
@@ -51,7 +47,6 @@ class Jellyfin(Base):
 
     def make_request(self, action:str, json:dict={}, params:dict={}, mode:str="GET", action_keys:dict={}) -> dict:
         params = {
-            **self.get_base_params(),
             **params
         }
         headers = {
@@ -113,7 +108,6 @@ class Jellyfin(Base):
                     return model.get_property('gdkPaintableBytes'), model.get_property('gdkPaintable')
 
                 params = {
-                    **self.get_base_params(),
                     'maxWidth': 480,
                     'quality': 90
                 }
