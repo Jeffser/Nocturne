@@ -5,12 +5,14 @@ from ..song import SongRow
 from ...integrations import get_current_integration, models
 from ...constants import CONTEXT_ALBUM
 from ..containers import get_context_buttons_list
-import threading, uuid
+import threading, uuid, io
+from colorthief import ColorThief
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/album/page.ui')
 class AlbumPage(Adw.NavigationPage):
     __gtype_name__ = 'NocturneAlbumPage'
 
+    clamp_el = Gtk.Template.Child()
     cover_el = Gtk.Template.Child()
     name_el = Gtk.Template.Child()
     artist_el = Gtk.Template.Child()
@@ -39,6 +41,7 @@ class AlbumPage(Adw.NavigationPage):
         integration.connect_to_model(self.id, 'starred', self.update_starred)
         integration.connect_to_model(self.id, 'song', self.update_song_list)
         integration.connect_to_model(self.id, 'gdkPaintable', self.update_cover)
+        integration.connect_to_model(self.id, 'gdkPaintableBytes', self.update_background)
 
     def update_cover(self, paintable:Gdk.Paintable=None):
         if paintable:
@@ -47,6 +50,28 @@ class AlbumPage(Adw.NavigationPage):
         elif isinstance(self.cover_el.get_paintable(), Adw.SpinnerPaintable):
             self.cover_el.set_from_icon_name("music-queue-symbolic")
             self.cover_el.set_pixel_size(-1)
+
+    def update_background(self, gbytes:bytes):
+        def run():
+            if raw_bytes := gbytes.get_data():
+                img_io = io.BytesIO(raw_bytes)
+                color = ColorThief(img_io).get_color(quality=10)
+                css = f"""
+                clamp {{
+                    transition: background .2s;
+                    background: linear-gradient(180deg, color-mix(in srgb, rgb({','.join([str(c) for c in color])}) 50%, transparent), transparent 30%);
+                    background-size: 100% 1000px;
+                    background-repeat: no-repeat;
+                }}
+                """
+                provider = Gtk.CssProvider()
+                provider.load_from_data(css.encode())
+                GLib.idle_add(self.clamp_el.get_style_context().add_provider,
+                    provider,
+                    Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+                )
+        if gbytes:
+            threading.Thread(target=run).start()
 
     def update_name(self, name:str):
         self.name_el.set_label(name)
