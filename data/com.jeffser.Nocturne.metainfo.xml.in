@@ -82,6 +82,27 @@
   </screenshots>
 
   <releases>
+    <release version="0.5.0" date="2026-03-28">
+      <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.5.0</url>
+      <description translate="no">
+        <p>New</p>
+        <ul>
+          <li>Added dynamic backgrounds to multiple pages</li>
+          <li>Redesigned titlebar for multiple pages</li>
+          <li>Redesigned playlist and album buttons</li>
+          <li>Added the option to restore queues to Jellyfin integration</li>
+          <li>Added option to trust self-signed certificates</li>
+          <li>Added shortcut to preferences</li>
+          <li>Hide titlebar buttons in player</li>
+          <li>Retrieve lyrics from server before lrclib</li>
+        </ul>
+        <p>Fixes</p>
+        <ul>
+          <li>Fixed problems with metadata fetching</li>
+          <li>Fixed problems with stability</li>
+        </ul>
+      </description>
+    </release>
     <release version="0.4.0" date="2026-03-27">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/0.4.0</url>
       <description translate="no">
