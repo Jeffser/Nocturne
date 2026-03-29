@@ -42,7 +42,7 @@ The following dependencies are requirements of the project.
 ### Linux (Flatpak)
 Dependencies are automatically managed and built depending on host environment.
 ```sh
-flatpak-builder build com.jeffser.Nocturne.yml --force-clean
+flatpak-builder build com.jeffser.Nocturne.yml --force-clean --install-deps-from=flathub
 flatpak-builder --run build com.jeffser.Nocturne.yml nocturne
 ```
 
