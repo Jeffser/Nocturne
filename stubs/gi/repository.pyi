@@ -9,3 +9,7 @@ Gdk: Any
 Gio: Any
 GdkPixbuf: Any
 Gst: Any
+Pango: Any
+
+def require_version(name: str, version: str) -> None: ...
+def require_foreign(name: str) -> None: ...
