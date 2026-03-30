@@ -237,7 +237,12 @@ class Player(EventAdapter):
         self.mpris = Server("com.jeffser.Nocturne", adapter=self.adapter)
         super().__init__(root=self.mpris.root, player=self.mpris.player)
         self.interface = MprisInterface('com.jeffser.Nocturne', self.adapter)
-        self.mpris.publish()
+        self.mpris_published = False
+        try:
+            self.mpris.publish()
+            self.mpris_published = True
+        except Exception as e:
+            print("Failed to publish MPRIS:", e)
         GLib.timeout_add(500, self.update_stream_progress)
 
     # ---

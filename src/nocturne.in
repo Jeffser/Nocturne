@@ -31,8 +31,9 @@ localedir = '@localedir@'
 
 sys.path.insert(1, pkgdatadir)
 signal.signal(signal.SIGINT, signal.SIG_DFL)
-locale.bindtextdomain('nocturne', localedir)
-locale.textdomain('nocturne')
+if hasattr(locale, 'bindtextdomain'):
+    locale.bindtextdomain('nocturne', localedir)
+    locale.textdomain('nocturne')
 gettext.install('nocturne', localedir)
 
 if __name__ == '__main__':
