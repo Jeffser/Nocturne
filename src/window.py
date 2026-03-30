@@ -111,6 +111,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.delete_navidrome_server, parameter_type=None)
         self.create_action(actions.open_popout_window, parameter_type=None)
         self.create_action(actions.close_popout_window, parameter_type=None)
+        self.create_action(actions.toggle_fullscreen, shortcuts=['F11'], parameter_type=None)
 
         self.create_action(actions.play_radio)
         self.create_action(actions.add_radio, parameter_type=None)

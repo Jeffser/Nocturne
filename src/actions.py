@@ -135,6 +135,17 @@ def open_popout_window(window):
     window.sheet_status_stack.set_visible_child_name("pop-out")
     window.main_bottom_sheet.set_open(False)
 
+def toggle_fullscreen(window):
+    if len(window.queue_page.song_list_el.get_all_ids()) > 0:
+        if not window.get_application().popout_window:
+            open_popout_window(window)
+
+        popout_window = window.get_application().popout_window
+        if popout_window.is_fullscreen():
+            popout_window.unfullscreen()
+        else:
+            popout_window.fullscreen()
+
 def close_popout_window(window):
     if popoutwindow := window.get_application().popout_window:
         try:
