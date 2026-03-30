@@ -41,16 +41,17 @@ template $NocturnePlayingFooter: Gtk.Overlay {
         };
       }
 
-      Gtk.Box {
+      Gtk.Box detail_container {
         orientation: vertical;
         spacing: 5;
         valign: center;
-        halign: start;
+        hexpand: true;
 
         Gtk.Label title_el {
           styles [
             "title-4"
           ]
+          xalign: 0;
           halign: start;
           ellipsize: end;
         }
@@ -59,6 +60,7 @@ template $NocturnePlayingFooter: Gtk.Overlay {
           styles [
             "dimmed"
           ]
+          xalign: 0;
           halign: start;
           ellipsize: end;
         }

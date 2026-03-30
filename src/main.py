@@ -38,6 +38,7 @@ class NocturneApplication(Adw.Application):
     def __init__(self, version):
         self.version = version
         self.external_songs = []
+        self.popout_window = None
         super().__init__(application_id='com.jeffser.Nocturne',
                          flags=Gio.ApplicationFlags.DEFAULT_FLAGS | Gio.ApplicationFlags.HANDLES_OPEN,
                          resource_base_path='/com/jeffser/Nocturne')

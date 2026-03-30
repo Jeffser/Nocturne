@@ -51,6 +51,10 @@
     <file alias="icons/scalable/status/view-list-bullet-symbolic.svg">icons/view-list-bullet-symbolic.svg</file>
     <file alias="icons/scalable/status/folder-open-symbolic.svg">icons/folder-open-symbolic.svg</file>
     <file alias="icons/scalable/status/update-symbolic.svg">icons/update-symbolic.svg</file>
+    <file alias="icons/scalable/status/pip-in-symbolic.svg">icons/pip-in-symbolic.svg</file>
+    <file alias="icons/scalable/status/pip-out-symbolic.svg">icons/pip-out-symbolic.svg</file>
+    <file alias="icons/scalable/status/view-fullscreen-symbolic.svg">icons/view-fullscreen-symbolic.svg</file>
+    <file alias="icons/scalable/status/view-unfullscreen-symbolic.svg">icons/view-unfullscreen-symbolic.svg</file>
 
     <file alias="window.ui">ui/window.ui</file>
     <file alias="shortcuts-dialog.ui">ui/shortcuts-dialog.ui</file>
@@ -60,6 +64,7 @@
     <file alias="playing/control_page.ui">ui/playing/control_page.ui</file>
     <file alias="playing/queue_page.ui">ui/playing/queue_page.ui</file>
     <file alias="playing/lyrics_page.ui">ui/playing/lyrics_page.ui</file>
+    <file alias="playing/popout_window.ui">ui/playing/popout_window.ui</file>
 
     <file alias="pages/home.ui">ui/pages/home.ui</file>
     <file alias="pages/login.ui">ui/pages/login.ui</file>

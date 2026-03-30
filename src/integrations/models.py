@@ -130,4 +130,4 @@ class CurrentSong(GObject.Object):
     songId = GObject.Property(type=str)
     positionSeconds = GObject.Property(type=float, default=0.0)
     playbackMode = GObject.Property(type=str, default="consecutive") # consecutive, # repeat-one # repeat-all
-
+    buttonState = GObject.Property(type=str, default="play") # play, pause (for use in state stacks)

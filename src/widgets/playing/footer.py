@@ -14,12 +14,14 @@ class PlayingFooter(Gtk.Overlay):
     artist_el = Gtk.Template.Child()
     progress_el = Gtk.Template.Child()
     state_stack_el = Gtk.Template.Child()
+    detail_container = Gtk.Template.Child()
 
     def setup(self):
         # Called after login
         integration = get_current_integration()
         integration.connect_to_model('currentSong', 'songId', self.song_changed)
         integration.connect_to_model('currentSong', 'positionSeconds', self.position_changed)
+        integration.connect_to_model('currentSong', 'buttonState', self.state_stack_el.set_visible_child_name)
 
     def song_changed(self, song_id:str):
         integration = get_current_integration()
@@ -54,7 +56,7 @@ class PlayingFooter(Gtk.Overlay):
             gbytes, paintable = integration.getCoverArt(song_id)
             if paintable:
                 GLib.idle_add(self.cover_el.set_from_paintable, paintable)
-                GLib.idle_add(self.cover_el.set_pixel_size, 48)
+                GLib.idle_add(self.cover_el.set_pixel_size, self.cover_el.get_size_request()[0])
             else:
                 GLib.idle_add(self.cover_el.set_from_icon_name, 'music-note-symbolic')
                 GLib.idle_add(self.cover_el.set_pixel_size, -1)

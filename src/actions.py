@@ -125,6 +125,30 @@ def delete_navidrome_server(window):
     dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
     dialog.choose(window, None, response)
 
+def open_popout_window(window):
+    window.get_application().popout_window = Widgets.PopoutWindow(
+        application=window.get_application(),
+        player=window.playing_page.player,
+        queue_list_el=window.queue_page.song_list_el
+    )
+    window.get_application().popout_window.present()
+    window.sheet_status_stack.set_visible_child_name("pop-out")
+    window.main_bottom_sheet.set_open(False)
+
+def close_popout_window(window):
+    if popoutwindow := window.get_application().popout_window:
+        try:
+            popoutwindow.close()
+        except Exception as e: # might fail if already closed
+            print(e)
+            pass
+
+        GLib.idle_add(window.queue_page.replace_list_element, popoutwindow.queue_page.song_list_el)
+        window.sheet_status_stack.set_visible_child_name("content")
+        if len(window.queue_page.song_list_el.get_all_ids()) > 0:
+            window.main_bottom_sheet.set_open(True)
+        window.get_application().popout_window = None
+
 # -- RADIO --
 
 def play_radio(window, model_id:str):

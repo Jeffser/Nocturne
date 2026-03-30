@@ -111,15 +111,18 @@ overlay.album-button:hover image.card {
   );
 }
 
+window.popout-window .sidebar-pane,
 bottom-sheet#main-bottom-sheet sheet .sidebar-pane {
   background: color-mix(in srgb, var(--sidebar-bg-color) 10%, transparent);
 }
 
+window.popout-window.player-blur,
 window.player-blur bottom-sheet#main-bottom-sheet sheet.background {
   backdrop-filter: blur(10px);
   background: color-mix(in srgb, var(--window-bg-color) 85%, transparent);
 }
 
+window.popout-window,
 window.dynamic-accent-bg bottom-sheet#main-bottom-sheet sheet > stack {
   transition: background .2s;
 }
@@ -129,6 +132,7 @@ toast {
 }
 
 @media (prefers-color-scheme: light) {
+  window.popout-window list.boxed-list,
   bottom-sheet#main-bottom-sheet sheet list.boxed-list {
     background-color: rgba(255,255,255,0.2);
   }

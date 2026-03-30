@@ -9,7 +9,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
     extend-content-to-top-edge: true;
 
     [top]
-    Adw.HeaderBar {
+    Adw.HeaderBar header_bar {
       show-title: false;
       show-end-title-buttons: false;
       show-start-title-buttons: false;
@@ -299,6 +299,25 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
             tooltip-text: _("Star");
             action-name: "app.toggle_star";
             action-target: "''";
+          }
+
+          Gtk.Stack pop_status_stack {
+            Gtk.StackPage {
+              name: "popout";
+              child: Gtk.Button {
+                icon-name: "pip-in-symbolic";
+                tooltip-text: _("Open Popout Window");
+                action-name: "app.open_popout_window";
+              };
+            }
+            Gtk.StackPage {
+              name: "popin";
+              child: Gtk.Button {
+                icon-name: "pip-out-symbolic";
+                tooltip-text: _("Close Popout Window");
+                action-name: "app.close_popout_window";
+              };
+            }
           }
 
           Gtk.Button show_sidebar_el {

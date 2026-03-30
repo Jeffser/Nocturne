@@ -25,10 +25,12 @@ template $NocturnePlayingQueuePage: Gtk.ScrolledWindow {
         subtitle: _("Generate a new queue when the current one ends");
       }
 
-      $NocturneSongQueue song_list_el {
-        styles [
-          "p10"
-        ]
+      Adw.Bin list_bin_el {
+        child: $NocturneSongQueue song_list_el {
+          styles [
+            "p10"
+          ]
+        };
       }
     };
   };

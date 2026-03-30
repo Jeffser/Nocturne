@@ -245,13 +245,9 @@ class Player(EventAdapter):
     def handle_new_state(self, state):
         if not self.control_page.is_seeking:
             stack_page_name = 'play' if state in (Gst.State.NULL, Gst.State.READY, Gst.State.PAUSED) else 'pause'
-            # UI
-            self.control_page.state_stack_el.set_visible_child_name(stack_page_name)
+            integration = get_current_integration()
+            integration.loaded_models.get("currentSong").set_property("buttonState", stack_page_name)
             if root := self.control_page.get_root():
-                for dialog in root.get_dialogs():
-                    if isinstance(dialog, LyricsDialog):
-                        dialog.state_stack_el.set_visible_child_name(stack_page_name)
-                root.footer.state_stack_el.set_visible_child_name(stack_page_name)
                 if stack_page_name == 'pause':
                     root.add_css_class('playing')
                 else:

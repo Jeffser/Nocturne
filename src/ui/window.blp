@@ -5,7 +5,6 @@ template $NocturneWindow: Adw.ApplicationWindow {
   title: "Nocturne";
   width-request: 360;
   height-request: 560;
-  hide-on-close: true;
   close-request => $close_request();
   Adw.Breakpoint breakpoint_el {
     condition ("max-width: 480sp")
@@ -96,47 +95,75 @@ template $NocturneWindow: Adw.ApplicationWindow {
 
           bottom-bar: $NocturnePlayingFooter footer {};
 
-          sheet: Adw.NavigationSplitView sheet_split_view {
-            sidebar-width-fraction: 0.5;
-            max-sidebar-width: 320;
+          sheet: Gtk.Stack sheet_status_stack {
+            transition-type: crossfade;
 
-            sidebar: $NocturnePlayingControlPage playing_page {};
-            content: Adw.NavigationPage {
-              title: _("Song Details");
-              child: Adw.ToolbarView {
-                [top]
-                Adw.HeaderBar sheet_header {
-                  show-end-title-buttons: false;
-                  show-start-title-buttons: false;
-                  title-widget: Adw.ViewSwitcher {
-                    stack: sheet_stack;
-                    policy: wide;
+            Gtk.StackPage {
+              name: "content";
+              child: Adw.NavigationSplitView sheet_split_view {
+                sidebar-width-fraction: 0.5;
+                max-sidebar-width: 320;
+
+                sidebar: $NocturnePlayingControlPage playing_page {};
+                content: Adw.NavigationPage {
+                  title: _("Song Details");
+                  child: Adw.ToolbarView {
+                    [top]
+                    Adw.HeaderBar sheet_header {
+                      show-end-title-buttons: false;
+                      show-start-title-buttons: false;
+                      title-widget: Adw.ViewSwitcher {
+                        stack: sheet_stack;
+                        policy: wide;
+                      };
+                    }
+                    [bottom]
+                    Adw.ViewSwitcherBar sheet_switch_bar {
+                      stack: sheet_stack;
+                    }
+
+                    Adw.ViewStack sheet_stack {
+                      enable-transitions: true;
+                      vhomogeneous: true;
+                      hhomogeneous: true;
+                      Adw.ViewStackPage {
+                        name: "queue";
+                        title: _("Queue");
+                        icon-name: "playlist-symbolic";
+                        child: $NocturnePlayingQueuePage queue_page {};
+                      }
+                      Adw.ViewStackPage {
+                        name: "lyrics";
+                        title: _("Lyrics");
+                        icon-name: "text-justify-center-symbolic";
+                        child: $NocturnePlayingLyricsPage lyrics_page {};
+                      }
+                    }
                   };
-                }
-                [bottom]
-                Adw.ViewSwitcherBar sheet_switch_bar {
-                  stack: sheet_stack;
-                }
-
-                Adw.ViewStack sheet_stack {
-                  enable-transitions: true;
-                  vhomogeneous: true;
-                  hhomogeneous: true;
-                  Adw.ViewStackPage {
-                    name: "queue";
-                    title: _("Queue");
-                    icon-name: "playlist-symbolic";
-                    child: $NocturnePlayingQueuePage queue_page {};
-                  }
-                  Adw.ViewStackPage {
-                    name: "lyrics";
-                    title: _("Lyrics");
-                    icon-name: "text-justify-center-symbolic";
-                    child: $NocturnePlayingLyricsPage lyrics_page {};
-                  }
-                }
+                };
               };
-            };
+            }
+
+            Gtk.StackPage {
+              name: "pop-out";
+              child: Adw.StatusPage {
+                icon-name: "pip-in-symbolic";
+                title: _("Player in Popout Window");
+                child: Gtk.Button {
+                  styles [
+                    "suggested-action",
+                    "pill"
+                  ]
+                  halign: center;
+                  action-name: "app.close_popout_window";
+                  tooltip-text: _("Close Popout Window");
+                  child: Adw.ButtonContent {
+                    label: _("Close Popout Window");
+                    icon-name: "pip-out-symbolic";
+                  };
+                };
+              };
+            }
           };
         };
       }

@@ -11,6 +11,7 @@ blueprints = files(
   'ui/playing/control_page.blp',
   'ui/playing/queue_page.blp',
   'ui/playing/lyrics_page.blp',
+  'ui/playing/popout_window.blp',
 
   'ui/pages/home.blp',
   'ui/pages/login.blp',

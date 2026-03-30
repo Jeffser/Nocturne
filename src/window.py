@@ -42,6 +42,7 @@ class NocturneWindow(Adw.ApplicationWindow):
     playing_page = Gtk.Template.Child()
     queue_page = Gtk.Template.Child()
     lyrics_page = Gtk.Template.Child()
+    sheet_status_stack = Gtk.Template.Child()
     main_sidebar = Gtk.Template.Child()
     main_stack = Gtk.Template.Child()
     footer = Gtk.Template.Child()
@@ -108,6 +109,8 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.show_external_file_warning, parameter_type=None)
         self.create_action(actions.update_navidrome_server, parameter_type=None)
         self.create_action(actions.delete_navidrome_server, parameter_type=None)
+        self.create_action(actions.open_popout_window, parameter_type=None)
+        self.create_action(actions.close_popout_window, parameter_type=None)
 
         self.create_action(actions.play_radio)
         self.create_action(actions.add_radio, parameter_type=None)

@@ -13,6 +13,8 @@ from .player import Player
 class PlayingControlPage(Adw.NavigationPage):
     __gtype_name__ = 'NocturnePlayingControlPage'
 
+    pop_status_stack = Gtk.Template.Child()
+    header_bar = Gtk.Template.Child()
     cover_el = Gtk.Template.Child()
     title_el = Gtk.Template.Child()
     radio_homepage_el = Gtk.Template.Child()
@@ -36,13 +38,16 @@ class PlayingControlPage(Adw.NavigationPage):
         super().__init__()
 
         self.is_seeking = False
-        self.player = Player(self)
-        GLib.idle_add(self.setup_sidebar_button_connection)
 
-    def setup(self):
+    def setup(self, player=None):
+        self.player = player
+        if not self.player:
+            self.player = Player(self)
         integration = get_current_integration()
         integration.connect_to_model('currentSong', 'positionSeconds', self.update_position)
+        integration.connect_to_model('currentSong', 'buttonState', self.state_stack_el.set_visible_child_name)
         integration.connect_to_model('currentSong', 'songId', lambda id: threading.Thread(target=self.song_changed, args=(id,)).start())
+        GLib.idle_add(self.setup_sidebar_button_connection)
 
     def update_position(self, positionSeconds:int):
         integration = get_current_integration()
@@ -136,6 +141,11 @@ class PlayingControlPage(Adw.NavigationPage):
             if not playing:
                 bottom_sheet.set_open(False)
             bottom_sheet.set_reveal_bottom_bar(playing)
+        if not playing:
+            if root := self.get_root():
+                if application := root.get_application():
+                    if popout_window := application.popout_window:
+                        popout_window.close()
 
     def update_interface(self, model):
         # to be called from song_changed as idle_add
@@ -204,14 +214,16 @@ class PlayingControlPage(Adw.NavigationPage):
         GLib.idle_add(self.change_bottom_sheet_state, bool(model))
         GLib.idle_add(self.update_interface, model)
         threading.Thread(target=self.update_cover_art).start()
-        integration.loaded_models.get('currentSong').set_property('positionSeconds', 0)
-        self.start_current_song()
+        if song_id != self.last_song_id:
+            integration.loaded_models.get('currentSong').set_property('positionSeconds', 0)
+            self.start_current_song()
 
     def update_palette(self, raw_bytes:bytes):
         img_io = io.BytesIO(raw_bytes)
         palette = ColorThief(img_io).get_palette(quality=10, color_count=2)
         css = f"""
         @media (prefers-color-scheme: dark) {{
+            window.popout-window,
             window.dynamic-accent-bg bottom-sheet#main-bottom-sheet sheet > stack {{
                 background-image: linear-gradient(
                     to bottom right,
@@ -221,6 +233,7 @@ class PlayingControlPage(Adw.NavigationPage):
             }}
         }}
         @media (prefers-color-scheme: light) {{
+            window.popout-window,
             window.dynamic-accent-bg bottom-sheet#main-bottom-sheet sheet > stack {{
                 background-image: linear-gradient(
                     to bottom right,
@@ -234,7 +247,10 @@ class PlayingControlPage(Adw.NavigationPage):
         }}
         """
 
-        GLib.idle_add(self.get_ancestor(Gtk.Stack).get_parent().set_overflow, Gtk.Overflow.HIDDEN)
+        if stack := self.get_ancestor(Gtk.Stack):
+            GLib.idle_add(stack.get_parent().set_overflow, Gtk.Overflow.HIDDEN)
+            if stack2 := stack.get_parent().get_parent():
+                GLib.idle_add(stack2.get_parent().set_overflow, Gtk.Overflow.HIDDEN)
         GLib.idle_add(self.get_root().add_css_class, 'dynamic-accent-bg')
         provider = Gtk.CssProvider()
         provider.load_from_string(css)

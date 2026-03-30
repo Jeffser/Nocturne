@@ -12,6 +12,7 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
     song_list_el = Gtk.Template.Child()
     autoplay_row_el = Gtk.Template.Child()
     autoplay_spinner_el = Gtk.Template.Child()
+    list_bin_el = Gtk.Template.Child()
     generated_queue = [] # Preload the next queue for auto-play
 
     def __init__(self):
@@ -19,6 +20,16 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
 
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         settings.bind('auto-play', self.autoplay_row_el, 'active', Gio.SettingsBindFlags.DEFAULT)
+
+    def replace_list_element(self, list_el:Gtk.Widget):
+        if self.get_root().__gtype_name__ != 'NocturnePopoutWindow':
+            if parent := self.song_list_el.get_parent():
+                parent.set_child(None)
+            self.list_bin_el.set_child(self.song_list_el)
+        else:
+            if parent := list_el.get_parent():
+                parent.set_child(None)
+            self.list_bin_el.set_child(list_el)
 
     def replace_queue(self, songs:list, current_id:str=None):
         integration = get_current_integration()

@@ -1,0 +1,90 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturnePopoutWindow: Adw.ApplicationWindow {
+  title: _("Popout Window");
+  width-request: 360;
+  height-request: 120;
+  default-width: 360;
+  close-request => $close_request();
+  notify::fullscreened => $fullscreen_toggled();
+  styles [
+    "popout-window"
+  ]
+
+  Adw.Breakpoint breakpoint_el {
+    condition ("max-width: 480sp")
+    setters {
+      split_view.collapsed: true;
+      header.title-widget: null;
+      switch_bar.reveal: true;
+    }
+  }
+  Adw.Breakpoint {
+    condition ("max-height: 120sp")
+    setters {
+      main_stack.visible-child-name: "footer";
+    }
+  }
+
+  content: Adw.ToastOverlay toast_overlay{
+    Gtk.Stack main_stack {
+      Gtk.StackPage {
+        name: "content";
+        child: Adw.NavigationSplitView split_view {
+          sidebar-width-fraction: 0.5;
+          max-sidebar-width: 480;
+
+          sidebar: Adw.NavigationPage {
+            title: _("Player");
+            child: Gtk.ScrolledWindow {
+              propagate-natural-width: true;
+              propagate-natural-height: true;
+              child: $NocturnePlayingControlPage playing_page {};
+            };
+          };
+          content: Adw.NavigationPage {
+            title: _("Song Details");
+            child: Adw.ToolbarView {
+              [top]
+              Adw.HeaderBar header {
+                title-widget: Adw.ViewSwitcher {
+                  stack: stack;
+                  policy: wide;
+                };
+              }
+              [bottom]
+              Adw.ViewSwitcherBar switch_bar {
+                stack: stack;
+              }
+
+              Adw.ViewStack stack {
+                enable-transitions: true;
+                vhomogeneous: true;
+                hhomogeneous: true;
+                Adw.ViewStackPage {
+                  name: "queue";
+                  title: _("Queue");
+                  icon-name: "playlist-symbolic";
+                  child: $NocturnePlayingQueuePage queue_page {};
+                }
+                Adw.ViewStackPage {
+                  name: "lyrics";
+                  title: _("Lyrics");
+                  icon-name: "text-justify-center-symbolic";
+                  child: $NocturnePlayingLyricsPage lyrics_page {};
+                }
+              }
+            };
+          };
+        };
+      }
+      Gtk.StackPage {
+        name: "footer";
+        child: Gtk.WindowHandle {
+          child: $NocturnePlayingFooter footer {};
+        };
+      }
+    }
+  };
+}
