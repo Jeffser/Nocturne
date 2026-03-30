@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch Nocturne (Python)",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${env:HOME}/.local/bin/nocturne",
+      "console": "integratedTerminal",
+      "cwd": "${workspaceFolder}",
+      "preLaunchTask": "meson: build and install",
+      "justMyCode": false
+    }
+  ]
+}
