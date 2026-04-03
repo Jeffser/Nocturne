@@ -1,0 +1,77 @@
+using Gtk 4.0;
+
+template $NocturneRatingButton: Gtk.MenuButton {
+  icon-name: "starred-symbolic";
+  tooltip-text: _("Rating");
+  popover: Gtk.Popover {
+    child: Gtk.Box {
+      orientation: horizontal;
+      Gtk.Button rate_0_el {
+        icon-name: "user-trash-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("Clear rating");
+        }
+      }
+      Gtk.Button rate_1_el{
+        icon-name: "non-starred-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("1/5");
+        }
+      }
+      Gtk.Button rate_2_el {
+        icon-name: "non-starred-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("2/5");
+        }
+      }
+      Gtk.Button rate_3_el {
+        icon-name: "non-starred-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("3/5");
+        }
+      }
+      Gtk.Button rate_4_el {
+        icon-name: "non-starred-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("4/5");
+        }
+      }
+      Gtk.Button rate_5_el {
+        icon-name: "non-starred-symbolic";
+        action-name: "app.set_rating";
+        styles [
+          "flat",
+          "circular"
+        ]
+        accessibility {
+          label: _("5/5");
+        }
+      }
+    };
+  };
+}

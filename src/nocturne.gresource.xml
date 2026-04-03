@@ -69,6 +69,8 @@
     <file alias="playing/lyrics_page.ui">ui/playing/lyrics_page.ui</file>
     <file alias="playing/popout_window.ui">ui/playing/popout_window.ui</file>
     <file alias="playing/volume_button.ui">ui/playing/volume_button.ui</file>
+    <file alias="playing/rating_button.ui">ui/playing/rating_button.ui</file>
+
     <file alias="playing/playback_mode_button.ui">ui/playing/playback_mode_button.ui</file>
 
     <file alias="pages/home.ui">ui/pages/home.ui</file>
@@ -108,8 +110,3 @@
     <file alias="lyrics/edit_row.ui">ui/lyrics/edit_row.ui</file>
   </gresource>
 </gresources>
-
-
-
-
-
