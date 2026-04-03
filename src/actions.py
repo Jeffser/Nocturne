@@ -74,12 +74,12 @@ def visit_url(window, url:str):
 
     Gio.AppInfo.launch_default_for_uri(url, None)
 
-def toggle_star(window, model_id:str):
+def toggle_favorite(window, model_id:str):
     integration = get_current_integration()
     if model_id in integration.loaded_models:
         model = integration.loaded_models.get(model_id)
         if model.get_property('starred'):
-            if integration.unstar(model.get_property('id')):
+            if integration.unfavorite(model.get_property('id')):
                 model.set_property('starred', None)
         else:
             if integration.favorite(model.get_property('id')):

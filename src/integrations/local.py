@@ -264,7 +264,7 @@ class Local(Base):
 
         return True
 
-    def unstar(self, id:str) -> bool:
+    def unfavorite(self, id:str) -> bool:
         STARFILE = os.path.join(LOCAL_DATA_DIR, 'stars.json')
 
         try:

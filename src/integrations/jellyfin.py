@@ -458,7 +458,7 @@ class Jellyfin(Base):
         )
         return response.get('IsFavorite', False)
 
-    def unstar(self, id:str) -> bool:
+    def unfavorite(self, id:str) -> bool:
         response = self.make_request(
             action='Users/{userId}/FavoriteItems/{id}',
             action_keys={"id": id},

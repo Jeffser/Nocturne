@@ -130,9 +130,9 @@ class Base(GObject.Object):
         print('WARNING', 'star', 'not implemented')
         return False
 
-    def unstar(self, id:str) -> bool:
-        # unstars an element, should return True if change is done
-        print('WARNING', 'unstar', 'not implemented')
+    def unfavorite(self, id:str) -> bool:
+        # unfavorites an element, should return True if change is done
+        print('WARNING', 'unfavorite', 'not implemented')
         return False
 
     def getPlayQueue(self) -> tuple:

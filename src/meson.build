@@ -13,6 +13,7 @@ blueprints = files(
   'ui/playing/lyrics_page.blp',
   'ui/playing/popout_window.blp',
   'ui/playing/volume_button.blp',
+  'ui/playing/rating_button.blp',
   'ui/playing/playback_mode_button.blp',
 
   'ui/pages/home.blp',

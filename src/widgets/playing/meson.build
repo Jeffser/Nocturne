@@ -9,6 +9,7 @@ widgets = [
   'player.py',
   'popout_window.py',
   'volume_button.py',
+  'rating_button.py',
   'playback_mode_button.py',
 ]
 

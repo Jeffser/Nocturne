@@ -267,8 +267,8 @@ class Navidrome(Base):
         response = self.make_request('star', {'id': id})
         return response.get('status') == 'ok'
 
-    def unstar(self, id:str) -> bool:
-        response = self.make_request('unstar', {'id': id})
+    def unfavorite(self, id:str) -> bool:
+        response = self.make_request('unfavorite', {'id': id})
         return response.get('status') == 'ok'
 
     def getPlayQueue(self) -> tuple:

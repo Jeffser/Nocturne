@@ -131,7 +131,7 @@ class NocturneWindow(Adw.ApplicationWindow):
 
         self.create_action(actions.replace_root_page)
         self.create_action(actions.visit_url)
-        self.create_action(actions.toggle_star)
+        self.create_action(actions.toggle_favorite)
         self.create_action(actions.logout, parameter_type=None)
         self.create_action(actions.show_external_file_warning, parameter_type=None)
         self.create_action(actions.update_navidrome_server, parameter_type=None)

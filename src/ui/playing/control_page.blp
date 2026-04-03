@@ -229,10 +229,12 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
 
               $NocturneVolumeButton {}
 
+              $NocturneRatingButton rating_button_el {}
+
               Gtk.Button favorite_el {
                 icon-name: "heart-outline-thick-symbolic";
                 tooltip-text: _("Star");
-                action-name: "app.toggle_star";
+                action-name: "app.toggle_favorite";
                 action-target: "''";
               }
 

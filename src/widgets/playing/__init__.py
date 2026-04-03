@@ -8,3 +8,4 @@ from .player import Player
 from .popout_window import PopoutWindow
 from .volume_button import VolumeButton
 from .playback_mode_button import PlaybackModeButton
+from .rating_button import RatingButton
