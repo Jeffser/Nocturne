@@ -241,12 +241,12 @@ class PlayingControlPage(Adw.NavigationPage):
     def update_starred(self, starred:bool):
         if starred:
             self.star_el.add_css_class('accent')
-            self.star_el.set_icon_name('starred-symbolic')
-            self.star_el.set_tooltip_text(_('Starred'))
+            self.star_el.set_icon_name('heart-filled-symbolic')
+            self.star_el.set_tooltip_text(_('Favorited'))
         else:
             self.star_el.remove_css_class('accent')
-            self.star_el.set_icon_name('non-starred-symbolic')
-            self.star_el.set_tooltip_text(_('Star'))
+            self.star_el.set_icon_name('heart-outline-thick-symbolic')
+            self.star_el.set_tooltip_text(_('Favorite'))
 
     def start_current_song(self):
         integration = get_current_integration()

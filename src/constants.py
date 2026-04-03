@@ -207,8 +207,8 @@ SIDEBAR_MENU = [
                 'page-type': 'random'
             },
             { # Item
-                'title': _("Starred"),
-                'icon-name': "starred-symbolic",
+                'title': _("Favorited"),
+                'icon-name': "heart-filled-symbolic",
                 'page-tag': 'albums',
                 'page-type': 'starred'
             },
