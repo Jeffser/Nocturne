@@ -11,6 +11,8 @@
     <file alias="icons/scalable/status/non-starred-symbolic.svg">icons/non-starred-symbolic.svg</file>
     <file alias="icons/scalable/status/playlist-shuffle-symbolic.svg">icons/playlist-shuffle-symbolic.svg</file>
     <file alias="icons/scalable/status/starred-symbolic.svg">icons/starred-symbolic.svg</file>
+    <file alias="icons/scalable/status/heart-filled-symbolic.svg">icons/heart-filled-symbolic.svg</file>
+    <file alias="icons/scalable/status/heart-outline-thick-symbolic.svg">icons/heart-outline-thick-symbolic.svg</file>
     <file alias="icons/scalable/status/sound-symbolic.svg">icons/sound-symbolic.svg</file>
     <file alias="icons/scalable/status/view-more-symbolic.svg">icons/view-more-symbolic.svg</file>
     <file alias="icons/scalable/status/playlist-symbolic.svg">icons/playlist-symbolic.svg</file>
@@ -106,8 +108,3 @@
     <file alias="lyrics/edit_row.ui">ui/lyrics/edit_row.ui</file>
   </gresource>
 </gresources>
-
-
-
-
-
