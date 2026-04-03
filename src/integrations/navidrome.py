@@ -263,7 +263,7 @@ class Navidrome(Base):
 
         threading.Thread(target=self.getCoverArt, args=(id,)).start()
 
-    def star(self, id:str) -> bool:
+    def favorite(self, id:str) -> bool:
         response = self.make_request('star', {'id': id})
         return response.get('status') == 'ok'
 

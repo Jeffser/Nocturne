@@ -16,7 +16,7 @@ class AlbumPage(Adw.NavigationPage):
     cover_el = Gtk.Template.Child()
     name_el = Gtk.Template.Child()
     artist_el = Gtk.Template.Child()
-    star_el = Gtk.Template.Child()
+    favorite_el = Gtk.Template.Child()
     song_list_el = Gtk.Template.Child()
 
     context_wrap_el = Gtk.Template.Child()
@@ -30,7 +30,7 @@ class AlbumPage(Adw.NavigationPage):
         )
         self.song_list_el.set_header(_("Songs"), "music-note-symbolic")
 
-        self.star_el.set_action_target_value(GLib.Variant.new_string(self.id))
+        self.favorite_el.set_action_target_value(GLib.Variant.new_string(self.id))
         context_buttons = get_context_buttons_list(CONTEXT_ALBUM, self.id)
         for btn in context_buttons:
             self.context_wrap_el.append(btn)
@@ -99,13 +99,13 @@ class AlbumPage(Adw.NavigationPage):
 
     def update_starred(self, starred:bool):
         if starred:
-            self.star_el.add_css_class('accent')
-            self.star_el.set_icon_name('heart-filled-symbolic')
-            self.star_el.set_tooltip_text(_('Favorited'))
+            self.favorite_el.add_css_class('accent')
+            self.favorite_el.set_icon_name('heart-filled-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorited'))
         else:
-            self.star_el.remove_css_class('accent')
-            self.star_el.set_icon_name('heart-outline-thick-symbolic')
-            self.star_el.set_tooltip_text(_('Favorite'))
+            self.favorite_el.remove_css_class('accent')
+            self.favorite_el.set_icon_name('heart-outline-thick-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorite'))
 
     def update_song_list(self, song_list:list):
         self.song_list_el.list_el.remove_all()

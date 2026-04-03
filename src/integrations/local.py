@@ -245,7 +245,7 @@ class Local(Base):
 
         threading.Thread(target=self.getCoverArt, args=(id,)).start()
 
-    def star(self, id:str) -> bool:
+    def favorite(self, id:str) -> bool:
         STARFILE = os.path.join(LOCAL_DATA_DIR, 'stars.json')
 
         try:

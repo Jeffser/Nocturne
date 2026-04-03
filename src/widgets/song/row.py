@@ -18,7 +18,7 @@ class SongRow(Adw.ActionRow):
     artist_container_el = Gtk.Template.Child()
     external_file_el = Gtk.Template.Child()
     suffixes_stack_el = Gtk.Template.Child()
-    star_el = Gtk.Template.Child()
+    favorite_el = Gtk.Template.Child()
     check_el = Gtk.Template.Child()
     menu_button_el = Gtk.Template.Child()
 
@@ -32,7 +32,7 @@ class SongRow(Adw.ActionRow):
             action_target=GLib.Variant.new_string(self.id)
         )
 
-        self.star_el.set_action_target_value(GLib.Variant.new_string(self.id))
+        self.favorite_el.set_action_target_value(GLib.Variant.new_string(self.id))
 
         integration.connect_to_model(self.id, 'title', self.update_title)
         integration.connect_to_model(self.id, 'artists', self.update_artists)
@@ -51,7 +51,7 @@ class SongRow(Adw.ActionRow):
 
     def update_is_external(self, isExternalFile:bool):
         self.external_file_el.set_visible(isExternalFile)
-        self.star_el.set_visible(not isExternalFile)
+        self.favorite_el.set_visible(not isExternalFile)
 
     def generate_context_menu(self) -> ContextContainer:
         integration = get_current_integration()
@@ -135,13 +135,13 @@ class SongRow(Adw.ActionRow):
 
     def update_starred(self, starred:bool):
         if starred:
-            self.star_el.add_css_class('accent')
-            self.star_el.set_icon_name('heart-filled-symbolic')
-            self.star_el.set_tooltip_text(_('Favorited'))
+            self.favorite_el.add_css_class('accent')
+            self.favorite_el.set_icon_name('heart-filled-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorited'))
         else:
-            self.star_el.remove_css_class('accent')
-            self.star_el.set_icon_name('heart-outline-thick-symbolic')
-            self.star_el.set_tooltip_text(_('Favorite'))
+            self.favorite_el.remove_css_class('accent')
+            self.favorite_el.set_icon_name('heart-outline-thick-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorite'))
 
     def update_streamUrl(self, streamUrl:str):
         if not streamUrl:

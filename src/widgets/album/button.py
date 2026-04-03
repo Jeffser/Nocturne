@@ -11,7 +11,7 @@ class AlbumButton(Gtk.Box):
     __gtype_name__ = 'NocturneAlbumButton'
 
     play_el = Gtk.Template.Child()
-    star_el = Gtk.Template.Child()
+    favorite_el = Gtk.Template.Child()
     cover_button_el = Gtk.Template.Child()
     cover_el = Gtk.Template.Child()
     name_el = Gtk.Template.Child()
@@ -25,7 +25,7 @@ class AlbumButton(Gtk.Box):
 
         self.play_el.set_action_target_value(GLib.Variant.new_string(self.id))
         self.cover_button_el.set_action_target_value(GLib.Variant.new_string(self.id))
-        self.star_el.set_action_target_value(GLib.Variant.new_string(self.id))
+        self.favorite_el.set_action_target_value(GLib.Variant.new_string(self.id))
         self.name_el.set_action_target_value(GLib.Variant.new_string(self.id))
 
         integration.connect_to_model(self.id, 'name', self.update_name)
@@ -56,13 +56,13 @@ class AlbumButton(Gtk.Box):
 
     def update_starred(self, starred:bool):
         if starred:
-            self.star_el.add_css_class('accent')
-            self.star_el.set_icon_name('heart-filled-symbolic')
-            self.star_el.set_tooltip_text(_('Favorited'))
+            self.favorite_el.add_css_class('accent')
+            self.favorite_el.set_icon_name('heart-filled-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorited'))
         else:
-            self.star_el.remove_css_class('accent')
-            self.star_el.set_icon_name('heart-outline-thick-symbolic')
-            self.star_el.set_tooltip_text(_('Favorite'))
+            self.favorite_el.remove_css_class('accent')
+            self.favorite_el.set_icon_name('heart-outline-thick-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorite'))
 
     @Gtk.Template.Callback()
     def show_popover_image(self, *args):

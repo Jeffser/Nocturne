@@ -450,7 +450,7 @@ class Jellyfin(Base):
 
         threading.Thread(target=self.getCoverArt, args=(id,)).start()
 
-    def star(self, id:str) -> bool:
+    def favorite(self, id:str) -> bool:
         response = self.make_request(
             action='Users/{userId}/FavoriteItems/{id}',
             action_keys={"id": id},

@@ -23,13 +23,13 @@ class PlayingControlPage(Adw.NavigationPage):
     progress_el = Gtk.Template.Child()
     positive_progress_el = Gtk.Template.Child()
     negative_progress_el = Gtk.Template.Child()
-    star_el = Gtk.Template.Child()
+    favorite_el = Gtk.Template.Child()
     show_sidebar_el = Gtk.Template.Child()
     state_stack_el = Gtk.Template.Child()
     pause_next_change = False
 
     def __init__(self):
-        # Used to disconnect star_el when song changes
+        # Used to disconnect favorite_el when song changes
         self.starred_connection = None
         self.last_song_id = None
         super().__init__()
@@ -153,13 +153,13 @@ class PlayingControlPage(Adw.NavigationPage):
         self.progress_el.set_visible(not model.get_property('isRadio'))
 
         # Star
-        self.star_el.set_visible(not model.get_property('isRadio'))
+        self.favorite_el.set_visible(not model.get_property('isRadio'))
 
         # Star Connection
         if self.last_song_id and self.starred_connection:
             integration.loaded_models.get(self.last_song_id).disconnect(self.starred_connection)
 
-        self.star_el.set_action_target_value(GLib.Variant.new_string(model.id))
+        self.favorite_el.set_action_target_value(GLib.Variant.new_string(model.id))
         self.starred_connection = integration.connect_to_model(model.id, 'starred', self.update_starred)
         self.last_song_id = model.id
 
@@ -240,13 +240,13 @@ class PlayingControlPage(Adw.NavigationPage):
 
     def update_starred(self, starred:bool):
         if starred:
-            self.star_el.add_css_class('accent')
-            self.star_el.set_icon_name('heart-filled-symbolic')
-            self.star_el.set_tooltip_text(_('Favorited'))
+            self.favorite_el.add_css_class('accent')
+            self.favorite_el.set_icon_name('heart-filled-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorited'))
         else:
-            self.star_el.remove_css_class('accent')
-            self.star_el.set_icon_name('heart-outline-thick-symbolic')
-            self.star_el.set_tooltip_text(_('Favorite'))
+            self.favorite_el.remove_css_class('accent')
+            self.favorite_el.set_icon_name('heart-outline-thick-symbolic')
+            self.favorite_el.set_tooltip_text(_('Favorite'))
 
     def start_current_song(self):
         integration = get_current_integration()
