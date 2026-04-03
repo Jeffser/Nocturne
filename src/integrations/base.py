@@ -125,7 +125,7 @@ class Base(GObject.Object):
         # verifies that element is fully loaded with all it's metadata, should also call for getCoverArt or getRadioCoverArt
         print('WARNING', 'verifySong', 'not implemented')
 
-    def favorite(self, id:str) -> bool:
+    def star(self, id:str) -> bool:
         # stars an element, should return True if change is done
         print('WARNING', 'star', 'not implemented')
         return False

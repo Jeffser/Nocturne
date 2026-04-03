@@ -90,14 +90,14 @@ template $NocturneArtistPage: Adw.NavigationPage {
                 line-spacing: 10;
                 child-spacing: 10;
 
-                Gtk.Button favorite_el {
+                Gtk.Button star_el {
                   styles [
                     "circular"
                   ]
                   child: Adw.Spinner {};
                   action-name: "app.toggle_favorite";
                   accessibility {
-                    label: _("Toggle favorite");
+                    label: _("Toggle star");
                   }
                 }
               }

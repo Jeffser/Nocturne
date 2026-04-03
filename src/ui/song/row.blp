@@ -99,7 +99,7 @@ template $NocturneSongRow: Adw.ActionRow {
           orientation: horizontal;
           spacing: 10;
 
-          Gtk.Button favorite_el {
+          Gtk.Button star_el {
             styles [
               "circular",
             ]
@@ -108,7 +108,7 @@ template $NocturneSongRow: Adw.ActionRow {
             action-name: "app.toggle_favorite";
             valign: center;
             accessibility {
-              label: _("Toggle favorite");
+              label: _("Toggle star");
             }
           }
 

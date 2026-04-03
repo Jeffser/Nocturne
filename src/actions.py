@@ -82,7 +82,7 @@ def toggle_favorite(window, model_id:str):
             if integration.unfavorite(model.get_property('id')):
                 model.set_property('starred', None)
         else:
-            if integration.favorite(model.get_property('id')):
+            if integration.star(model.get_property('id')):
                 model.set_property('starred', datetime.now(UTC).isoformat(timespec='microseconds').replace('+00:00', 'Z'))
 
 def logout(window):

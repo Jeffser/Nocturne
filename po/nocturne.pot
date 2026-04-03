@@ -331,7 +331,7 @@ msgstr ""
 #: src/constants.py:210 src/widgets/album/button.py:61
 #: src/widgets/album/page.py:104 src/widgets/artist/page.py:98
 #: src/widgets/playing/control_page.py:245 src/widgets/song/row.py:140
-msgid "favorited"
+msgid "Starred"
 msgstr ""
 
 #. Item
@@ -489,7 +489,7 @@ msgstr ""
 
 #: src/ui/album/button.blp:44 src/ui/album/page.blp:101
 #: src/ui/artist/page.blp:100 src/ui/song/row.blp:111
-msgid "Toggle favorite"
+msgid "Toggle star"
 msgstr ""
 
 #: src/ui/album/button.blp:58 src/ui/playing/control_page.blp:111
