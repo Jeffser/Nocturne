@@ -215,19 +215,23 @@ class Local(Base):
             self.loaded_models.get(id).update_data(**song)
 
             # Making Album Model
-            if song.get('albumId'):
-                if song.get('albumId') in self.loaded_models:
-                    if {'id': id} not in self.loaded_models.get(song.get('albumId')).get_property('song'):
-                        self.loaded_models.get(song.get('albumId')).song.append({'id': id})
+            album_id = song.get('albumId')
+            if not album_id:
+                album_id = 'ALBUM:NO_ALBUM:{}'.format(song.get('artists')[0].get('id'))
+
+            if album_id:
+                if album_id in self.loaded_models:
+                    if {'id': id} not in self.loaded_models.get(album_id).get_property('song'):
+                        self.loaded_models.get(album_id).song.append({'id': id})
                 else:
                     album = {
-                        'id': song.get('albumId'),
+                        'id': album_id,
                         'path': song.get('path'),
-                        'name': song.get('album'),
+                        'name': song.get('album') or _("No Album"),
                         'artist': song.get('artist'),
                         'artistId': song.get('artistId'),
                         'song': [{'id': id}],
-                        'starred': song.get('albumId') in star_dict
+                        'starred': album_id in star_dict
                     }
                     self.loaded_models[album.get('id')] = models.Album(**album)
 
@@ -247,8 +251,8 @@ class Local(Base):
 
                     # Add album
                     album_list = self.loaded_models.get(a_dict.get('id')).album
-                    if song.get('albumId') and not any([album.get('id') == song.get('albumId') for album in album_list]):
-                        self.loaded_models.get(a_dict.get('id')).album.append({'id': song.get('albumId')})
+                    if album_id and not any([album.get('id') == album_id for album in album_list]):
+                        self.loaded_models.get(a_dict.get('id')).album.append({'id': album_id})
                         self.loaded_models.get(a_dict.get('id')).albumCount += 1
 
         if force_update or not self.loaded_models.get(id).get_property('title'):
