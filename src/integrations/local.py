@@ -247,7 +247,7 @@ class Local(Base):
 
                     # Add album
                     album_list = self.loaded_models.get(a_dict.get('id')).album
-                    if not any([album.get('id') == song.get('albumId') for album in album_list]):
+                    if song.get('albumId') and not any([album.get('id') == song.get('albumId') for album in album_list]):
                         self.loaded_models.get(a_dict.get('id')).album.append({'id': song.get('albumId')})
                         self.loaded_models.get(a_dict.get('id')).albumCount += 1
 
