@@ -210,5 +210,8 @@ window.popout-window.big-mode .fullscreen-bottom-bar {
 
 button.lyrics_go_back_overlay_button {
   margin: 10px;
+  background: rgba(255, 255, 255, 0.15);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 7px rgba(0, 0, 0, 0.2);
 }
 
