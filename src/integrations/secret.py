@@ -48,7 +48,7 @@ def get_hashed_password(schema_type:str="password") -> tuple:
     salt = ''.join(secrets.choice(string.ascii_letters + string.digits) for _ in range(8))
     salted_password = get_plain_password(schema_type) + salt
 
-    hashed_password = hashlib.md5(salted_password.encode('utf-8')).hexdigest()
+    hashed_password = hashlib.sha256(salted_password.encode('utf-8')).hexdigest()
 
     return salt, hashed_password
 
