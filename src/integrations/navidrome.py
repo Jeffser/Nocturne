@@ -69,8 +69,9 @@ class Navidrome(Base):
 
     def get_stream_url(self, song_id:str) -> str:
         # streams are handled by gst not requests
-        if song_id not in self.loaded_models:
-            self.verifySong(song_id, use_threading=False)
+        model = self.loaded_models.get(song_id)
+        if not model or (model.get_property('artistId') and not model.get_property('artists')):
+            self.verifySong(song_id, force_update=True, use_threading=False)
         model = self.loaded_models.get(song_id)
 
         if radioStreamUrl := model.get_property('radioStreamUrl'):
