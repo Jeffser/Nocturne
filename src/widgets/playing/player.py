@@ -234,7 +234,7 @@ class Player(EventAdapter):
         self.gst.set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
         self.gst.connect("video-changed", self.video_changed)
 
-        self.bin = Gst.Bin.new("audio-filter-bin")
+        self.bin = Gst.Bin.new("audio-sink-bin")
 
         # Equalizer
         self.equalizer = Gst.ElementFactory.make("equalizer-nbands", "equalizer")
@@ -271,22 +271,34 @@ class Player(EventAdapter):
         self.spectrum.set_property("multi-channel", True)
         self.spectrum.set_property("interval", 50000000)
 
+        # Volume autoaudiosink elements
+        self.volume = Gst.ElementFactory.make("volume", "volume")
+        self.autoaudiosink = Gst.ElementFactory.make("autoaudiosink", "autoaudiosink")
+
+        self.volume.set_property("volume", volume)
+        self.volume.set_property("mute", False)
+
+        self.bin.add(self.volume)
+        self.bin.add(self.autoaudiosink)
+
         # Links
         self.equalizer.link(self.rg_volume)
         self.rg_volume.link(self.rg_limiter)
         self.rg_limiter.link(self.spectrum)
+        self.spectrum.link(self.volume)
+        self.volume.link(self.autoaudiosink)
 
+        # Bin consumes the output
         sink_pad = Gst.GhostPad.new("sink", self.equalizer.get_static_pad("sink"))
-        src_pad = Gst.GhostPad.new("src", self.spectrum.get_static_pad("src"))
         self.bin.add_pad(sink_pad)
-        self.bin.add_pad(src_pad)
-        self.gst.set_property("audio-filter", self.bin)
+
+        self.gst.set_property("audio-sink", self.bin)
         self.gst.set_property("buffer-duration", 5 * Gst.SECOND)
         self.gst.set_property("buffer-size", 10 * 1024 * 1024) # 10MB I think
 
         self.updating_volume = False
         self.settings.connect("changed::volume", self.settings_volume_changed)
-        self.gst.connect("notify::volume", self.gst_volume_changed)
+
 
         self.bus = self.gst.get_bus()
         self.bus.add_signal_watch()
@@ -321,7 +333,7 @@ class Player(EventAdapter):
             self.updating_volume = True
             try:
                 value = settings.get_value(key).unpack() ** 3
-                self.gst.set_property('volume', value)
+                self.volume.set_property('volume', value)
             finally:
                 self.updating_volume = False
 
