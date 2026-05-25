@@ -124,10 +124,10 @@ class PlayerAdapter(MprisAdapter):
         return False
 
     def get_volume(self) -> Volume:
-        return Volume(self.player.gst.get_property("volume"))
+        return Volume(self.player.volume.get_property("volume"))
 
     def is_mute(self) -> bool:
-        return self.player.gst.get_property("volume") == 0
+        return self.player.volume.get_property("volume") == 0
 
     def is_playlist(self) -> bool:
         # Again, the queue is what it is, I'm not sure if I can get this info
