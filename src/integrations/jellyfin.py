@@ -155,36 +155,41 @@ class Jellyfin(Base):
             if not big and model.get_property('gdkPaintable') is not None:
                 return model.get_property('gdkPaintable')
 
-            params = {
-                'maxWidth': 720 if big else 240,
-                'quality': 90
-            }
-            try:
-                response = self.session.get(
-                    self.get_url('Items/{id}/Images/Primary', id=model_id),
-                    headers=self.get_base_header(),
-                    params=params,
-                    verify=not self.get_property('trustServer'),
-                    timeout=10
-                )
-                # Treat non-200 responses as empty content to avoid
-                # propagating network-related exceptions up and into the UI thread
-                response.raise_for_status()
-                response_bytes = response.content
-            except Exception as e:
-                response_bytes = b''
-                logger.error(f"can't get image from {model_id}: {e}")
-
-            if response_bytes and len(response_bytes) > 0:
-                try:
-                    gbytes = GLib.Bytes.new(response_bytes)
-                    texture = Gdk.Texture.new_from_bytes(gbytes)
-                    if big:
-                        return texture
-                    model.set_property('gdkPaintable', texture)
+            with self.cover_art_semaphore:
+                # Re-check, another thread might have loaded it while waiting
+                if not big and model.get_property('gdkPaintable') is not None:
                     return model.get_property('gdkPaintable')
+
+                params = {
+                    'maxWidth': 720 if big else 240,
+                    'quality': 90
+                }
+                try:
+                    response = self.session.get(
+                        self.get_url('Items/{id}/Images/Primary', id=model_id),
+                        headers=self.get_base_header(),
+                        params=params,
+                        verify=not self.get_property('trustServer'),
+                        timeout=10
+                    )
+                    # Treat non-200 responses as empty content to avoid
+                    # propagating network-related exceptions up and into the UI thread
+                    response.raise_for_status()
+                    response_bytes = response.content
                 except Exception as e:
-                    logger.error(f"can't convert image from {model_id}: {e}")
+                    response_bytes = b''
+                    logger.error(f"can't get image from {model_id}: {e}")
+
+                if response_bytes and len(response_bytes) > 0:
+                    try:
+                        gbytes = GLib.Bytes.new(response_bytes)
+                        texture = Gdk.Texture.new_from_bytes(gbytes)
+                        if big:
+                            return texture
+                        model.set_property('gdkPaintable', texture)
+                        return model.get_property('gdkPaintable')
+                    except Exception as e:
+                        logger.error(f"can't convert image from {model_id}: {e}")
         return None
 
     def getCoverArtUrl(self, model_id:str='', big:bool=False) -> str:
@@ -366,19 +371,21 @@ class Jellyfin(Base):
         return id_list
 
     def getStarredSongs(self) -> list:
-        song_list = []
+        # The list request already returns full metadata for every song,
+        # load it into the models so searching and displaying doesn't need
+        # per song requests
         songs = self.make_request(
             action="Users/{userId}/Items",
             mode="GET",
             params={
                 "IncludeItemTypes": "Audio",
                 "Recursive": "true",
-                "Fields": "Id",
+                "Fields": "ArtistItems,AlbumId,RunTimeTicks,UserData,IndexNumber,ParentIndexNumber",
                 "Filters": "IsFavorite"
             }
         ).get("Items", [])
 
-        return [song.get("Id") for song in songs]
+        return [song_id for song in songs if (song_id := self.load_song_dict(song))]
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         def run():
@@ -520,6 +527,33 @@ class Jellyfin(Base):
 
         threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
 
+    def load_song_dict(self, song:dict) -> str:
+        # Creates or updates a Song model from an API item dict, returns the model id
+        model_id = song.get("Id", "")
+        if not model_id:
+            return ''
+        data = dict(
+            id=model_id,
+            title=song.get("Name"),
+            album=song.get("Album"),
+            albumId=song.get("AlbumId"),
+            artist=song.get("AlbumArtist"),
+            artistId=(song.get("ArtistItems") or [{}])[0].get("Id"),
+            duration=int(song.get("RunTimeTicks", 0) / 10000000),
+            artists=[{"id": art.get("Id"), "name": art.get("Name")} for art in song.get("ArtistItems", [])],
+            starred=song.get("UserData", {}).get("IsFavorite", False),
+            track=song.get("IndexNumber") or 0,
+            discNumber=song.get("ParentIndexNumber") or 0,
+            albumGain=song.get("AlbumNormalizationGain", song.get("NormalizationGain")) or 0.0,
+            trackGain=song.get("NormalizationGain") or 0.0,
+            userRating=self.get_rating(model_id)
+        )
+        if model_id in self.loaded_models:
+            self.loaded_models.get(model_id).update_data(**data)
+        else:
+            self.loaded_models[model_id] = models.Song(**data)
+        return model_id
+
     def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         def run():
             params = {
@@ -533,23 +567,7 @@ class Jellyfin(Base):
             )
 
             if song.get("Id"):
-                duration = int(song.get("RunTimeTicks", 0) / 10000000)
-                self.loaded_models.get(model_id).update_data(
-                    id=song.get("Id"),
-                    title=song.get("Name"),
-                    album=song.get("Album"),
-                    albumId=song.get("AlbumId"),
-                    artist=song.get("AlbumArtist"),
-                    artistId=(song.get("ArtistItems") or [{}])[0].get("Id"),
-                    duration=duration,
-                    artists=[{"id": art.get("Id"), "name": art.get("Name")} for art in song.get("ArtistItems", [])],
-                    starred=song.get("UserData", {}).get("IsFavorite", False),
-                    track=song.get("IndexNumber") or 0,
-                    discNumber=song.get("ParentIndexNumber") or 0,
-                    albumGain=song.get("AlbumNormalizationGain", song.get("NormalizationGain")) or 0.0,
-                    trackGain=song.get("NormalizationGain") or 0.0,
-                    userRating=self.get_rating(model_id)
-                )
+                self.load_song_dict(song)
             elif model_id in self.loaded_models:
                 self.loaded_models.get(model_id).set_property('deleted', True)
                 del self.loaded_models[model_id]
@@ -561,8 +579,6 @@ class Jellyfin(Base):
                 threading.Thread(target=run, daemon=True).start()
             else:
                 run()
-
-        threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
 
     def star(self, model_id:str) -> bool:
         response = self.make_request(

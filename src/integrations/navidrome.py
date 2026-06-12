@@ -95,28 +95,33 @@ class Navidrome(Base):
             if not big and model.get_property('gdkPaintable'):
                 return model.get_property('gdkPaintable')
 
-            params = {
-                **self.get_base_params(),
-                'id': model.get_property('coverArt') or model.get_property('id'),
-                'size': 720 if big else 240
-            }
-            response = self.session.get(
-                self.get_url('getCoverArt'),
-                params=params,
-                verify=not self.get_property('trustServer')
-            )
-            response_bytes = response.content if response.status_code == 200 else b''
-
-            if response_bytes and len(response_bytes) > 0:
-                try:
-                    gbytes = GLib.Bytes.new(response_bytes)
-                    texture = Gdk.Texture.new_from_bytes(gbytes)
-                    if big:
-                        return texture
-                    model.set_property('gdkPaintable', texture)
+            with self.cover_art_semaphore:
+                # Re-check, another thread might have loaded it while waiting
+                if not big and model.get_property('gdkPaintable'):
                     return model.get_property('gdkPaintable')
-                except Exception as e:
-                    logger.error(f"can't convert image from {model_id}: {e}")
+
+                params = {
+                    **self.get_base_params(),
+                    'id': model.get_property('coverArt') or model.get_property('id'),
+                    'size': 720 if big else 240
+                }
+                response = self.session.get(
+                    self.get_url('getCoverArt'),
+                    params=params,
+                    verify=not self.get_property('trustServer')
+                )
+                response_bytes = response.content if response.status_code == 200 else b''
+
+                if response_bytes and len(response_bytes) > 0:
+                    try:
+                        gbytes = GLib.Bytes.new(response_bytes)
+                        texture = Gdk.Texture.new_from_bytes(gbytes)
+                        if big:
+                            return texture
+                        model.set_property('gdkPaintable', texture)
+                        return model.get_property('gdkPaintable')
+                    except Exception as e:
+                        logger.error(f"can't convert image from {model_id}: {e}")
         return None
 
     def getCoverArtUrl(self, model_id:str='', big:bool=False) -> str:
@@ -204,8 +209,10 @@ class Navidrome(Base):
         return playlist_ids
 
     def getStarredSongs(self) -> list:
+        # getStarred2 already returns full song metadata, load it into the
+        # models so searching and displaying doesn't need per song requests
         songs = self.make_request('getStarred2').get('starred2', {}).get('song', [])
-        return [song.get('id') for song in songs]
+        return [song_id for song in songs if (song_id := self.load_song_dict(song))]
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         def update():
@@ -275,19 +282,30 @@ class Navidrome(Base):
 
         threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
 
+    def load_song_dict(self, song_dict:dict) -> str:
+        # Creates or updates a Song model from an API song dict, returns the model id
+        model_id = str(song_dict.get('id', ''))
+        if not model_id:
+            return ''
+        song_dict['id'] = model_id
+        if 'artists' not in song_dict and song_dict.get('artistId'):
+            song_dict['artists'] = [{
+                'id': song_dict.get('artistId'),
+                'name': song_dict.get('artist')
+            }]
+        gains = song_dict.get('replayGain') or {}
+        if model_id in self.loaded_models:
+            self.loaded_models.get(model_id).update_data(**song_dict, albumGain=gains.get('albumGain', 0.0), trackGain=gains.get('trackGain', 0.0))
+        else:
+            self.loaded_models[model_id] = models.Song(**song_dict, albumGain=gains.get('albumGain', 0.0), trackGain=gains.get('trackGain', 0.0))
+        return model_id
+
     def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         def update():
             response = self.make_request('getSong', {'id': model_id})
             song_dict = response.get('song', {})
             if song_dict.get('id'):
-                if 'artists' not in song_dict and song_dict.get('artistId'):
-                    song_dict['artists'] = [{
-                        'id': song_dict.get('artistId'),
-                        'name': song_dict.get('artist')
-                    }]
-                gains = song_dict.get('replayGain') or {}
-                self.loaded_models.get(model_id).update_data(**song_dict, albumGain=gains.get('albumGain', 0.0), trackGain=gains.get('trackGain', 0.0))
-                threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
+                self.load_song_dict(song_dict)
             elif model_id in self.loaded_models:
                 self.loaded_models.get(model_id).set_property('deleted', True)
                 del self.loaded_models[model_id]
@@ -301,8 +319,6 @@ class Navidrome(Base):
                 threading.Thread(target=update, daemon=True).start()
             else:
                 update()
-        else:
-            threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
 
     def star(self, model_id:str) -> bool:
         response = self.make_request('star', {'id': model_id})

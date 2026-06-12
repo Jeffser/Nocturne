@@ -3,7 +3,7 @@
 from gi.repository import GLib, GObject, Gdk
 from . import models, secret, sql_instance
 from ..constants import get_nocturne_version, DEFAULT_MUSIC_DIR, INTEGRATIONS_DIR
-import requests, urllib3, time, os, json
+import requests, urllib3, time, os, json, threading
 from datetime import datetime
 from requests.adapters import HTTPAdapter, Retry
 
@@ -21,6 +21,11 @@ class Base(GObject.Object):
 
     # Always have a currentSong inside loaded_models
     loaded_models = {'currentSong': models.CurrentSong()}
+
+    # Limits concurrent cover art fetches and texture decodes,
+    # Gdk.Texture.new_from_bytes spawns a sandboxed glycin loader process
+    # per decode on newer GTK, spawning hundreds at once can crash the app
+    cover_art_semaphore = threading.BoundedSemaphore(4)
 
     url = GObject.Property(type=str)
     trustServer = GObject.Property(type=bool, default=False)
@@ -135,6 +140,13 @@ class Base(GObject.Object):
         # Returns URL that can be used to get coverArt directly by external services
         # Returns empty string when a url is not available
         return ""
+
+    def requestCoverArt(self, model_id:str=''):
+        # Starts a background cover art fetch unless it's already cached,
+        # called by widgets when they actually need to display the cover
+        model = self.loaded_models.get(model_id)
+        if model and not model.get_property('gdkPaintable'):
+            threading.Thread(target=self.getCoverArt, args=(model_id,), daemon=True).start()
 
     def ping(self) -> dict:
         # return True if logged in and connection is successful

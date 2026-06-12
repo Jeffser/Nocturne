@@ -22,7 +22,7 @@ template $NocturneSongsStarredPage: Adw.NavigationPage {
         }
       }
 
-      title-widget: Gtk.SearchEntry {
+      title-widget: Gtk.SearchEntry search_entry {
         hexpand: true;
         key-capture-widget: main_stack;
         placeholder-text: _("Favorite Songs");
@@ -41,9 +41,10 @@ template $NocturneSongsStarredPage: Adw.NavigationPage {
       }
       Gtk.StackPage {
         name: "content";
-        child: Gtk.ScrolledWindow {
+        child: Gtk.ScrolledWindow scrolledwindow {
           propagate-natural-width: true;
           propagate-natural-height: true;
+          edge-reached => $scroll_edge_reached();
 
           child: Adw.Clamp {
             maximum-size: 2000;
@@ -81,6 +82,26 @@ template $NocturneSongsStarredPage: Adw.NavigationPage {
                     styles [
                       "m10"
                     ]
+                  };
+                }
+              }
+
+              Gtk.Stack end_stack {
+                Gtk.StackPage {
+                  name: "loading";
+                  child: Adw.Spinner {};
+                }
+                Gtk.StackPage {
+                  name: "end";
+                  child: Gtk.Label {
+                    styles [
+                      "dimmed"
+                    ]
+                    label: _("Reached End of List");
+                    halign: center;
+                    wrap: true;
+                    wrap-mode: word_char;
+                    justify: center;
                   };
                 }
               }

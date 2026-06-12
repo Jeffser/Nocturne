@@ -145,29 +145,34 @@ class Local(Base):
             if not coverArtPath:
                 return None
 
-            tag = TinyTag.get(coverArtPath, image=True)
-            if tag is None:
-                return None
+            with self.cover_art_semaphore:
+                # Re-check, another thread might have loaded it while waiting
+                if not big and not isinstance(model, models.Playlist) and model.get_property('gdkPaintable'):
+                    return model.get_property('gdkPaintable')
 
-            image_data = tag.get_image()
-            if not image_data:
-                return None
+                tag = TinyTag.get(coverArtPath, image=True)
+                if tag is None:
+                    return None
 
-            try:
-                img = Image.open(io.BytesIO(image_data))
-                width = 720 if big else 240
-                w_percent = (width / float(img.size[0]))
-                height = int((float(img.size[1]) * float(w_percent)))
-                resized_img = img.resize((width, height), Image.LANCZOS)
-                buffer = io.BytesIO()
-                resized_img.save(buffer, format="JPEG", quality=85)
-                raw_data = buffer.getvalue()
-                gbytes = GLib.Bytes.new(raw_data)
-                texture = Gdk.Texture.new_from_bytes(gbytes)
-                model.set_property('gdkPaintable', texture)
-                return model.get_property('gdkPaintable')
-            except Exception as e:
-                logger.error(f"can't get image from {model_id}: {e}")
+                image_data = tag.get_image()
+                if not image_data:
+                    return None
+
+                try:
+                    img = Image.open(io.BytesIO(image_data))
+                    width = 720 if big else 240
+                    w_percent = (width / float(img.size[0]))
+                    height = int((float(img.size[1]) * float(w_percent)))
+                    resized_img = img.resize((width, height), Image.LANCZOS)
+                    buffer = io.BytesIO()
+                    resized_img.save(buffer, format="JPEG", quality=85)
+                    raw_data = buffer.getvalue()
+                    gbytes = GLib.Bytes.new(raw_data)
+                    texture = Gdk.Texture.new_from_bytes(gbytes)
+                    model.set_property('gdkPaintable', texture)
+                    return model.get_property('gdkPaintable')
+                except Exception as e:
+                    logger.error(f"can't get image from {model_id}: {e}")
         return None
 
     def getCoverArtUrl(self, model_id:str="", big:bool=False) -> str:
@@ -313,8 +318,6 @@ class Local(Base):
             for artist in song.get('artists', []):
                 if artist.get('id'):
                     update_artist(artist.get('id'), artist.get('name'))
-
-            self.getCoverArt(model_id)
 
         # safe check before loading
         song = self.loaded_models.get(model_id)

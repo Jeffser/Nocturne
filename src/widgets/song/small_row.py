@@ -27,6 +27,15 @@ class SongSmallRow(Gtk.Button):
         integration.connect_to_model(self.id, 'gdkPaintable', self.update_cover)
         integration.connect_to_model(self.id, 'deleted', self.delete_status_changed)
 
+        # Only fetch cover art once the widget is actually shown,
+        # 'title' re-triggers in case metadata wasn't loaded yet at map time
+        self.connect('map', self.request_cover)
+        integration.connect_to_model(self.id, 'title', self.request_cover)
+
+    def request_cover(self, *_):
+        if self.get_mapped():
+            get_current_integration().requestCoverArt(self.id)
+
     def delete_status_changed(self, status:bool):
         if status:
             if wrapbox := self.get_ancestor(Adw.WrapBox):
