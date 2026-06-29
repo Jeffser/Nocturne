@@ -148,18 +148,19 @@ class Jellyfin(Base):
                 return radioStreamUrl
             elif model.get_property('isExternalFile'):
                 return 'file://{}'.format(model.get_property('path'))
-        base_url = self.get_url('Audio/{}/stream'.format(song_id))
-        max_bitrate = self.settings.get_value('max-bitrate').unpack()
+        stream_url = self.get_url('Audio/{}/universal?api_key={}&userId={}&deviceId={}'.format(
+            song_id,
+            self.get_property('accessToken'),
+            self.userId,
+            get_device_id()
+        ))
+        max_bitrate = self.settings.get_int('max-bitrate')
         if max_bitrate == 0:
-            return '{}?static=true&api_key={}'.format(
-                base_url,
-                self.get_property('accessToken')
-            )
+            return '{}&static=true'.format(stream_url)
         else:
-            return '{}?static=true&audioBitrate={}&api_key={}'.format(
-                base_url,
-                max_bitrate*1000,
-                self.get_property('accessToken')
+            return '{}&maxStreamingBitrate={}&container=opus&audioCodec=opus&transcodingContainer=ogg&transcodingProtocol=hls'.format(
+                stream_url,
+                max_bitrate*1000
             )
 
     def initiateQuickConnect(self) -> dict:

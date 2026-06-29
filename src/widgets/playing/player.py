@@ -257,7 +257,7 @@ class Player(GObject.Object):
     __gtype_name__ = 'NocturnePlayer'
 
     application = GObject.Property(type=Adw.Application)
-    gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin", "player"))
+    gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin3", "player"))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
