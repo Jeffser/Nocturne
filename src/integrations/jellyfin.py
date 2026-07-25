@@ -3,7 +3,7 @@
 from gi.repository import GLib, GObject, Gdk, Gio
 from . import secret, models, local, sql_instance
 from .base import Base
-from ..constants import DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP
+from ..constants import DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, get_nocturne_version, get_device_id
 import os, platform, logging
 from urllib.parse import urlencode
 
@@ -34,14 +34,16 @@ class Jellyfin(Base):
         }
     }
 
-    AUTH_HEADER = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="1.0.0"'.format(platform.node(), str(abs(hash(platform.node()))))
-
     url = GObject.Property(type=str, default="http://127.0.0.1:8096")
 
     # Loaded by API
     accessToken = GObject.Property(type=str)
     userId = GObject.Property(type=str)
     libraryId = GObject.Property(type=str)
+
+    @property
+    def AUTH_HEADER(self) -> str:
+        return 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), get_nocturne_version())
 
     def get_base_header(self) -> dict:
         headers = {

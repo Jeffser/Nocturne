@@ -1,6 +1,6 @@
 # constants.py
 
-import os, subprocess, json, shutil
+import os, subprocess, json, shutil, uuid
 from tinytag import TinyTag
 
 CLI_ARGUMENTS = {
@@ -219,6 +219,34 @@ DOWNLOAD_MIME_MAP = {
 
 # Fallback only used if the system does not have a keyring
 FALLBACK_PASSWORD_PATH = os.path.join(CONFIG_DIR, 'pass.txt')
+
+# Retrieves device ID or generates a UUID if device ID not found
+# Used for Jellyfin session tracking
+def get_device_id():
+    device_id = None
+    if IN_FLATPAK:
+        try:
+            from pydbus import SessionBus
+            bus = SessionBus()
+            flatpak_portal = bus.get("org.freedesktop.portal.Flatpak", "/org/freedesktop/portal/Flatpak")
+            device_id = flatpak_portal.GetMachineId().strip()
+        except Exception as e:
+            pass
+    else:
+        for path in ["/etc/machine-id", "/var/lib/dbus/machine-id"]:
+            if os.path.exists(path):
+                with open(path, "r") as f:
+                    device_id = f.read().strip()
+    if not device_id: #generate UUID as fallback
+        fallback_path = os.path.join(CONFIG_DIR, "device_id")
+        if os.path.exists(fallback_path):
+            with open(fallback_path, "r") as f:
+                device_id = f.read().strip()
+        else:
+            device_id = str(uuid.uuid4())
+            with open(fallback_path, "w") as f:
+                f.write(device_id)
+    return device_id
 
 BASE_NAVIDROME_DIR = os.path.join(DATA_DIR, "navidrome")
 os.makedirs(BASE_NAVIDROME_DIR, exist_ok=True)
