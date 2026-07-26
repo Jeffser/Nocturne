@@ -591,9 +591,7 @@ class Player(EventAdapter):
         integration.loaded_models.get('currentSong').set_property('displaySongTitle', title)
 
     def update_radioStreamUrl(self, radioStreamUrl:str):
-        if radioStreamUrl:
-            integration = get_current_integration()
-            integration.loaded_models.get('currentSong').set_property('displaySongArtist', urlparse(radioStreamUrl).netloc.capitalize())
+        pass #Maybe add the radio stream URL to the currentSong or something?
 
     def update_artists(self, artists:list):
         integration = get_current_integration()
