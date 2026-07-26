@@ -71,13 +71,27 @@ class PlayerAdapter(MprisAdapter):
             self.last_cover_art['id'] = song.get_property('id')
             self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
 
+        if song.get_property('radioStreamUrl'):
+            if not (title := current_song_model.get_property("displaySongTitle")):
+                title = song.get_property('title')
+            if not (artist := current_song_model.get_property("displaySongArtist")):
+                artist = song.get_property('title')
+            if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
+                artist = urlparse(song.get_property('radioStreamUrl')).netloc
+            artists = [artist]
+            album = song.get_property('title')
+        else:
+            album = song.get_property('album')
+            artists = ([a.get('name') for a in song.get_property('artists')] or [song.get_property('artist')])
+            title = song.get_property('title')
+
         return MetadataObj(
-            album=song.get_property('album'),
+            album=album,
             art_url=self.last_cover_art.get('url'),
-            artists=[urlparse(song.get_property('radioStreamUrl')).netloc] if song.get_property('radioStreamUrl') else ([a.get('name') for a in song.get_property('artists')] or [song.get_property('artist')]),
+            artists=artists,
             as_text=[song.get_property('title')],
             length=song.get_property('duration')*1000000,
-            title=song.get_property('title'),
+            title=title,
             track_id='/com/jeffser/Nocturne/track/{}'.format(song.get_property('id')),
             track_number=0
         )
@@ -490,16 +504,18 @@ class Player(EventAdapter):
             if song_model := integration.loaded_models.get(model.get_property('songId')):
                 if song_model.get_property('radioStreamUrl'): # is radio
                     if tag_list := message.parse_tag():
-                        success, title = tag_list.get_string(Gst.TAG_TITLE)
-                        if success and title and title != 'null':
+                        success_title, title = tag_list.get_string(Gst.TAG_TITLE)
+                        if success_title and title and title != 'null':
                             current_title = model.get_property('displaySongTitle')
                             if current_title != title:
-                                model.set_property('displaySongTitle', title)
-                        success, artist = tag_list.get_string(Gst.TAG_ARTIST)
-                        if success and artist and artist != 'null':
+                                model.set_property('displaySongTitle', title.strip())
+                        success_artist, artist = tag_list.get_string(Gst.TAG_ARTIST)
+                        if success_artist and artist and artist != 'null':
                             current_artist = model.get_property('displaySongArtist')
                             if current_artist != artist:
-                                model.set_property('displaySongArtist', artist)
+                                model.set_property('displaySongArtist', artist.strip())
+                        if success_title or success_artist:
+                            self.emit_changes(self.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def update_stream_progress(self):
         if integration := get_current_integration():
