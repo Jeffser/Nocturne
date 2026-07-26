@@ -485,22 +485,21 @@ class Player(EventAdapter):
                     self.discord_rpc.update()
 
     def handle_message_tag(self, bus, message):
-        if message.src == self.gst:
-            integration = get_current_integration()
-            if model := integration.loaded_models.get('currentSong'):
-                if song_model := integration.loaded_models.get(model.get_property('songId')):
-                    if song_model.get_property('radioStreamUrl'): # is radio
-                        if tag_list := message.parse_tag():
-                            success, title = tag_list.get_string(Gst.TAG_TITLE)
-                            if success and title and title != 'null':
-                                current_title = model.get_property('displaySongTitle')
-                                if current_title != title:
-                                    model.set_property('displaySongTitle', title)
-                            success, artist = tag_list.get_string(Gst.TAG_ARTIST)
-                            if success and artist and artist != 'null':
-                                current_artist = model.get_property('displaySongArtist')
-                                if current_artist != artist:
-                                    model.set_property('displaySongArtist', artist)
+        integration = get_current_integration()
+        if model := integration.loaded_models.get('currentSong'):
+            if song_model := integration.loaded_models.get(model.get_property('songId')):
+                if song_model.get_property('radioStreamUrl'): # is radio
+                    if tag_list := message.parse_tag():
+                        success, title = tag_list.get_string(Gst.TAG_TITLE)
+                        if success and title and title != 'null':
+                            current_title = model.get_property('displaySongTitle')
+                            if current_title != title:
+                                model.set_property('displaySongTitle', title)
+                        success, artist = tag_list.get_string(Gst.TAG_ARTIST)
+                        if success and artist and artist != 'null':
+                            current_artist = model.get_property('displaySongArtist')
+                            if current_artist != artist:
+                                model.set_property('displaySongArtist', artist)
 
     def update_stream_progress(self):
         if integration := get_current_integration():
