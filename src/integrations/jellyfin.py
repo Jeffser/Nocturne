@@ -956,6 +956,7 @@ class Jellyfin(Base):
                 self.loaded_models.get(radio.get("Id")).set_property("radioStreamUrl", raw_url)
 
                 id_list.append(radio.get("Id"))
+                self.threads.submit(self.updateCoverArt, radio.get("Id"))
         return id_list
 
     def createInternetRadioStation(self, name:str, radioStreamUrl:str) -> bool:
