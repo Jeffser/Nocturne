@@ -75,7 +75,7 @@
 	  </key>
 	  <!--### Section: Dynamic Background-->
     <key name="global-dynamic-bg-mode" type="s">
-	    <default>''</default>
+	    <default>'blur'</default>
 	  </key>
 	  <key name="player-dynamic-bg-mode" type="s">
 	    <default>'blur'</default>
