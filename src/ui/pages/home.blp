@@ -49,6 +49,12 @@ template $NocturneHomePage: Adw.NavigationPage {
               orientation: vertical;
               spacing: 10;
 
+              $NocturneCarousel frequent_album_carousel {
+                header-label: _("On Replay");
+                header-icon-name: "playlist-infinite-symbolic";
+                header-page-tag: "albums-all";
+              }
+
               $NocturneWrapbox song_wrapbox {
                 header-label: _("Songs");
                 header-icon-name: "music-note-symbolic";

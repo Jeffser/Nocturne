@@ -267,12 +267,20 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
     Adw.PreferencesGroup {
       title: _("Homepage");
       description: _("Reload homepage to see changes");
+      Adw.SpinRow hp_frequent_albums_el {
+        title: _("Frequent Albums");
+        adjustment: Gtk.Adjustment {
+          lower: 0;
+          upper: 25;
+          step-increment: 1;
+        };
+      }
       Adw.SpinRow hp_songs_el {
         title: _("Songs");
         adjustment: Gtk.Adjustment {
           lower: 0;
           upper: 25;
-          value: 1;
+          step-increment: 1;
         };
       }
       Adw.SpinRow hp_albums_el {
@@ -280,7 +288,7 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
         adjustment: Gtk.Adjustment {
           lower: 0;
           upper: 25;
-          value: 1;
+          step-increment: 1;
         };
       }
       Adw.SpinRow hp_artists_el {
@@ -288,7 +296,7 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
         adjustment: Gtk.Adjustment {
           lower: 0;
           upper: 25;
-          value: 1;
+          step-increment: 1;
         };
       }
       Adw.SpinRow hp_playlists_el {
@@ -296,7 +304,7 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
         adjustment: Gtk.Adjustment {
           lower: 0;
           upper: 25;
-          value: 1;
+          step-increment: 1;
         };
       }
     }

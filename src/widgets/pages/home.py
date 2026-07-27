@@ -18,6 +18,7 @@ class HomePage(Adw.NavigationPage):
     search_entry = Gtk.Template.Child()
     main_stack = Gtk.Template.Child()
     main_clamp = Gtk.Template.Child()
+    frequent_album_carousel = Gtk.Template.Child()
     song_wrapbox = Gtk.Template.Child()
     album_carousel = Gtk.Template.Child()
     artist_carousel = Gtk.Template.Child()
@@ -27,6 +28,7 @@ class HomePage(Adw.NavigationPage):
         super().__init__()
 
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
         self.max_songs = self.settings.get_value('n-songs-home').unpack()
         self.max_albums = self.settings.get_value('n-albums-home').unpack()
         self.max_artists = self.settings.get_value('n-artists-home').unpack()
@@ -43,11 +45,13 @@ class HomePage(Adw.NavigationPage):
 
     def get_default_results(self) -> dict:
         if integration := get_current_integration():
+            frequent_albums = integration.getAlbumList(list_type="frequent", size=self.max_frequent_albums) if self.max_frequent_albums > 0 else []
             songs = integration.getRandomSongs(size=self.max_songs) if self.max_songs > 0 else []
             albums = integration.getAlbumList(list_type="random", size=self.max_albums) if self.max_albums > 0 else []
             artists = integration.getArtists(size=self.max_artists) if self.max_artists > 0 else []
             playlists = integration.getPlaylists()[:self.max_playlists]
             return {
+                'frequent-album': frequent_albums,
                 'song': songs,
                 'album': albums,
                 'artist': artists,
@@ -56,6 +60,7 @@ class HomePage(Adw.NavigationPage):
         return {}
 
     def reload(self):
+        self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
         self.max_songs = self.settings.get_value('n-songs-home').unpack()
         self.max_albums = self.settings.get_value('n-albums-home').unpack()
         self.max_artists = self.settings.get_value('n-artists-home').unpack()
@@ -64,6 +69,7 @@ class HomePage(Adw.NavigationPage):
         GLib.idle_add(self.search_mode_toggled, self.search_toggle)
 
     def reset(self):
+        threading.Thread(target=self.frequent_album_carousel.set_widgets, args=([],), daemon=True).start()
         threading.Thread(target=self.song_wrapbox.set_widgets, args=([],), daemon=True).start()
         threading.Thread(target=self.album_carousel.set_widgets, args=([],), daemon=True).start()
         threading.Thread(target=self.artist_carousel.set_widgets, args=([],), daemon=True).start()
@@ -91,6 +97,11 @@ class HomePage(Adw.NavigationPage):
                                     search_results['album'].remove(albumId)
             else:
                 search_results = self.get_default_results()
+            threading.Thread(
+                target=self.frequent_album_carousel.set_widgets,
+                args=([AlbumButton(id) for id in search_results.get('frequent-album') or []],),
+                daemon=True
+            ).start()
             threading.Thread(
                 target=self.song_wrapbox.set_widgets,
                 args=([SongSmallRow(id) for id in search_results.get('song') or []],),

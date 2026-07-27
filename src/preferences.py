@@ -53,6 +53,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     dynamic_accent_el = Gtk.Template.Child()
 
     ## Homepage
+    hp_frequent_albums_el = Gtk.Template.Child()
     hp_songs_el = Gtk.Template.Child()
     hp_albums_el = Gtk.Template.Child()
     hp_artists_el = Gtk.Template.Child()
@@ -263,6 +264,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
         )
 
         ## Homepage
+        settings.bind(
+            "n-frequent-albums-home",
+            self.hp_frequent_albums_el,
+            "value",
+            Gio.SettingsBindFlags.DEFAULT
+        )
         settings.bind(
             "n-songs-home",
             self.hp_songs_el,
