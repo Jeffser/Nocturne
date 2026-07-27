@@ -24,7 +24,7 @@ class AlbumsAllPage(Adw.NavigationPage):
         super().__init__()
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.settings.bind(
-            "default-view-mode",
+            "default-view-mode-albums",
             self.toggle_group_el,
             "active-name",
             Gio.SettingsBindFlags.DEFAULT

@@ -16,6 +16,7 @@ class SongsStarredPage(Adw.NavigationPage):
     main_stack = Gtk.Template.Child()
     scrolledwindow = Gtk.Template.Child()
     toggle_group_el = Gtk.Template.Child()
+    failed_status_el = Gtk.Template.Child()
     item_ids = []
     offset = 0
     searching = False
@@ -23,9 +24,12 @@ class SongsStarredPage(Adw.NavigationPage):
     def __init__(self):
         super().__init__()
         self.scrolledwindow.get_vadjustment().connect('notify::upper', lambda va, ud: GLib.timeout_add(1000, self.check_scrollbar, va))
+        self.connect("notify::tag", self.on_tag_assigned)
 
+    def on_tag_assigned(self, obj, pspec):
+        pref_string = f"default-view-mode-{self.get_tag().split('-')[0]}"
         Gio.Settings(schema_id="com.jeffser.Nocturne").bind(
-            "default-view-mode",
+            pref_string,
             self.toggle_group_el,
             "active-name",
             Gio.SettingsBindFlags.DEFAULT

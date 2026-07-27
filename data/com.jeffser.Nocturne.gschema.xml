@@ -196,7 +196,16 @@
 	  <key name="last-playback-checked" type="s">
 	    <default>''</default>
 	  </key>
-	  <key name="default-view-mode" type="s">
+	  <key name="default-view-mode-artists" type="s">
+	    <default>'grid'</default>
+	  </key>
+	  <key name="default-view-mode-albums" type="s">
+	    <default>'grid'</default>
+	  </key>
+	  <key name="default-view-mode-songs" type="s">
+	    <default>'list'</default>
+	  </key>
+	  <key name="default-view-mode-playlists" type="s">
 	    <default>'list'</default>
 	  </key>
 	</schema>

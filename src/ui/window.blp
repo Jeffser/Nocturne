@@ -126,7 +126,10 @@ template $NocturneWindow: Adw.ApplicationWindow {
                   }
                   $NocturnePlaylistsPage {}
                   $NocturneSongsAllPage {}
-                  $NocturneSongsStarredPage {}
+                  $NocturneSongsStarredPage {
+                    tag: "songs-starred";
+                    title:_("Favorite Songs");
+                  }
                   $NocturneAlbumsAllPage {}
                   $NocturneRadiosPage {}
                   $NocturneAlbumsPage {
