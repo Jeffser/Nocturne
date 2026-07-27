@@ -688,15 +688,9 @@ class Local(Base):
     def getServerInformation(self) -> dict:
         server_information = {
             'link': 'file://{}'.format(self.get_property('libraryDir')),
-            'title': _("Local Files")
+            'title': _("Local Files"),
+            'username': os.getlogin()
         }
-        try:
-            gecos_temp = pwd.getpwnam(getpass.getuser()).pw_gecos.split(',')
-            if len(gecos_temp) > 0:
-                server_information["username"] = pwd.getpwnam(getpass.getuser()).pw_gecos.split(',')[0].title()
-        except Exception as e:
-            logger.error(f"can't get server information: {e}")
-
         return server_information
 
 class Offline(Local):
@@ -715,15 +709,9 @@ class Offline(Local):
 
     def getServerInformation(self) -> dict:
         server_information = {
-            'title': _("Offline Mode")
+            'title': _("Offline Mode"),
+            'username': os.getlogin()
         }
-        try:
-            gecos_temp = pwd.getpwnam(getpass.getuser()).pw_gecos.split(',')
-            if len(gecos_temp) > 0:
-                server_information["username"] = pwd.getpwnam(getpass.getuser()).pw_gecos.split(',')[0].title()
-        except Exception as e:
-            logger.error(f"can't get server information: {e}")
-
         return server_information
 
 

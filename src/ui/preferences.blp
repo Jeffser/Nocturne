@@ -267,6 +267,31 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
     Adw.PreferencesGroup {
       title: _("Homepage");
       description: _("Reload homepage to see changes");
+      Adw.ActionRow {
+        title: _("Welcome Message");
+        subtitle: _("Where to get user information");
+
+        [suffix]
+        Adw.ToggleGroup home_mode_el {
+          valign: center;
+          notify::active-name => $home_mode_changed();
+          Adw.Toggle {
+            tooltip: _("Off");
+            label: _("Off");
+            name: "";
+          }
+          Adw.Toggle {
+            tooltip: _("Instance");
+            label: _("Instance");
+            name: "instance";
+          }
+          Adw.Toggle {
+            tooltip: _("System");
+            label: _("System");
+            name: "system";
+          }
+        }
+      }
       Adw.SpinRow hp_frequent_albums_el {
         title: _("Frequent Albums");
         adjustment: Gtk.Adjustment {

@@ -1,10 +1,10 @@
 # preferences.py
 
-from gi.repository import Gtk, Adw, GLib, Gio, Gdk, Pango
+from gi.repository import Gtk, Adw, GLib, Gio, Gdk, Pango, Xdp, XdpGtk4
 
 from .integrations import get_current_integration, secret
-from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, CACHE_DIR
-import os, threading
+from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, CACHE_DIR, DATA_DIR
+import os, threading, shutil
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/preferences.ui')
 class NocturnePreferences(Adw.PreferencesDialog):
@@ -53,6 +53,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     dynamic_accent_el = Gtk.Template.Child()
 
     ## Homepage
+    home_mode_el = Gtk.Template.Child()
     hp_frequent_albums_el = Gtk.Template.Child()
     hp_songs_el = Gtk.Template.Child()
     hp_albums_el = Gtk.Template.Child()
@@ -265,6 +266,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
 
         ## Homepage
         settings.bind(
+            "welcome-mode-home",
+            self.home_mode_el,
+            "active-name",
+            Gio.SettingsBindFlags.DEFAULT
+        )
+        settings.bind(
             "n-frequent-albums-home",
             self.hp_frequent_albums_el,
             "value",
@@ -460,6 +467,47 @@ class NocturnePreferences(Adw.PreferencesDialog):
             os.remove(db_path)
         button.set_end_icon_name('check-plain-symbolic')
         button.set_sensitive(False)
+
+    @Gtk.Template.Callback()
+    def home_mode_changed(self, toggle_group, gparam):
+        root = self.get_root()
+        if not root:
+            return
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        home_mode = self.home_mode_el.get_active_name()
+        pfp_destination_path = os.path.join(DATA_DIR, 'pfp')
+        if os.path.isfile(pfp_destination_path):
+            os.remove(pfp_destination_path)
+        settings.set_string("welcome-user-home", "")
+
+        def on_portal_response(portal, response):
+            try:
+                if result := portal.get_user_information_finish(response):
+                    settings.set_string("welcome-user-home", result["name"])
+                    shutil.copy2(result["image"].removeprefix('file://'), pfp_destination_path)
+            except:
+                self.home_mode_el.set_active_name('')
+
+        def instance_information_run():
+            try:
+                integration = get_current_integration()
+                data = integration.getServerInformation()
+                if username := data.get('username'):
+                    settings.set_string("welcome-user-home", username)
+                    if profile_picture := data.get('picture'):
+                        profile_picture.save_to_png(pfp_destination_path)
+                else:
+                    self.home_mode_el.set_active_name('')
+            except:
+                self.home_mode_el.set_active_name('')
+
+        if home_mode == 'system':
+            portal = Xdp.Portal()
+            portal.get_user_information(
+                XdpGtk4.parent_new_gtk(root), "", Xdp.UserInformationFlags.NONE, None, on_portal_response
+            )
+        elif home_mode == 'instance':
+            threading.Thread(target=instance_information_run).run()
 
     def sidebar_item_toggled(self, row, gp):
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")

@@ -268,6 +268,12 @@ def logout(window):
     threading.Thread(target=__replace_queue, args=(window,[]), daemon=True).start()
     GLib.idle_add(window.main_stack.set_visible_child_name, 'welcome')
     GLib.idle_add(replace_root_page, window, 'home')
+    if settings.get_value('welcome-mode-home').unpack() == 'instance':
+        pfp_destination_path = os.path.join(DATA_DIR, 'pfp')
+        if os.path.isfile(pfp_destination_path):
+            os.remove(pfp_destination_path)
+        settings.set_string("welcome-user-home", "")
+        settings.set_string("welcome-mode-home", "")
     if window.get_application().player.mpris_published:
         window.get_application().player.mpris.unpublish()
     for dialog in window.get_dialogs():

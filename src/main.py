@@ -25,8 +25,10 @@ gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 gi.require_version('Secret', '1')
 gi.require_version('Gst', '1.0')
+gi.require_version('Xdp', '1.0')
+gi.require_version('XdpGtk4', '1.0')
 
-from gi.repository import Gtk, Gdk, Gio, Adw, GLib
+from gi.repository import Gtk, Gdk, Gio, Adw, GLib, Xdp, XdpGtk4
 from .window import NocturneWindow
 from .preferences import NocturnePreferences
 from .constants import get_song_info_from_file, CLI_ARGUMENTS, TRANSLATORS, COPYRIGHT_NOTICE, set_version

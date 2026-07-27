@@ -1,12 +1,14 @@
 # home.py
 
-from gi.repository import Gtk, Adw, GLib, Gio
+from gi.repository import Gtk, Adw, GLib, Gio, Gdk
 from ...integrations import get_current_integration
+from ...constants import DATA_DIR
 from ..album import AlbumButton
 from ..artist import ArtistButton
 from ..playlist import PlaylistButton
 from ..song import SongSmallRow
-import threading
+import threading, os, io
+from colorthief import ColorThief
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/home.ui')
 class HomePage(Adw.NavigationPage):
@@ -18,7 +20,11 @@ class HomePage(Adw.NavigationPage):
     search_entry = Gtk.Template.Child()
     main_stack = Gtk.Template.Child()
     main_clamp = Gtk.Template.Child()
+    main_container = Gtk.Template.Child()
     frequent_album_carousel = Gtk.Template.Child()
+    welcome_container = Gtk.Template.Child()
+    welcome_avatar = Gtk.Template.Child()
+    welcome_username_label = Gtk.Template.Child()
     song_wrapbox = Gtk.Template.Child()
     album_carousel = Gtk.Template.Child()
     artist_carousel = Gtk.Template.Child()
@@ -27,6 +33,11 @@ class HomePage(Adw.NavigationPage):
     def __init__(self):
         super().__init__()
 
+        self.css_provider = Gtk.CssProvider()
+        self.main_clamp.get_style_context().add_provider(
+            self.css_provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
         self.max_songs = self.settings.get_value('n-songs-home').unpack()
@@ -59,6 +70,42 @@ class HomePage(Adw.NavigationPage):
             }
         return {}
 
+    def update_pfp_gradient(self, paintable):
+        raw_bytes = paintable.save_to_png_bytes().get_data()
+        if not raw_bytes:
+            self.css_provider.load_from_data('clamp {background: none;}'.encode())
+        img_io = io.BytesIO(raw_bytes)
+        color = ColorThief(img_io).get_color(quality=10)
+        css = f"""
+        clamp {{
+            transition: background .2s;
+            background: linear-gradient(180deg, color-mix(in srgb, rgb({','.join([str(c) for c in color])}) 25%, transparent), transparent 30%);
+            background-size: 100% 1000px;
+            background-repeat: no-repeat;
+        }}
+        """
+        self.css_provider.load_from_data(css.encode())
+
+    def update_welcome_visibility(self):
+        welcome_mode = self.settings.get_value("welcome-mode-home").unpack()
+        welcome_username = self.settings.get_value("welcome-user-home").unpack()
+        self.welcome_avatar.set_custom_image(None)
+        self.css_provider.load_from_data('clamp {background: none;}'.encode())
+
+        if welcome_mode and welcome_username:
+            self.welcome_container.set_visible(True)
+            try:
+                pfp_destination_path = os.path.join(DATA_DIR, 'pfp')
+                if os.path.isfile(pfp_destination_path):
+                    if paintable := Gdk.Texture.new_from_filename(pfp_destination_path):
+                        self.welcome_avatar.set_custom_image(paintable)
+                        threading.Thread(target=self.update_pfp_gradient, args=(paintable,), daemon=True).start()
+            except:
+                self.welcome_avatar.set_custom_image(None)
+            self.welcome_username_label.set_label(welcome_username)
+        else:
+            self.welcome_container.set_visible(False)
+
     def reload(self):
         self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
         self.max_songs = self.settings.get_value('n-songs-home').unpack()
@@ -67,6 +114,7 @@ class HomePage(Adw.NavigationPage):
         self.max_playlists = self.settings.get_value('n-playlists-home').unpack()
         threading.Thread(target=self.search, daemon=True).start()
         GLib.idle_add(self.search_mode_toggled, self.search_toggle)
+        GLib.idle_add(self.update_welcome_visibility)
 
     def reset(self):
         threading.Thread(target=self.frequent_album_carousel.set_widgets, args=([],), daemon=True).start()
@@ -130,7 +178,7 @@ class HomePage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def search_mode_toggled(self, button):
-        self.main_clamp.set_margin_top(0 if button.get_active() else self.header_bar.get_height() or 46)
+        self.main_container.set_margin_top(0 if button.get_active() else self.header_bar.get_height() or 46)
 
     @Gtk.Template.Callback()
     def on_search(self, entry):

@@ -45,9 +45,47 @@ template $NocturneHomePage: Adw.NavigationPage {
             maximum-size: 2000;
             tightening-threshold: 1700;
 
-            child: Gtk.Box {
+            child: Gtk.Box main_container {
               orientation: vertical;
               spacing: 10;
+
+              Gtk.Box welcome_container {
+                visible: false;
+                styles [
+                  "p10"
+                ]
+                orientation: horizontal;
+                spacing: 10;
+
+                Adw.Avatar welcome_avatar {
+                  size: 100;
+                }
+                Gtk.Box {
+                  valign: center;
+                  orientation: vertical;
+                  spacing: 5;
+                  Gtk.Label welcome_username_label {
+                    styles [
+                      "title-4",
+                      "dim-label"
+                    ]
+                    xalign: 0;
+                    lines: 2;
+                    wrap-mode: word_char;
+                    ellipsize: end;
+                  }
+                  Gtk.Label {
+                    styles [
+                      "title-1"
+                    ]
+                    label: _("Welcome back");
+                    xalign: 0;
+                    lines: 2;
+                    wrap-mode: word;
+                    ellipsize: end;
+                  }
+                }
+              }
 
               $NocturneCarousel frequent_album_carousel {
                 header-label: _("On Replay");

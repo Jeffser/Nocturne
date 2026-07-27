@@ -87,6 +87,12 @@
 	    <default>true</default>
 	  </key>
 	  <!--### Section: Homepage -->
+	  <key name="welcome-user-home" type="s"> <!--Not shown but directly affected by welcome-mode-home-->
+	    <default>''</default>
+	  </key>
+	  <key name="welcome-mode-home" type="s">
+	    <default>''</default>
+	  </key>
 	  <key name="n-frequent-albums-home" type="i">
 	    <default>0</default>
 	  </key>
