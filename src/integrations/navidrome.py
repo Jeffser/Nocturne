@@ -236,9 +236,9 @@ class Navidrome(Base):
                     self.loaded_models[new_id] = models.Playlist(**playlist_dict)
         return playlist_ids
 
-    def getStarredSongs(self) -> list:
-        songs = self.make_request('getStarred2').get('starred2', {}).get('song', [])
-        return [song.get('id') for song in songs]
+    def getStarred(self, item_type:str) -> list:
+        items = self.make_request('getStarred2').get('starred2', {}).get(item_type, [])
+        return [item.get('id') for item in items]
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         def update():

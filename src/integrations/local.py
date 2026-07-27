@@ -270,12 +270,13 @@ class Local(Base):
         self.load_playlists()
         return [model_id for model_id in list(self.loaded_models) if model_id.startswith('PLAYLIST:')]
 
-    def getStarredSongs(self) -> list:
+    def getStarred(self, item_type:str) -> list:
         conn, cursor = sql_instance.get_connection(self)
         cursor.execute("SELECT id FROM stars")
         star_list = [str(r[0]) for r in cursor.fetchall()]
         conn.close()
-        return [song_id for song_id in star_list if song_id.startswith("SONG:") and song_id in self.loaded_models]
+        query = f"{item_type.upper()}:"
+        return [item_id for item_id in star_list if item_id.startswith(query) and item_id in self.loaded_models]
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         threading.Thread(target=self.updateCoverArt, args=(model_id,), daemon=True).start()

@@ -396,11 +396,6 @@ SIDEBAR_MENU = [
                 'title': _("Home"),
                 'icon-name': "user-home-symbolic",
                 'page-tag': 'home'
-            },
-            { # Item
-                'title': _("Artists"),
-                'icon-name': "music-artist-symbolic",
-                'page-tag': 'artists'
             }
         ]
     },
@@ -436,6 +431,21 @@ SIDEBAR_MENU = [
                 'title': _("Most Played"),
                 'icon-name': "media-playlist-repeat-symbolic",
                 'page-tag': 'albums-frequent'
+            }
+        ]
+    },
+    { # Section
+        'title': _("Artists"),
+        'items': [
+            { # Item
+                'title': _("All"),
+                'icon-name': "music-artist-symbolic",
+                'page-tag': 'artists'
+            },
+            { # Item
+                'title': _("Favorites"),
+                'icon-name': "heart-filled-symbolic",
+                'page-tag': 'artists-starred'
             }
         ]
     },

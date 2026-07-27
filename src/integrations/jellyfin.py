@@ -358,22 +358,43 @@ class Jellyfin(Base):
         self.__bulk_verify("Playlist", playlists)
         return [playlist.get("Id") for playlist in playlists]
 
-    def getStarredSongs(self) -> list:
-        song_list = []
-        songs = self.make_request(
-            action="Users/{userId}/Items",
-            mode="GET",
-            params={
-                "IncludeItemTypes": "Audio",
+    def getStarred(self, item_type:str) -> list:
+        check = {
+            "artist": "MusicArtist",
+            "album": "MusicAlbum",
+            "song": "Audio",
+            "playlist": "Playlist"
+        }
+        if item_type == 'artist':
+            items = self.make_request(
+                action='Artists/AlbumArtists',
+                mode="GET",
+                params={
+                    "userId": self.get_property("userId"),
+                    "parentId": self.get_property("libraryId"),
+                    "Recursive": "true",
+                    "Filters": "isFavorite"
+                }
+            ).get('Items', [])
+        else:
+            params = {
+                "IncludeItemTypes": check[item_type],
                 "Recursive": "true",
                 "Fields": "Id",
-                "Filters": "IsFavorite",
-                "ParentId": self.get_property("libraryId")
+                "Filters": "IsFavorite"
             }
-        ).get("Items", [])
+            if item_type != 'playlist':
+                params["ParentId"] = self.get_property("libraryId")
 
-        self.__bulk_verify("Audio", songs)
-        return [song.get("Id") for song in songs]
+            items = self.make_request(
+                action="Users/{userId}/Items",
+                mode="GET",
+                params=params
+            ).get("Items", [])
+
+        self.__bulk_verify(check[item_type], items)
+        return [item.get("Id") for item in items]
+
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True, artist_object:models.Artist=None, lite:bool=False):
         def run():
