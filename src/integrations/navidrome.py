@@ -645,12 +645,10 @@ class Navidrome(Base):
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         params = {
             **self.get_base_params(),
-            'id': model_id,
-            'maxBitRate': 0,
-            'format': 'raw'
+            'id': model_id
         }
         try:
-            with self.session.get(self.get_url('stream'), params=params, stream=True) as r:
+            with self.session.get(self.get_url('download'), params=params, stream=True) as r:
                 r.raise_for_status()
                 total_size = int(r.headers.get('content-length', 0))
                 downloaded_size = 0
@@ -1014,3 +1012,30 @@ class Bandcamp(Navidrome):
             return [model_id for model_id in album_list if model_id in self.loaded_models][offset:size+offset]
         else:
             return super().getAlbumList(list_type, size, offset)
+
+    def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
+        params = {
+            **self.get_base_params(),
+            'id': model_id,
+            'maxBitRate': 0,
+            'format': 'raw'
+        }
+        try:
+            with self.session.get(self.get_url('stream'), params=params, stream=True) as r:
+                r.raise_for_status()
+                total_size = int(r.headers.get('content-length', 0))
+                downloaded_size = 0
+                extension = DOWNLOAD_MIME_MAP.get(r.headers.get('Content-Type'), '.mp3')
+                file_name = '{}{}'.format(file_title, extension)
+                file_path = os.path.join(DOWNLOAD_QUEUE_DIR, file_name)
+
+                with open(file_path, 'wb') as f:
+                    for chunk in r.iter_content(chunk_size=8192):
+                        if chunk:
+                            f.write(chunk)
+                            downloaded_size += len(chunk)
+                            if total_size > 0:
+                                progress_callback(downloaded_size / total_size)
+                os.replace(file_path, os.path.join(DOWNLOADS_DIR, file_name))
+        except:
+            pass
