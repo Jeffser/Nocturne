@@ -418,7 +418,7 @@ class Local(Base):
         songs = [song_id for song_id in list(self.loaded_models) if song_id.startswith('SONG:')]
         return random.sample(songs, k=min(size, len(songs)))
 
-    def getLyrics(self, songId:str) -> dict:
+    def getLyrics(self, songId:str, requestOnline:bool=False) -> dict:
         # Initial Checks
         if songId not in self.loaded_models:
             return 'not-found', ''
@@ -725,4 +725,5 @@ class Offline(Local):
             logger.error(f"can't get server information: {e}")
 
         return server_information
+
 
