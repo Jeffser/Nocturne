@@ -208,10 +208,12 @@ class PlayingLyricsPage(Gtk.Stack):
 
     def copy_lyrics_lrc(self, dialog, task):
         if source_file := dialog.open_finish(task):
-            success, content = source_file.load_contents()
-            if success:
+            with open(source_file.get_path(), 'r') as f:
                 integration = get_current_integration()
-                integration.saveLyrics(integration.loaded_models.get('currentSong').get_property('songId'), content, 'lrc')
+                if songId := integration.loaded_models.get('currentSong').get_property('songId'):
+                    if content := f.read():
+                        integration.saveLyrics(songId, content, 'lrc')
+                        self.song_changed(songId)
 
     @Gtk.Template.Callback()
     def lyric_load_requested(self, button):
