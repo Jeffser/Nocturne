@@ -197,7 +197,7 @@ class SongRow(Adw.ActionRow):
                 action_target = GLib.Variant.new_string(homepage_url),
                 child = Gtk.Label(
                     ellipsize=Pango.EllipsizeMode.END,
-                    label=urlparse(homepage_url).netloc.capitalize(),
+                    label=urlparse(homepage_url).netloc,
                     css_classes=['subtitle']
                 ),
                 css_classes = ['p0', 'flat'],

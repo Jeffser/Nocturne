@@ -149,6 +149,7 @@ class PlayingControlPage(Adw.NavigationPage):
             homepage_url = '{}://{}'.format(stream_url.scheme, stream_url.netloc)
         self.radio_homepage_el.set_tooltip_text(homepage_url)
         self.radio_homepage_el.set_action_target_value(GLib.Variant.new_string(homepage_url))
+        self.radio_homepage_el.get_child().set_label(urlparse(radioStreamUrl).netloc)
 
     def update_artistId(self, artistId:str):
         if artistId:
@@ -200,7 +201,6 @@ class PlayingControlPage(Adw.NavigationPage):
         self.title_el.set_tooltip_text(display_title)
 
     def display_artist_changed(self, display_artist:str):
-        self.radio_homepage_el.get_child().set_label(display_artist)
         self.artist_el.get_child().set_label(display_artist)
         self.artist_el.set_tooltip_text(display_artist)
 
