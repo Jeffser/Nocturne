@@ -21,10 +21,13 @@ template $NocturneCarousel: Gtk.Box {
       halign: start;
       sensitive: false;
       child: Adw.ButtonContent {
-        label: _("List");
+        label: bind template.header-label;
+        icon-name: bind template.header-icon-name;
       };
-      tooltip-text: _("List");
-      visible: false;
+      tooltip-text: bind template.header-label;
+      visible: bind $handle_visible_bind(template.header-label);
+      action-name: bind $handle_action_name_bind(template.header-page-tag);
+      action-target: bind $handle_action_target_bind(template.header-page-tag);
     }
 
     Gtk.Box pan_container_el {
