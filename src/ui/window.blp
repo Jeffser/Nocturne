@@ -120,9 +120,16 @@ template $NocturneWindow: Adw.ApplicationWindow {
                 content: Adw.NavigationView main_navigationview {
                   $NocturneHomePage {}
                   $NocturneArtistsPage {}
+                  $NocturneSongsStarredPage {
+                    tag: "artists-starred";
+                    title:_("Favorite Artists");
+                  }
                   $NocturnePlaylistsPage {}
                   $NocturneSongsAllPage {}
-                  $NocturneSongsStarredPage {}
+                  $NocturneSongsStarredPage {
+                    tag: "songs-starred";
+                    title:_("Favorite Songs");
+                  }
                   $NocturneAlbumsAllPage {}
                   $NocturneRadiosPage {}
                   $NocturneAlbumsPage {

@@ -22,7 +22,7 @@ class SongsAllPage(Adw.NavigationPage):
     def __init__(self):
         super().__init__()
         Gio.Settings(schema_id="com.jeffser.Nocturne").bind(
-            "default-view-mode",
+            "default-view-mode-songs",
             self.toggle_group_el,
             "active-name",
             Gio.SettingsBindFlags.DEFAULT

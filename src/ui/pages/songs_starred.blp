@@ -25,7 +25,7 @@ template $NocturneSongsStarredPage: Adw.NavigationPage {
       title-widget: Gtk.SearchEntry search_entry_el {
         hexpand: true;
         key-capture-widget: main_stack;
-        placeholder-text: _("Favorite Songs");
+        placeholder-text: bind template.title;
         search-changed => $on_search();
         accessibility {
           label: _("Search favorite songs");
@@ -91,7 +91,7 @@ template $NocturneSongsStarredPage: Adw.NavigationPage {
       }
       Gtk.StackPage {
         name: "no-content";
-        child: Adw.StatusPage {
+        child: Adw.StatusPage failed_status_el {
           icon-name: "sad-computer-symbolic";
           title: _("No Songs Found");
         };

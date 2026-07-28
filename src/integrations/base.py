@@ -322,9 +322,9 @@ class Base(GObject.Object):
         print('WARNING', 'getPlaylists', 'not implemented')
         return []
 
-    def getStarredSongs(self) -> list:
-        # returns a list of IDs of songs
-        print('WARNING', 'getStarredSongs', 'not implemented')
+    def getStarred(self, item_type:str) -> list:
+        # returns a list of IDs of items of a given type
+        print('WARNING', 'getStarred', 'not implemented')
         return []
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
