@@ -129,9 +129,10 @@ class HomePage(Adw.NavigationPage):
         self.searching = True
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if integration := get_current_integration():
-            if query := self.search_entry.get_text():
-                query_check = ""
-                while True: #do-while loop if search entry changes while integration is loading
+            if self.search_entry.get_text():
+                query = ""
+                while query != self.search_entry.get_text(): # In case query changes whilst calling integration
+                    query = self.search_entry.get_text()
                     search_results = integration.search(
                         query=query,
                         songCount=self.max_songs,
@@ -139,17 +140,13 @@ class HomePage(Adw.NavigationPage):
                         albumCount=self.max_albums,
                         playlistCount=self.max_playlists
                     )
-                    query_check = query
-                    query = self.search_entry.get_text()
-                    if query == query_check:
-                        break
                 if self.settings.get_value('hide-singles').unpack():
                     if album_results := search_results.get('album'):
                         for albumId in album_results.copy():
                             if model := integration.loaded_models.get(albumId):
                                 if model.get_property('songCount') <= 1:
                                     search_results['album'].remove(albumId)
-            if not query:
+            else:
                 search_results = self.get_default_results()
             threading.Thread(
                 target=self.frequent_album_carousel.set_widgets,

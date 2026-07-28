@@ -48,14 +48,10 @@ class PlaylistsPage(Adw.NavigationPage):
         self.searching = True
         integration = get_current_integration()
 
-        query = self.search_entry.get_text()
-        query_check = ""
-        while True: #do-while loop if search entry changes while integration is loading
-            search_results = integration.search(query=query, playlistCount=30, playlistOffset=self.offset)
-            query_check = query
+        query = ""
+        while query != self.search_entry.get_text(): # In case query changes whilst calling integration
             query = self.search_entry.get_text()
-            if query == query_check:
-                break
+            search_results = integration.search(query=query, playlistCount=30, playlistOffset=self.offset)
 
         for playlist_id in search_results.get('playlist'):
             results_list = [row for row in list(self.list_el) if row.id == playlist_id]
