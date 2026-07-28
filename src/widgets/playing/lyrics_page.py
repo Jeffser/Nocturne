@@ -131,7 +131,7 @@ class PlayingLyricsPage(Gtk.Stack):
 
         GLib.idle_add(self.set_visible_child_name, lyrics_type)
         if lyrics_type == 'plain':
-            GLib.idle_add(self.plain_label_el.set_label, content)
+            GLib.idle_add(self.plain_label_el.set_label, raw_content)
         elif lyrics_type == 'lrc':
             content = prepare_lrc(raw_content)
             GLib.idle_add(self.lrc_list_el.remove_all)
