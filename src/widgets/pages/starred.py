@@ -1,4 +1,5 @@
-# songs_starred.py
+# starred.py
+# handles both starred artists and songs
 
 from gi.repository import Gtk, Adw, GLib, Gio
 from ...integrations import get_current_integration
@@ -6,9 +7,9 @@ from ..song import SongRow, SongButton
 from ..artist import ArtistRow, ArtistButton
 import re, threading
 
-@Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/songs_starred.ui')
-class SongsStarredPage(Adw.NavigationPage):
-    __gtype_name__ = 'NocturneSongsStarredPage'
+@Gtk.Template(resource_path='/com/jeffser/Nocturne/pages/starred.ui')
+class StarredPage(Adw.NavigationPage):
+    __gtype_name__ = 'NocturneStarredPage'
 
     list_el = Gtk.Template.Child()
     wrapbox_el = Gtk.Template.Child()

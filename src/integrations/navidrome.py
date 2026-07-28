@@ -237,7 +237,7 @@ class Navidrome(Base):
         return playlist_ids
 
     def getStarred(self, item_type:str) -> list:
-        items = self.make_request('getStarred2').get('starred2', {}).get(item_type, [])
+        items = self.make_request('getStarred').get('starred', {}).get(item_type, [])
         return [item.get('id') for item in items]
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):

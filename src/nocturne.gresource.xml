@@ -94,7 +94,7 @@
     <file alias="pages/login.ui">ui/pages/login.ui</file>
     <file alias="pages/artists.ui">ui/pages/artists.ui</file>
     <file alias="pages/playlists.ui">ui/pages/playlists.ui</file>
-    <file alias="pages/songs_starred.ui">ui/pages/songs_starred.ui</file>
+    <file alias="pages/starred.ui">ui/pages/starred.ui</file>
     <file alias="pages/songs_all.ui">ui/pages/songs_all.ui</file>
     <file alias="pages/albums.ui">ui/pages/albums.ui</file>
     <file alias="pages/albums_all.ui">ui/pages/albums_all.ui</file>
