@@ -778,14 +778,17 @@ class Jellyfin(Base):
             if result.get('Lyrics', [{}])[0].get('Start'): # is lrc
                 lines = []
                 for line in result.get('Lyrics', []):
-                    lines.append({
-                        'content': line.get('Text'),
-                        'ms': line.get('Start') / 10000
-                    })
-                return True, {
-                    'type': 'lrc',
-                    'content': lines
-                }
+                    ms = line.get('Start') / 10000
+                    minutes = int(ms // 60000)
+                    seconds = int((ms % 60000) // 1000)
+                    centiseconds = int((ms % 1000) // 10)
+                    timestamp = f"[{minutes:02d}:{seconds:02d}.{centiseconds:02d}]"
+                    lines.append(f"{timestamp} {line.get('Text').strip()}")
+                if content := '\n'.join(lines):
+                    return True, {
+                        'type': 'lrc',
+                        'content': content
+                    }
             else:
                 text = '\n'.join([line.get('Text') for line in result.get('Lyrics', [])])
                 if text:
