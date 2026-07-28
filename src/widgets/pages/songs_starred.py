@@ -35,6 +35,13 @@ class SongsStarredPage(Adw.NavigationPage):
             Gio.SettingsBindFlags.DEFAULT
         )
 
+        if self.get_tag() == 'favorite-artists':
+            GLib.idle_add(self.search_entry_el.update_property(
+                [Gtk.AccessibleProperty.LABEL],
+                [_("Search favorite artists")]
+            ))
+            GLib.idle_add(self.failed_status_el.set_title(_("No Artists Found")))
+
     def search(self):
         if self.searching:
             return
