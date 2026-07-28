@@ -130,7 +130,7 @@ class HomePage(Adw.NavigationPage):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if integration := get_current_integration():
             if self.search_entry.get_text():
-                query = ""
+                query = None
                 while query != self.search_entry.get_text(): # In case query changes whilst calling integration
                     query = self.search_entry.get_text()
                     search_results = integration.search(

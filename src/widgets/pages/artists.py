@@ -48,7 +48,7 @@ class ArtistsPage(Adw.NavigationPage):
         self.searching = True
         integration = get_current_integration()
 
-        query = ""
+        query = None
         while query != self.search_entry.get_text(): # In case query changes whilst calling integration
             query = self.search_entry.get_text()
             search_results = integration.search(query=query, artistCount=30, artistOffset=self.offset)
