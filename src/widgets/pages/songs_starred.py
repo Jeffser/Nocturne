@@ -85,16 +85,19 @@ class SongsStarredPage(Adw.NavigationPage):
 
     def reset(self):
         self.offset = 0
-        self.list_el.list_el.remove_all()
+        GLib.idle_add(self.list_el.list_el.remove_all)
         for el in list(self.wrapbox_el):
-            self.wrapbox_el.remove(el)
+            GLib.idle_add(self.wrapbox_el.remove, el)
         integration = get_current_integration()
         self.item_ids = integration.getStarred((self.get_tag().split('-')[0]).removesuffix("s"))
 
     def reload(self):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
-        GLib.idle_add(self.reset)
-        GLib.idle_add(self.search)
+
+        def run():
+            self.reset()
+            self.search()
+        threading.Thread(target=run, daemon=True).start()
 
     @Gtk.Template.Callback()
     def on_search(self, search_entry):
