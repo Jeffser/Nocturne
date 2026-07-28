@@ -47,15 +47,19 @@ class AlbumsAllPage(Adw.NavigationPage):
         if self.searching:
             return
         self.searching = True
-        query = self.search_entry.get_text()
         integration = get_current_integration()
         hide_singles = self.settings.get_value('hide-singles').unpack()
         self.skipped_albums = 0
-        search_results = integration.search(
-            query=query,
-            albumCount=30,
-            albumOffset=self.offset
-        )
+
+        query = self.search_entry.get_text()
+        query_check = ""
+        while True: #do-while loop if search entry changes while integration is loading
+            search_results = integration.search(query=query, albumCount=30, albumOffset=self.offset)
+            query_check = query
+            query = self.search_entry.get_text()
+            if query == query_check:
+                break
+
         for album_id in search_results.get('album'):
             should_skip = False
             if hide_singles:
