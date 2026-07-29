@@ -58,6 +58,7 @@ class PlaybackPage(Adw.NavigationPage):
                 css_classes=["subtitle"]
             ))
             self.song_queue.list_el.append(row)
+        self.song_queue.main_stack.set_visible_child_name('content')
 
     @Gtk.Template.Callback()
     def go_home(self, button):
