@@ -186,8 +186,8 @@ class NocturnePreferences(Adw.PreferencesDialog):
         )
         self.default_page_dict = {}
         selected_page = settings.get_value('default-page-tag').unpack()
-        for section in []:#SIDEBAR_MENU:
-            for item in section.get('items', []):
+        for section in SIDEBAR_MENU.values():
+            for item in section.get('items', []).values():
                 if section.get('title') and item.get('page-tag') != "radios":
                     title = '{} ({})'.format(section.get('title'), item.get('title'))
                 else:
@@ -575,20 +575,6 @@ class NocturnePreferences(Adw.PreferencesDialog):
             )
         elif home_mode == 'instance':
             threading.Thread(target=instance_information_run).run()
-
-    def sidebar_item_toggled(self, row, gp):
-        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
-        enabled_pages = settings.get_value('sidebar-disabled-pages').unpack()
-        name = row.get_name()
-        if not row.get_active():
-            if name not in enabled_pages:
-                enabled_pages.append(name)
-        else:
-            if name in enabled_pages:
-                enabled_pages.remove(name)
-        settings.set_value('sidebar-disabled-pages', GLib.Variant('as', enabled_pages))
-        if main_window := self.get_root().get_application().main_window:
-            GLib.idle_add(main_window.setup_sidebar)
 
     def show_discord_flatpak_warning(self, settings, key):
         if settings.get_value(key).unpack():
