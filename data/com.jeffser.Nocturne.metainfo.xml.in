@@ -97,6 +97,20 @@
   </keywords>
 
   <releases>
+    <release version="1.5.1" date="2026-07-29">
+      <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/1.5.1</url>
+      <description translate="no">
+        <p>New</p>
+        <ul>
+          <li>Added page reload keyboard shortcut (ctrl+r)</li>
+        </ul>
+        <p>Fix</p>
+        <ul>
+          <li>Bottom padding is now removed when footer is not being shown</li>
+          <li>Fix list of songs not being shown in Nocturne Playback</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.0" date="2026-07-28">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/1.5.0</url>
       <description translate="no">
