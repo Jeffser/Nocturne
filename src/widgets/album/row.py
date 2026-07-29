@@ -44,7 +44,7 @@ class AlbumRow(Adw.ActionRow):
         self.set_name(name)
 
     def update_artist(self, artist:str):
-        self.set_subtitle(artist)
+        self.set_subtitle(artist or "")
 
     @Gtk.Template.Callback()
     def on_context_button_active(self, button, gparam):
