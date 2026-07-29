@@ -22,57 +22,6 @@ class SongQueue(Gtk.Box):
     header_icon_name = GObject.Property(type=str, default="")
     header_page_tag = GObject.Property(type=str, default="")
 
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.bind_property(
-            "header-label",
-            self.header_button,
-            "tooltip-text",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: value or "",
-            None
-        )
-        self.bind_property(
-            "header-label",
-            self.header_button,
-            "visible",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: bool(value),
-            None
-        )
-        self.bind_property(
-            "header-label",
-            self.header_button.get_child(),
-            "label",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: value or "",
-            None
-        )
-        self.bind_property(
-            "header-icon-name",
-            self.header_button.get_child(),
-            "icon-name",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: value or "view-list-bullet-symbolic",
-            None
-        )
-        self.bind_property(
-            "header-page-tag",
-            self.header_button,
-            "action-name",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: "app.replace_root_page" if value else "",
-            None
-        )
-        self.bind_property(
-            "header-page-tag",
-            self.header_button,
-            "action-target",
-            GObject.BindingFlags.SYNC_CREATE,
-            lambda bind, value: GLib.Variant.new_string(value or ""),
-            None
-        )
-
     def set_selected_mode(self, select:bool=False, selected_row:Gtk.Widget=None):
         integration = get_current_integration()
         for row in list(self.list_el):
@@ -191,3 +140,14 @@ class SongQueue(Gtk.Box):
         self.get_root().activate_action("app.prompt_add_songs_to_playlist", target_value)
         self.close_selector()
 
+    @Gtk.Template.Callback()
+    def handle_visible_bind(self, queue, value) -> bool:
+        return bool(value)
+
+    @Gtk.Template.Callback()
+    def handle_action_name_bind(self, carousel, value) -> str:
+        return str("app.replace_root_page") if value else str("")
+
+    @Gtk.Template.Callback()
+    def handle_action_target_bind(self, carousel, value) -> GLib.Variant:
+        return GLib.Variant.new_string(value or "")
