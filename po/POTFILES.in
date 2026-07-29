@@ -44,7 +44,7 @@ src/ui/pages/playlists.blp
 src/ui/pages/radios.blp
 src/ui/pages/setup.blp
 src/ui/pages/songs_all.blp
-src/ui/pages/songs_starred.blp
+src/ui/pages/starred.blp
 src/ui/pages/welcome.blp
 src/ui/playing/control_page.blp
 src/ui/playing/cover_art.blp
@@ -98,7 +98,7 @@ src/widgets/pages/playlists.py
 src/widgets/pages/radios.py
 src/widgets/pages/setup.py
 src/widgets/pages/songs_all.py
-src/widgets/pages/songs_starred.py
+src/widgets/pages/starred.py
 src/widgets/pages/welcome.py
 src/widgets/playing/control_page.py
 src/widgets/playing/cover_art.py
