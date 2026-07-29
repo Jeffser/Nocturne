@@ -56,6 +56,11 @@ window:not(.popout-window).showing-footer navigation-view-page > toolbarview > s
   padding-bottom: 100px;
 }
 
+window:not(.popout-window):not(.showing-footer) navigation-view-page > toolbarview > scrolledwindow > viewport > *,
+window:not(.popout-window):not(.showing-footer) navigation-view-page > toolbarview > stack > scrolledwindow > viewport > * {
+  padding-bottom: 10px;
+}
+
 popover button label, button.no_bold_button, .no-bold {
   font-weight: normal;
 }
