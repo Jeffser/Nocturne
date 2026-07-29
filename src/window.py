@@ -122,6 +122,7 @@ class NocturneWindow(Adw.ApplicationWindow):
                     root_section = self.main_sidebar.get_sections()[0]
                     row = SidebarItem(
                         title=row_title,
+                        tooltip=row_title,
                         icon_name=section_data.get("icon-name"),
                         page_tag=section_data.get("page-tag")
                     )
@@ -139,6 +140,7 @@ class NocturneWindow(Adw.ApplicationWindow):
                             if row_title := item_data.get("title"):
                                 row = SidebarItem(
                                     title=row_title,
+                                    tooltip=row_title,
                                     icon_name=item_data.get("icon-name"),
                                     page_tag=item_data.get("page-tag")
                                 )
@@ -176,6 +178,7 @@ class NocturneWindow(Adw.ApplicationWindow):
                 )
                 GLib.idle_add(section_el.append, item)
                 integration.connect_to_model(playlistId, "name", lambda name, row=item: row.set_title(name))
+                integration.connect_to_model(playlistId, "name", lambda name, row=item: row.set_tooltip(name))
                 integration.connect_to_model(playlistId, "songCount", lambda n, row=item: row.set_subtitle(('{} Songs' if n > 1 else '{} Song').format(n)))
                 #integration.connect_to_model(playlistId, "gdkPaintable", lambda paintable, row=item: update_row_paintable(row, paintable))
                 #TODO: enable this once Adw 1.10 is out https://gnome.pages.gitlab.gnome.org/libadwaita/doc/main/method.SidebarItem.set_prefix.html
