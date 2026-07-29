@@ -227,20 +227,6 @@ class Base(GObject.Object):
             callback(self.loaded_models.get(model_id).get_property(parameter))
         return connection_id
 
-    def bind_to_model(self, model_id:str, parameter:str, target_object:GObject.Object, target_property:str, function:callable):
-        # do not modify this function, it works as is in any instance
-        # similar to connect_to_model but instead of using callbacks it binds properties from models to those of target objects (or widgets)
-        # this is one way, so the model property is not affected
-        if model := self.loaded_models.get(model_id):
-            model.bind_property(
-                parameter,
-                target_object,
-                target_property,
-                GObject.BindingFlags.SYNC_CREATE,
-                function,
-                None
-            )
-
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
         # do not modify this function, it works as is in any instance
         # should be called in updateCoverArt
