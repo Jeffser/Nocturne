@@ -10,8 +10,6 @@ from .constants import DATA_DIR, BASE_NAVIDROME_DIR, DOWNLOADS_DIR
 # -- HELPER --
 
 def __show_page(window, page:Adw.NavigationPage):
-    for dialog in window.get_dialogs():
-        GLib.idle_add(dialog.close)
     application = window.get_application()
     active_window = application.props.active_window
     if active_window.__gtype_name__ == 'NocturnePopoutWindow':
@@ -25,6 +23,8 @@ def __show_page(window, page:Adw.NavigationPage):
         GLib.idle_add(active_window.main_bottom_sheet.set_open, False)
         GLib.idle_add(active_window.main_split_view.set_show_content, True)
         GLib.idle_add(active_window.main_navigationview.push, page)
+        for dialog in active_window.get_dialogs():
+            GLib.idle_add(dialog.close)
 
 def __show_custom_toast(window, model_id:str, title_property:str, subtitle:str, icon_name:str=None):
     # Thread safe
@@ -133,6 +133,16 @@ def __play_later(window, songs:list):
         )
 
 # -- MISC --
+
+def reload(window):
+    application = window.get_application()
+    active_window = application.props.active_window
+    if active_window.__gtype_name__ == 'NocturnePopoutWindow':
+        for dialog in active_window.get_dialogs():
+            if dialog.__gtype_name__ == 'NocturnePageDialog':
+                dialog.navigation_view.get_visible_page().reload()
+    else:
+        active_window.main_navigationview.get_visible_page().reload()
 
 def show_error(window, message:str):
     if app := window.get_application():

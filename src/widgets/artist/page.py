@@ -146,3 +146,6 @@ class ArtistPage(Adw.NavigationPage):
             'rating': GLib.Variant('i', int(button.get_name()))
         })
         self.get_root().activate_action("app.set_rating", target_value)
+
+    def reload(self):
+        pass

@@ -201,3 +201,5 @@ class AlbumPage(Adw.NavigationPage):
         })
         self.get_root().activate_action("app.set_rating", target_value)
 
+    def reload(self):
+        pass

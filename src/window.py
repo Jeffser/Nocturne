@@ -239,6 +239,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         super().__init__(**kwargs)
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
 
+        self.create_action(actions.reload, shortcuts=['<ctrl>R'], parameter_type=None)
         self.create_action(actions.show_error)
         self.create_action(actions.search, shortcuts=['<ctrl>F'], parameter_type=None)
         self.create_action(actions.launch_playback, parameter_type=None)
