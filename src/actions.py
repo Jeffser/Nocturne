@@ -640,7 +640,7 @@ def update_playlist(window, model_id:str=None):
     def do_update(name:str):
         if result := integration.createPlaylist(name, playlistId=model_id):
             integration.verifyPlaylist(result, force_update=True, use_threading=False)
-            window.update_playlist_section_of_sidebar()
+            window.setup_sidebar()
             window.main_navigationview.get_visible_page().reload()
             message = _("Playlist updated successfully") if model_id else _("Playlist created successfully")
         else:
@@ -709,7 +709,7 @@ def add_songs_to_playlist(window, data):
             integration.verifyPlaylist(response, force_update=True, use_threading=False)
             message = ngettext("{} Song Added", "{} Songs Added", len(data.get("songs"))).format(len(data.get("songs")))
             __show_custom_toast(window, response, "name", message)
-            window.update_playlist_section_of_sidebar()
+            window.setup_sidebar()
     elif data.get('playlist'):
         integration.verifyPlaylist(data.get('playlist'), force_update=True, use_threading=False)
         if model := integration.loaded_models.get(data.get('playlist')):
@@ -740,7 +740,7 @@ def delete_playlist(window, model_id:str):
                 show_toast(model)
                 del integration.loaded_models[model.id]
                 window.main_navigationview.get_visible_page().reload()
-                threading.Thread(target=window.update_playlist_section_of_sidebar, daemon=True).start()
+                window.setup_sidebar()
 
     dialog = Adw.AlertDialog(
         heading=_("Delete Playlist"),

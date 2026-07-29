@@ -1,10 +1,80 @@
 # preferences.py
 
-from gi.repository import Gtk, Adw, GLib, Gio, Gdk, Pango, Xdp, XdpGtk4
+from gi.repository import GObject, Gtk, Adw, GLib, Gio, Gdk, Pango, Xdp, XdpGtk4
 
 from .integrations import get_current_integration, secret
 from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, CACHE_DIR, DATA_DIR
 import os, threading, shutil
+
+# Handles sections and items of sidebar
+class NocturneSidebarPreferencesExpanderRow(Adw.ExpanderRow):
+    __gtype_name__ = 'NocturneSidebarPreferencesExpanderRow'
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.toggle_group = Adw.ToggleGroup(
+            valign=Gtk.Align.CENTER
+        )
+        self.toggle_group.add(
+            Adw.Toggle(
+                label=_("Item"),
+                name="item",
+                tooltip=_("Item")
+            )
+        )
+        self.toggle_group.add(
+            Adw.Toggle(
+                label=_("Section"),
+                name="section",
+                tooltip=_("Section")
+            )
+        )
+        self.add_suffix(self.toggle_group)
+        self.bind_property(
+            'enable-expansion',
+            self.toggle_group,
+            "active-name",
+            GObject.BindingFlags.SYNC_CREATE,
+            lambda bind, value: "section" if value else "item"
+        )
+        self.toggle_group.bind_property(
+            'active-name',
+            self,
+            "enable-expansion",
+            GObject.BindingFlags.SYNC_CREATE,
+            lambda bind, value: value == "section"
+        )
+        self.connect('notify::enable-expansion', self.section_toggled)
+
+    def add_row(self, row):
+        row.connect("notify::active", self.item_toggled)
+        super().add_row(row)
+
+    def item_toggled(self, row, gparam):
+        active = row.get_active()
+        name = row.get_name()
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        disabled_items = settings.get_value('sidebar-disabled-items').unpack()
+        if active and name in disabled_items:
+            disabled_items.remove(name)
+        elif not active and name not in disabled_items:
+            disabled_items.append(name)
+        settings.set_value('sidebar-disabled-items', GLib.Variant('as', disabled_items))
+        if main_window := self.get_root().get_application().main_window:
+            GLib.idle_add(main_window.setup_sidebar)
+
+    def section_toggled(self, row, gparam):
+        active = row.get_enable_expansion()
+        name = row.get_name()
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        disabled_sections = settings.get_value('sidebar-disabled-sections').unpack()
+        if active and name in disabled_sections:
+            disabled_sections.remove(name)
+        elif not active and name not in disabled_sections:
+            disabled_sections.append(name)
+        settings.set_value('sidebar-disabled-sections', GLib.Variant('as', disabled_sections))
+        if main_window := self.get_root().get_application().main_window:
+            GLib.idle_add(main_window.setup_sidebar)
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/preferences.ui')
 class NocturnePreferences(Adw.PreferencesDialog):
@@ -116,7 +186,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
         )
         self.default_page_dict = {}
         selected_page = settings.get_value('default-page-tag').unpack()
-        for section in SIDEBAR_MENU:
+        for section in []:#SIDEBAR_MENU:
             for item in section.get('items', []):
                 if section.get('title') and item.get('page-tag') != "radios":
                     title = '{} ({})'.format(section.get('title'), item.get('title'))
@@ -303,31 +373,28 @@ class NocturnePreferences(Adw.PreferencesDialog):
         )
 
         ## Sidebar
-        disabled_pages = settings.get_value('sidebar-disabled-pages').unpack()
-        for section in SIDEBAR_MENU:
-            section_expander = None
-            if section.get("title"):
-                section_expander = Adw.ExpanderRow(
-                    title=section.get("title")
+        disabled_sections = settings.get_value('sidebar-disabled-sections').unpack()
+        disabled_items = settings.get_value('sidebar-disabled-items').unpack()
+
+        for section_id, section_data in SIDEBAR_MENU.items():
+            if section_id != 'root':
+                section_expander = NocturneSidebarPreferencesExpanderRow(
+                    title=section_data.get("title"),
+                    enable_expansion=section_id not in disabled_sections,
+                    name=section_id
                 )
                 self.sidebar_group.add(section_expander)
-
-            for item in section.get('items', []):
-                if item.get('page-tag') != 'home':
+                for item_id, item_data in section_data.get('items', {}).items():
                     row = Adw.SwitchRow(
-                        title=item.get("title"),
-                        active=item.get("page-tag") not in disabled_pages,
-                        name=item.get("page-tag")
+                        title=item_data.get("title"),
+                        active=item_id not in disabled_items,
+                        name=item_id
                     )
-                    row.connect('notify::active', self.sidebar_item_toggled)
-                    if item.get("icon-name"):
+                    if icon_name := item_data.get("icon-name"):
                         row.add_prefix(
-                            Gtk.Image(icon_name=item.get("icon-name"))
+                            Gtk.Image(icon_name=icon_name)
                         )
-                    if section_expander:
-                        section_expander.add_row(row)
-                    else:
-                        self.sidebar_group.add(row)
+                    section_expander.add_row(row)
 
         # Visualizer
         ## Preferences

@@ -389,97 +389,110 @@ BITRATE_OPTIONS = {
     _("Original File"): 0
 }
 
-SIDEBAR_MENU = [
-    { # Section
-        'items': [
-            { # Item
+# All items and sections must have unique names (even if items are on different sections)
+SIDEBAR_MENU = {
+    'root': { # Section (These are not grouped and can't be disabled)
+        'items': {
+            'home': { # Item
                 'title': _("Home"),
                 'icon-name': "user-home-symbolic",
                 'page-tag': 'home'
             }
-        ]
+        }
     },
-    { # Section
+    'albums': { # Section
         'title': _("Albums"),
-        'items': [
-            { # Item
+        'page-tag': 'albums-all',
+        'icon-name': "music-queue-symbolic",
+        'items': {
+            'albums-all': { # Item
                 'title': _("All"),
                 'icon-name': "music-queue-symbolic",
                 'page-tag': 'albums-all'
             },
-            { # Item
+            'albums-random': { # Item
                 'title': _("Random"),
                 'icon-name': "playlist-shuffle-symbolic",
                 'page-tag': 'albums-random'
             },
-            { # Item
+            'albums-starred': { # Item
                 'title': _("Favorites"),
                 'icon-name': "heart-filled-symbolic",
                 'page-tag': 'albums-starred'
             },
-            { # Item
+            'albums-newest': { # Item
                 'title': _("Recently Added"),
                 'icon-name': "list-add-symbolic",
                 'page-tag': 'albums-newest'
             },
-            { # Item
+            'albums-recent': { # Item
                 'title': _("Recently Played"),
                 'icon-name': "media-playback-start-symbolic",
                 'page-tag': 'albums-recent'
             },
-            { # Item
+            'albums-frequent': { # Item
                 'title': _("Most Played"),
                 'icon-name': "media-playlist-repeat-symbolic",
                 'page-tag': 'albums-frequent'
             }
-        ]
+        }
     },
-    { # Section
+    'artists': { # Section
         'title': _("Artists"),
-        'items': [
-            { # Item
+        'page-tag': 'artists',
+        'icon-name': "music-artist-symbolic",
+        'items': {
+            'artists-all': { # Item
                 'title': _("All"),
                 'icon-name': "music-artist-symbolic",
                 'page-tag': 'artists'
             },
-            { # Item
+            'artists-starred': { # Item
                 'title': _("Favorites"),
                 'icon-name': "heart-filled-symbolic",
                 'page-tag': 'artists-starred'
             }
-        ]
+        }
     },
-    { # Section
+    'songs': { # Section
         'title': _("Songs"),
-        'items': [
-            { # Item
+        'page-tag': 'songs-all',
+        'icon-name': "music-note-symbolic",
+        'items': {
+            'songs-all': { # Item
                 'title': _("All"),
                 'icon-name': "music-note-symbolic",
                 'page-tag': 'songs-all'
             },
-            { # Item
+            'songs-starred': { # Item
                 'title': _("Favorites"),
                 'icon-name': "heart-filled-symbolic",
                 'page-tag': 'songs-starred'
             },
-            { # Item
+            'radios': { # Item
                 'title': _("Radios"),
                 'icon-name': "sound-wave-symbolic",
                 'page-tag': 'radios'
             }
-        ]
+        }
     },
-    { # Section
+    'playlists': { # Section
         'title': _("Playlists"),
-        'items': [
-            { # Item
+        'page-tag': 'playlists',
+        'icon-name': "playlist-symbolic",
+        'items': {
+            'playlists-all': { # Item
                 'title': _("All"),
                 'icon-name': "playlist-symbolic",
                 'page-tag': "playlists"
+            },
+            'playlists-group': { # Item (special)
+                'title': _("Playlists"),
+                'icon-name': "playlist-symbolic"
             }
-        ]
+        }
     }
-]
+}
 
 CONTEXT_ALBUM = {
     "play": {

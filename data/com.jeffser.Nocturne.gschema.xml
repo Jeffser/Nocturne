@@ -109,7 +109,10 @@
 	    <default>12</default>
 	  </key>
 	  <!--### Section: Sidebar -->
-	  <key name="sidebar-disabled-pages" type="as">
+	  <key name="sidebar-disabled-sections" type="as">
+	    <default>[]</default>
+	  </key>
+	  <key name="sidebar-disabled-items" type="as">
 	    <default>[]</default>
 	  </key>
 

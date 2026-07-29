@@ -113,25 +113,39 @@ class NocturneWindow(Adw.ApplicationWindow):
         )
 
     def setup_sidebar(self):
-        disabled_pages = self.settings.get_value('sidebar-disabled-pages').unpack()
         self.main_sidebar.remove_all()
-        for section in SIDEBAR_MENU:
-            section_el = Adw.SidebarSection(
-                title=section.get('title')
-            )
-            append_section = False
-            for item in section.get('items'):
-                if item.get('page-tag') not in disabled_pages:
+        disabled_sections = self.settings.get_value('sidebar-disabled-sections').unpack()
+        disabled_items = self.settings.get_value('sidebar-disabled-items').unpack()
+        for section_id, section_data in SIDEBAR_MENU.items():
+            if section_id in disabled_sections:
+                if row_title := section_data.get("title"):
+                    root_section = self.main_sidebar.get_sections()[0]
                     row = SidebarItem(
-                        title=item.get('title'),
-                        icon_name=item.get('icon-name'),
-                        page_tag=item.get('page-tag')
+                        title=row_title,
+                        icon_name=section_data.get("icon-name"),
+                        page_tag=section_data.get("page-tag")
                     )
-                    section_el.append(row)
-                    append_section = True
-            if append_section:
-                self.main_sidebar.append(section_el)
-        threading.Thread(target=self.update_playlist_section_of_sidebar, daemon=True).start()
+                    root_section.append(row)
+            else:
+                section_el = Adw.SidebarSection(
+                    title=section_data.get('title')
+                )
+                append_section = False
+                for item_id, item_data in section_data.get('items').items():
+                    if item_id not in disabled_items:
+                        if item_id == 'playlists-group':
+                            threading.Thread(target=self.update_playlist_section_of_sidebar, args=(section_el,), daemon=True).start()
+                        else:
+                            if row_title := item_data.get("title"):
+                                row = SidebarItem(
+                                    title=row_title,
+                                    icon_name=item_data.get("icon-name"),
+                                    page_tag=item_data.get("page-tag")
+                                )
+                                section_el.append(row)
+                                append_section = True
+                if append_section:
+                    self.main_sidebar.append(section_el)
 
     def update_loading_message(self, integration):
         message = integration.get_property("loadingMessage")
@@ -140,23 +154,11 @@ class NocturneWindow(Adw.ApplicationWindow):
         if not message:
             threading.Thread(target=self.main_navigationview.get_visible_page().reload, daemon=True).start()
 
-    def update_playlist_section_of_sidebar(self):
-        if 'playlists' in self.settings.get_value('sidebar-disabled-pages').unpack():
-            return
+    def update_playlist_section_of_sidebar(self, section_el):
         integration = get_current_integration()
         integration.connect('notify::loadingMessage', lambda integration, ud: self.update_loading_message(integration))
         if integration.get_property('loadingMessage'):
             self.update_loading_message(integration)
-
-        playlist_section = self.main_sidebar.get_sections()[-1]
-
-        GLib.idle_add(playlist_section.remove_all)
-        item = SidebarItem(
-            title=_("All"),
-            icon_name="playlist-symbolic",
-            page_tag="playlists"
-        )
-        GLib.idle_add(playlist_section.append, item)
 
         for playlistId in integration.getPlaylists()[:4]:
             if model := integration.loaded_models.get(playlistId):
@@ -164,7 +166,7 @@ class NocturneWindow(Adw.ApplicationWindow):
                     page_tag="playlists",
                     playlist_id=playlistId
                 )
-                GLib.idle_add(playlist_section.append, item)
+                GLib.idle_add(section_el.append, item)
                 integration.connect_to_model(playlistId, "name", lambda name, row=item: row.set_title(name))
                 integration.connect_to_model(playlistId, "songCount", lambda n, row=item: row.set_subtitle(('{} Songs' if n > 1 else '{} Song').format(n)))
 
