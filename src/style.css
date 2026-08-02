@@ -51,13 +51,14 @@ searchbar > revealer > box {
 }
 
 window:not(.popout-window).showing-footer sidebar scrolledwindow > viewport > *,
-window:not(.popout-window).showing-footer navigation-view-page > toolbarview > scrolledwindow > viewport > *,
-window:not(.popout-window).showing-footer navigation-view-page > toolbarview > stack > scrolledwindow > viewport > * {
+window:not(.popout-window).showing-footer .main-navigationview navigation-view-page > toolbarview > scrolledwindow > viewport > *,
+window:not(.popout-window).showing-footer .main-navigationview navigation-view-page > toolbarview > stack > scrolledwindow > viewport > * {
   padding-bottom: 100px;
 }
 
-window:not(.popout-window):not(.showing-footer) navigation-view-page > toolbarview > scrolledwindow > viewport > *,
-window:not(.popout-window):not(.showing-footer) navigation-view-page > toolbarview > stack > scrolledwindow > viewport > * {
+window:not(.popout-window):not(.showing-footer) sidebar scrolledwindow > viewport > *,
+window:not(.popout-window):not(.showing-footer) .main-navigationview navigation-view-page > toolbarview > scrolledwindow > viewport > *,
+window:not(.popout-window):not(.showing-footer) .main-navigationview navigation-view-page > toolbarview > stack > scrolledwindow > viewport > * {
   padding-bottom: 10px;
 }
 

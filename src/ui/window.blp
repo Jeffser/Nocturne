@@ -118,6 +118,9 @@ template $NocturneWindow: Adw.ApplicationWindow {
                 show-sidebar: false;
                 sidebar-position: end;
                 content: Adw.NavigationView main_navigationview {
+                  styles [
+                    "main-navigationview"
+                  ]
                   $NocturneHomePage {}
                   $NocturneArtistsPage {}
                   $NocturneStarredPage {
