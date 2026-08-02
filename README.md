@@ -32,6 +32,7 @@ HomePage | Song Queue | Lyrics | Song List | Album Page
 ![screenie1](https://jeffser.com/images/nocturne/screenie1.png) | ![screenie2](https://jeffser.com/images/nocturne/screenie2.png) | ![screenie3](https://jeffser.com/images/nocturne/screenie3.png) | ![screenie4](https://jeffser.com/images/nocturne/screenie4.png) | ![screenie5](https://jeffser.com/images/nocturne/screenie5.png)
 
 ## Dependencies
+
 The following dependencies are requirements of the project.
 - `python3 >= 3.13`
 - `gtk4`
@@ -45,31 +46,50 @@ The following dependencies are requirements of the project.
 - `python-syncedlyrics >= 1.0.1`
 - `python-mpris-server >= 0.10.0`
 - `python-tinytag >= 2.2.1`
-- `gstreamer1.0-plugins-gstreamer-rs` (optional, needed for video rendering)
+- `gst-plugin-gtk4` (optional, needed for video rendering)
 
-## Install
+## Install (Official)
+
+These are the officially supported packages that have been validated and are guaranteed to be up to date with the project.
+
 ### Linux (Flatpak)
+
 Most Linux distributions come with Flatpak preinstalled, make sure your device has [the Flathub repo enabled](https://flathub.org/en/setup).
 ```sh
 flatpak install flathub com.jeffser.Nocturne
 ```
 
 ### Arch Linux (AUR)
-Nocturne is packaged unofficially in the AUR, to install it first make sure you have an AUR helper such as [yay](https://github.com/jguer/yay).
+
+Nocturne is packaged officially in the AUR, to install it first make sure you have an AUR helper such as [yay](https://github.com/jguer/yay).
 ```sh
 yay -S nocturne
 ```
+
+By default, this package is missing a dependency required to play videos. To add this functionality, install this package.
+```sh
+yay -S gst-plugin-gtk4
+```
+
+## Install (Unofficial)
+
+Nocturne is an open source project that accepts and encourages the creation of independent packages, although I cannot guarantee that they are up to date.
+
 ### Debian
+
 Nocturne is packaged unofficially in the official Debian archive (Available in Debian 14 'forky' and above). Install it via apt.
 ```sh
 apt install nocturne
 ```
+
 ### NixOS/nix
+
 Nocturne is packaged unofficially in nixpkgs.
 You can either try it out using nix-shell:
 ```sh
 nix-shell -p nocturne
 ```
+
 or add it to your sytem packages:
 ```nix
 environment.systemPackages = [
@@ -78,7 +98,9 @@ pkgs.nocturne
 ```
 
 ## Build
+
 ### Linux (Flatpak)
+
 Dependencies are automatically managed and built depending on host environment.
 ```sh
 flatpak-builder build com.jeffser.Nocturne.yml --force-clean --install-deps-from=flathub
@@ -86,6 +108,7 @@ flatpak-builder --run build com.jeffser.Nocturne.yml nocturne
 ```
 
 ### macOS
+
 #### 1. Install Dependencies with [Homebrew](https://brew.sh/)
 ```sh
 brew install python@3.14 meson ninja pkgconf \
@@ -126,6 +149,7 @@ nocturne
 ```
 
 ## Special Thanks
+
 ### Translators
 
 Language                | Contributors
