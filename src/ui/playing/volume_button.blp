@@ -1,34 +1,37 @@
 using Gtk 4.0;
 
 template $NocturneVolumeButton: Gtk.MenuButton {
-  icon-name: "speaker-2-symbolic";
+  icon-name: bind $handle_icon_name_bind(volume_adjustment_el.value);
   tooltip-text: _("Volume");
   popover: Gtk.Popover {
     child: Gtk.Box {
       orientation: horizontal;
-      Gtk.Image {
+      Gtk.Button {
+        styles [
+          "flat"
+        ]
         icon-name: "speaker-0-symbolic";
-        accessibility {
-          label: _("Speaker Mute");
-        }
+        tooltip-text: _("Mute");
+        clicked => $mute_volume();
       }
 
-      Gtk.Scale volume_el {
-        adjustment: Gtk.Adjustment {
+      Gtk.Scale {
+        adjustment: Gtk.Adjustment volume_adjustment_el {
           lower: 0;
           upper: 1;
           value: 0.25;
         };
         orientation: horizontal;
-        value-changed => $on_volume_changed();
         width-request: 150;
       }
 
-      Gtk.Image {
+      Gtk.Button {
+        styles [
+          "flat"
+        ]
         icon-name: "speaker-3-symbolic";
-        accessibility {
-          label: _("Speaker Full Volume");
-        }
+        tooltip-text: _("Full Volume");
+        clicked => $full_volume();
       }
     };
   };

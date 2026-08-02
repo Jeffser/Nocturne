@@ -6,25 +6,32 @@ from gi.repository import Gtk, Gio
 class VolumeButton(Gtk.MenuButton):
     __gtype_name__ = 'NocturneVolumeButton'
 
-    volume_el = Gtk.Template.Child()
+    volume_adjustment_el = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()
-        Gio.Settings(schema_id="com.jeffser.Nocturne").bind(
+        self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        self.settings.bind(
             "volume",
-            self.volume_el.get_adjustment(),
+            self.volume_adjustment_el,
             "value",
             Gio.SettingsBindFlags.DEFAULT
         )
 
     @Gtk.Template.Callback()
-    def on_volume_changed(self, scale_el):
-        value = scale_el.get_value()
+    def handle_icon_name_bind(self, button, value):
         if value == 0:
-            self.set_icon_name("speaker-0-symbolic")
+            return "speaker-0-symbolic"
         elif value < 0.33:
-            self.set_icon_name("speaker-1-symbolic")
+            return "speaker-1-symbolic"
         elif value < 0.66:
-            self.set_icon_name("speaker-2-symbolic")
-        else:
-            self.set_icon_name("speaker-3-symbolic")
+            return "speaker-2-symbolic"
+        return "speaker-3-symbolic"
+
+    @Gtk.Template.Callback()
+    def full_volume(self, button):
+        self.settings.set_double('volume', 1.0)
+
+    @Gtk.Template.Callback()
+    def mute_volume(self, button):
+        self.settings.set_double('volume', 0.0)
