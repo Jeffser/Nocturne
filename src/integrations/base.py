@@ -1,6 +1,6 @@
 # base.py
 
-from gi.repository import GLib, GObject, Gdk
+from gi.repository import GObject, GLib, Gdk
 from . import models, secret, sql_instance
 from ..constants import get_nocturne_version, INTEGRATIONS_DIR, DATA_DIR
 import requests, urllib3, time, os, json, threading, logging, syncedlyrics
@@ -255,12 +255,12 @@ class Base(GObject.Object):
 
     def start_instance(self) -> bool:
         # always called in different thread, because it might take a couple of seconds to get started
-        print('WARNING', 'start_instance', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def terminate_instance(self):
         # called when the instance is no longer used
-        print('WARNING', 'terminate_instance', 'not implemented')
+        logger.warning('method not implemented')
 
     def on_login(self):
         # gets called in different thread when the login is successful
@@ -269,7 +269,7 @@ class Base(GObject.Object):
 
     def get_stream_url(self, song_id:str) -> str:
         # should return a valid url for a gst stream
-        print('WARNING', 'get_stream_url', 'not implemented')
+        logger.warning('method not implemented')
         return ""
 
     def getIntegrationDir(self) -> str:
@@ -280,17 +280,17 @@ class Base(GObject.Object):
 
     def getCoverArtBytes(self, model_id:str, size:int) -> bytes:
         # Used to send bytes to different parts of the codebase instead of full paintables, also called by getCoverArt
-        print('WARNING', 'getCoverArtBytes', 'not implemented')
+        logger.warning('method not implemented')
         return b''
 
     def updateCoverArt(self, model_id:str):
         # update both gdkPaintable and gdkPaintableBig
-        print('WARNING', 'updateCoverArt', 'not implemented')
+        logger.warning('method not implemented')
 
     def getCoverArtUrl(self, model_id:str) -> str:
         # Returns URL that can be used to get coverArt directly by external services
         # Returns empty string when a url is not available
-        print('WARNING', 'getCoverArtUrl', 'not implemented')
+        logger.warning('method not implemented')
         return ""
 
     def ping(self) -> dict:
@@ -309,68 +309,68 @@ class Base(GObject.Object):
     def getAlbumList(self, list_type:str="recent", size:int=10, offset:int=0) -> list:
         # add non existing elements to self.loaded_models, returns lists of IDs, nothing more
         # list_type = random, newest, frequent, recent, starred
-        print('WARNING', 'getAlbumList', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def getArtists(self, size:int=10) -> list:
         # add non existing elements to self.loaded_models, returns lists of IDs, nothing more
-        print('WARNING', 'getArtists', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def getPlaylists(self) -> list:
         # add non existing elements to self.loaded_models, returns lists of IDs, nothing more
-        print('WARNING', 'getPlaylists', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def getStarred(self, item_type:str) -> list:
         # returns a list of IDs of items of a given type
-        print('WARNING', 'getStarred', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
-        print('WARNING', 'verifyArtist', 'not implemented')
+        logger.warning('method not implemented')
 
     def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
-        print('WARNING', 'verifyAlbum', 'not implemented')
+        logger.warning('method not implemented')
 
     def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
-        print('WARNING', 'verifyPlaylist', 'not implemented')
+        logger.warning('method not implemented')
 
     def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
-        print('WARNING', 'verifySong', 'not implemented')
+        logger.warning('method not implemented')
 
     def star(self, model_id:str) -> bool:
         # stars an element, should return True if change is done
-        print('WARNING', 'star', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def unstar(self, model_id:str) -> bool:
         # unstars an element, should return True if change is done
-        print('WARNING', 'unstar', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def getPlayQueue(self) -> tuple:
         # returns the song ID to be played and a list of IDs
-        print('WARNING', 'getPlayQueue', 'not implemented')
+        logger.warning('method not implemented')
         return "", []
 
     def savePlayQueue(self, id_list:list, current:str, position:int) -> bool:
         # save the play queue for retrieving later, called on close, return True if ok
-        print('WARNING', 'savePlayQueue', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def getSimilarSongs(self, model_id:str, count:int=20) -> list:
         # returns list of IDs of similar songs to id, if it can not be implemented just return the result of getRandomSongs
-        print('WARNING', 'getSimilarSongs', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def getRandomSongs(self, size:int=20) -> list:
         # returns a list of song IDs
-        print('WARNING', 'getRandomSongs', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def saveLyrics(self, songId:str, content:str, lyrics_type:str):
@@ -453,7 +453,7 @@ class Base(GObject.Object):
     def search(self, query:str, artistCount:int=0, artistOffset:int=0, albumCount:int=0, albumOffset:int=0, songCount:int=0, songOffset:int=0, playlistCount:int=0, playlistOffset:int=0) -> dict:
         # returns a dict with results trucated with the count and offset, the dict has keys for album, artist and song, the values are lists of IDs
         # for an example view local.py
-        print('WARNING', 'search', 'not implemented')
+        logger.warning('method not implemented')
         return {'artist': [], 'album': [], 'song': [], 'playlist': []}
 
     def systemSearch(self, query:str):
@@ -461,53 +461,53 @@ class Base(GObject.Object):
         # and instead of separating categories it is a dict of other dicts like this
         # {'ID': {'display': VARIANT, 'type': VARIANT, 'icon': VARIANT}}
         # The values for display, type and icon should be GVariants, see Jellyfin for example
-        print('WARNING', 'systemSearch', 'not implemented')
+        logger.warning('method not implemented')
         return {}
 
     def getInternetRadioStations(self) -> list:
         # returns a list of Song IDs with the property radioStreamUrl set
         # make sure the id also exists in self.loaded_models, no need to be verified
-        print('WARNING', 'getInternetRadioStations', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def createInternetRadioStation(self, name:str, radioStreamUrl:str) -> bool:
         # returns True if created successfully
-        print('WARNING', 'createInternetRadioStation', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def updateInternetRadioStation(self, model_id:str, name:str, radioStreamUrl:str) -> bool:
         # returns True if updated successfully
-        print('WARNING', 'updateInternetRadioStation', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def deleteInternetRadioStation(self, model_id:str) -> bool:
         # returns True if deleted successfully
-        print('WARNING', 'deleteInternetRadioStation', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def createPlaylist(self, name:str=None, playlistId:str=None, songId:list=[]) -> str:
         # returns id if created successfully
-        print('WARNING', 'createPlaylist', 'not implemented')
+        logger.warning('method not implemented')
         return ""
 
     def updatePlaylist(self, playlistId:str, songIdToAdd:list=[], songIndexToRemove:list=[]) -> bool:
         # returns True if updated successfully
-        print('WARNING', 'updatePlaylist', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def deletePlaylist(self, model_id:str) -> bool:
         # returns True if deleted successfully
-        print('WARNING', 'deletePlaylist', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def setRating(self, model_id:str, rating:int=0) -> bool:
         # returns True if rated successfully
-        print('WARNING', 'setRating', 'not implemented')
+        logger.warning('method not implemented')
         return False
 
     def getTopSongs(self, artist_id:str, count:int=10) -> list:
         # returns list of ids
-        print('WARNING', 'getTopSongs', 'not implemented')
+        logger.warning('method not implemented')
         return []
 
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
@@ -516,7 +516,7 @@ class Base(GObject.Object):
         # download into DOWNLOAD_QUEUE_DIR
         # on finish move file to DOWNLOADS_DIR
         # see navidrome.py for example
-        print('WARNING', 'downloadSong', 'not implemented')
+        logger.warning('method not implemented')
 
     def scrobble(self, model_id:str, submission:bool=True):
         # the id is for a Song, this is how views are stored
@@ -641,7 +641,7 @@ class Base(GObject.Object):
         # username : str
         # title : str
         # link : str
-        print('WARNING', 'getServerInformation', 'not implemented')
+        logger.warning('method not implemented')
         return {}
 
 
