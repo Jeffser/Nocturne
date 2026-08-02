@@ -2,8 +2,6 @@
 
 from gi.repository import Gtk, Adw, GLib, Gio
 from ...integrations import get_current_integration
-from ...constants import get_display_time
-import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/popout_window.ui')
 class PopoutWindow(Adw.ApplicationWindow):

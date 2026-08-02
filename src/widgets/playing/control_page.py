@@ -3,7 +3,6 @@
 from gi.repository import Gtk, Adw, GLib, Gst, GObject
 from ...integrations import get_current_integration
 from ...constants import get_display_time
-import threading
 from urllib.parse import urlparse
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/control_page.ui')

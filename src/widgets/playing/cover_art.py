@@ -2,7 +2,6 @@
 
 from gi.repository import GObject, Adw, Gtk, Gdk, GLib
 from ...integrations import get_current_integration
-import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/cover_art.ui')
 class PlayingCoverArt(Gtk.Box, Adw.Swipeable):

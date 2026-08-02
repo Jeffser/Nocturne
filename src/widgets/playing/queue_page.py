@@ -1,9 +1,8 @@
 # queue_page.py
 
-from gi.repository import Gtk, GLib, Gio
+from gi.repository import Gtk, Gio
 from ..song import SongRow
 from ...integrations import get_current_integration
-import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/queue_page.ui')
 class PlayingQueuePage(Gtk.ScrolledWindow):

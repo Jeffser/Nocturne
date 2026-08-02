@@ -3,9 +3,9 @@
 from gi.repository import Gtk, GObject, GLib, Gio, Pango, Gst
 from ...integrations import get_current_integration
 from ..lyrics.helpers import prepare_lrc
-from ...constants import DATA_DIR, CONTEXT_LYRICS
+from ...constants import CONTEXT_LYRICS
 from ..containers import ContextContainer
-import threading, os, re
+import threading, re
 
 class LyricRow(Gtk.ListBoxRow):
     __gtype_name__ = 'NocturneLyricRow'

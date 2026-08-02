@@ -1,7 +1,5 @@
 # helpers.py
 
-from ...integrations import get_current_integration
-
 def prepare_lrc(lrc_str:str) -> list:
     lrc_lines = []
     for line in lrc_str.split('\n'):

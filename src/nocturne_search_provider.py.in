@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import gettext
-import uuid
 from pydbus import SessionBus
 from gi.repository import GLib, Gio
 

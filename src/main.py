@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import sys, threading, logging, argparse, sys
+import sys, threading, logging, argparse
 from pydbus import SessionBus
 import gi
 
@@ -28,7 +28,7 @@ gi.require_version('Gst', '1.0')
 gi.require_version('Xdp', '1.0')
 gi.require_version('XdpGtk4', '1.0')
 
-from gi.repository import Gtk, Gdk, Gio, Adw, GLib, Xdp, XdpGtk4
+from gi.repository import Gtk, Gdk, Gio, Adw, GLib
 from .window import NocturneWindow
 from .preferences import NocturnePreferences
 from .constants import get_song_info_from_file, CLI_ARGUMENTS, TRANSLATORS, COPYRIGHT_NOTICE, set_version

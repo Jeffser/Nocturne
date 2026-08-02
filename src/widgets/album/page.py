@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GLib
 from ..song import SongRow
-from ...integrations import get_current_integration, models
+from ...integrations import get_current_integration
 from ...constants import CONTEXT_ALBUM
 from ..containers import get_context_buttons_list
 import threading, io

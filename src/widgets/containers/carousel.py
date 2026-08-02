@@ -1,6 +1,6 @@
 # carousel.py
 
-from gi.repository import GObject, Gtk, GLib, Gdk, Gio
+from gi.repository import GObject, Gtk, GLib, Gdk
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/containers/carousel.ui')
 class Carousel(Gtk.Box):

@@ -2,7 +2,6 @@
 
 from gi.repository import Gtk, GLib, GObject, Gst, Gio
 from ...integrations import get_current_integration
-import threading
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/footer.ui')
 class PlayingFooter(Gtk.Overlay):
