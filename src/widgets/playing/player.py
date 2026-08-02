@@ -250,7 +250,10 @@ class Player(EventAdapter):
         self.application = application
         self.gst = Gst.ElementFactory.make("playbin", "music-player")
         self.gst.connect("source-setup", self.on_source_setup)
-        self.gst.set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
+        try:
+            self.gst.set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
+        except:
+            logger.warning("Video dependency not found")
         self.gst.connect("video-changed", self.video_changed)
 
         self.bin = Gst.Bin.new("audio-filter-bin")
