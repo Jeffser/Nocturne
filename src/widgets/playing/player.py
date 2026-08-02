@@ -10,7 +10,7 @@ from mpris_server import Metadata, ValidMetadata, Track, Position, Volume, Rate,
 from ...integrations import get_current_integration
 from ...integrations.discord_rpc import DiscordRPC
 from urllib.parse import urlparse
-import threading, io, base64, logging
+import threading, io, base64, logging, gc
 from PIL import Image, ImageFilter
 from colorthief import ColorThief
 
@@ -661,4 +661,4 @@ class Player(EventAdapter):
                     self.gst.set_state(Gst.State.NULL)
         else:
             self.gst.set_state(Gst.State.NULL)
-
+        gc.collect()
