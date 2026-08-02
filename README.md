@@ -27,26 +27,9 @@
 
 ## Screenies
 
-HomePage | Song Queue | Lyrics | Song List | Album Page
-:------------------:|:-----------------:|:----------------:|:---------------------------:|:--------------------:
-![screenie1](https://jeffser.com/images/nocturne/screenie1.png) | ![screenie2](https://jeffser.com/images/nocturne/screenie2.png) | ![screenie3](https://jeffser.com/images/nocturne/screenie3.png) | ![screenie4](https://jeffser.com/images/nocturne/screenie4.png) | ![screenie5](https://jeffser.com/images/nocturne/screenie5.png)
-
-## Dependencies
-
-The following dependencies are requirements of the project.
-- `python3 >= 3.13`
-- `gtk4`
-- `libadwaita-1 >= 1.9`
-- `glib-2.0 >= 2.84.0`
-- `libsecret`
-- `gstreamer`
-- `blueprint-compiler >= 0.18.0`
-- `python-requests >= 2.33.1`
-- `python-colorthief >= 0.2.1`
-- `python-syncedlyrics >= 1.0.1`
-- `python-mpris-server >= 0.10.0`
-- `python-tinytag >= 2.2.1`
-- `gst-plugin-gtk4` (optional, needed for video rendering)
+HomePage | Song Playing
+:------------------:|:-----------------:
+![screenie1](https://jeffser.com/images/nocturne/screenie1.png) | ![screenie2](https://jeffser.com/images/nocturne/screenie3.png)
 
 ## Install (Official)
 
@@ -147,6 +130,44 @@ ninja install -C build
 ```sh
 nocturne
 ```
+
+## Running Nocturne From Terminal
+
+In addition to running Nocturne by opening it graphically, you can also start it from a terminal.
+```sh
+# Flatpak
+flatpak run com.jeffser.Nocturne
+
+# Others
+nocturne
+```
+
+You can also control Nocturne from a terminal, to get started make sure Nocturne is running and then run the following command to see all the available options:
+
+```sh
+# Flatpak
+flatpak run com.jeffser.Nocturne --help
+
+# Others
+nocturne --help
+```
+
+## Dependencies
+
+The following dependencies are requirements of the project in case you want to package it.
+- `python3 >= 3.13`
+- `gtk4`
+- `libadwaita-1 >= 1.9`
+- `glib-2.0 >= 2.84.0`
+- `libsecret`
+- `gstreamer`
+- `blueprint-compiler >= 0.18.0`
+- `python-requests >= 2.33.1`
+- `python-colorthief >= 0.2.1`
+- `python-syncedlyrics >= 1.0.1`
+- `python-mpris-server >= 0.10.0`
+- `python-tinytag >= 2.2.1`
+- `gst-plugin-gtk4` (optional, needed for video rendering)
 
 ## Special Thanks
 
