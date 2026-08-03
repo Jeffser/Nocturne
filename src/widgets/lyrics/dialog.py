@@ -191,8 +191,6 @@ class LyricsDialog(Adw.Dialog):
 
         integration = get_current_integration()
         integration.saveLyrics(self.id, content, 'lrc')
-        window.lyrics_page.song_changed(self.id)
-        __show_custom_toast(window, self.id, "title", _("Lyrics Saved"))
 
         Gio.Settings(schema_id="com.jeffser.Nocturne").set_string('playback-mode', self.playback_mode_backup)
         self.close()
