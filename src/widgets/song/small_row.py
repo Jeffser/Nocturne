@@ -17,7 +17,7 @@ class SongSmallRow(Gtk.Button):
         self.id = id
         self.show_album_name = show_album_name
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         super().__init__(
             action_target=GLib.Variant.new_string(self.id)
         )
@@ -53,7 +53,7 @@ class SongSmallRow(Gtk.Button):
                 self.subtitle_el.set_label("")
 
     def update_album(self, album:str):
-        if self.show_album_name:
+        if album and self.show_album_name:
             self.subtitle_el.set_label(album)
 
     def generate_context_menu(self) -> ContextContainer:

@@ -16,7 +16,7 @@ class ArtistButton(Gtk.Button):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyArtist(self.id)
+        integration.verifyArtist(self.id, minimal=True)
         super().__init__(
             action_target=GLib.Variant.new_string(self.id)
         )

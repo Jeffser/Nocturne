@@ -278,16 +278,16 @@ class Local(Base):
         query = f"{item_type.upper()}:"
         return [item_id for item_id in star_list if item_id.startswith(query) and item_id in self.loaded_models]
 
-    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         threading.Thread(target=self.updateCoverArt, args=(model_id,), daemon=True).start()
 
-    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         threading.Thread(target=self.updateCoverArt, args=(model_id,), daemon=True).start()
 
-    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         threading.Thread(target=self.updateCoverArt, args=(model_id,), daemon=True).start()
 
-    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def run():
             conn, cursor = sql_instance.get_connection(self)
             cursor.execute("SELECT id FROM stars")

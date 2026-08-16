@@ -18,7 +18,7 @@ class SongButton(Gtk.Box):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         super().__init__()
 
         self.cover_button_el.set_action_target_value(GLib.Variant.new_string(self.id))

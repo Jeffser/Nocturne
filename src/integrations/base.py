@@ -72,7 +72,7 @@ class CacheManager(GObject.Object):
             event.wait(timeout=self.get_property('timeout'))
             result = self.results.get(cache_id)
             if result:
-                logger.info(f'(Cache) Job Skipped : {cache_id}')
+                logger.debug(f'(Cache) Job Skipped : {cache_id}')
             else:
                 # No result, just do the job at this point
                 state, result = job(*job_args)
@@ -108,7 +108,8 @@ class Base(GObject.Object):
     # Re-usable session_adapter for shared connection pool
     _session_adapter = HTTPAdapter(
         pool_connections=5,
-        pool_maxsize=30,
+        pool_maxsize=35,
+        pool_block=True,
         max_retries=Retry(
             total=3,
             backoff_factor=1,
@@ -348,19 +349,19 @@ class Base(GObject.Object):
         logger.warning('method not implemented')
         return []
 
-    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
         logger.warning('method not implemented')
 
-    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
         logger.warning('method not implemented')
 
-    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
         logger.warning('method not implemented')
 
-    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         # verifies that element is fully loaded with all it's metadata, should also call for updateCoverArt
         logger.warning('method not implemented')
 
