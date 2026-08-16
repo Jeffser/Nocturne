@@ -20,7 +20,7 @@ class SongButton(Gtk.Box):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.settings.connect("changed::button-size", lambda *_: self.update_size())
         super().__init__(

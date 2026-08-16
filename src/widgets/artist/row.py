@@ -17,7 +17,7 @@ class ArtistRow(Adw.ActionRow):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyArtist(self.id)
+        integration.verifyArtist(self.id, minimal=True)
         super().__init__(
             model=integration.loaded_models.get(self.id)
         )
