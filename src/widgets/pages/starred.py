@@ -71,11 +71,11 @@ class StarredPage(Adw.NavigationPage):
 
         for item_id in missing_ids:
             if 'songs' in self.get_tag():
-                GLib.idle_add(self.list_el.list_el.append, SongRow(item_id))
-                GLib.idle_add(self.wrapbox_el.append, SongButton(item_id))
+                GLib.idle_add(lambda item_id: self.list_el.list_el.append(SongRow(item_id)), item_id)
+                GLib.idle_add(lambda item_id: self.wrapbox_el.append(SongButton(item_id)), item_id)
             elif 'artists' in self.get_tag():
-                GLib.idle_add(self.list_el.list_el.append, ArtistRow(item_id))
-                GLib.idle_add(self.wrapbox_el.append, ArtistButton(item_id))
+                GLib.idle_add(lambda item_id: self.list_el.list_el.append(ArtistRow(item_id)), item_id)
+                GLib.idle_add(lambda item_id: self.wrapbox_el.append(ArtistButton(item_id)), item_id)
         self.offset += 30
         GLib.idle_add(self.update_visibility)
         self.searching = False
