@@ -75,7 +75,7 @@ class PlayerAdapter(MprisAdapter):
             if not (title := current_song_model.get_property("displaySongTitle")):
                 title = song.get_property('title')
             if not (artist := current_song_model.get_property("displaySongArtist")):
-                artist = song.get_property('title')
+                artist = song.get_property('title') #sets station name to artist if the song has a title
             if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
                 artist = urlparse(song.get_property('radioStreamUrl')).netloc
             artists = [artist]
@@ -508,16 +508,29 @@ class Player(EventAdapter):
                 if song_model.get_property('radioStreamUrl'): # is radio
                     if tag_list := message.parse_tag():
                         success_title, title = tag_list.get_string(Gst.TAG_TITLE)
-                        if success_title and title and title != 'null':
-                            current_title = model.get_property('displaySongTitle')
-                            if current_title != title:
-                                model.set_property('displaySongTitle', title.strip())
+                        if not (success_title and title and title != 'null'):
+                            title = ""
                         success_artist, artist = tag_list.get_string(Gst.TAG_ARTIST)
-                        if success_artist and artist and artist != 'null':
-                            current_artist = model.get_property('displaySongArtist')
-                            if current_artist != artist:
-                                model.set_property('displaySongArtist', artist.strip())
-                        if success_title or success_artist:
+                        if not(success_artist and artist and artist != 'null'):
+                            artist = ""
+                        if title and not artist: #Handle Shoutcast metadata
+                            parts = title.split(" - ", 1)
+                            if len(parts) == 2:
+                                artist = parts[0]
+                                title = parts[1]
+                        title = title.strip()
+                        artist = artist.strip()
+                        emit_changes = False
+                        current_title = model.get_property('displaySongTitle')
+                        if title and current_title != title:
+                            model.set_property('displaySongTitle', title)
+                            emit_changes = True
+                        current_artist = model.get_property('displaySongArtist')
+                        if artist and current_artist != artist:
+                            model.set_property('displaySongArtist', artist)
+                            emit_changes = True
+
+                        if emit_changes:
                             self.emit_changes(self.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def update_stream_progress(self):
