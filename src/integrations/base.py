@@ -222,9 +222,9 @@ class Base(GObject.Object):
         if model_id in self.loaded_models:
             connection_id = self.loaded_models.get(model_id).connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, mid=model_id, cb=callback: cb(self.loaded_models.get(mid).get_property(p))
+                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(cb, self.loaded_models.get(mid).get_property(p))
             )
-            callback(self.loaded_models.get(model_id).get_property(parameter))
+            GLib.idle_add(callback, self.loaded_models.get(model_id).get_property(parameter))
         return connection_id
 
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
@@ -643,6 +643,5 @@ class Base(GObject.Object):
         # link : str
         logger.warning('method not implemented')
         return {}
-
 
 
