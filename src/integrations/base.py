@@ -231,9 +231,16 @@ class Base(GObject.Object):
         if model_id in self.loaded_models:
             connection_id = self.loaded_models.get(model_id).connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(cb, self.loaded_models.get(mid).get_property(p))
+                lambda *_, p=parameter, mid=model_id, cb=callback: (
+                    cb(self.loaded_models.get(mid).get_property(p))
+                    if threading.current_thread() == threading.main_thread()
+                    else GLib.idle_add(cb, self.loaded_models.get(mid).get_property(p))
+                )
             )
-            GLib.idle_add(callback, self.loaded_models.get(model_id).get_property(parameter))
+            if threading.current_thread() == threading.main_thread():
+                callback(self.loaded_models.get(model_id).get_property(parameter))
+            else:
+                GLib.idle_add(callback, self.loaded_models.get(model_id).get_property(parameter))
         return connection_id
 
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
