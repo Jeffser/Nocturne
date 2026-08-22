@@ -231,9 +231,16 @@ class Base(GObject.Object):
             model = self.loaded_models.get(model_id)
             connection_id = model.connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(self._dispatch_model_callback, cb, self.loaded_models.get(mid).get_property(p))
+                lambda *_, p=parameter, mid=model_id, cb=callback: (
+                    self._dispatch_model_callback(cb, self.loaded_models.get(mid).get_property(p))
+                    if threading.current_thread() == threading.main_thread()
+                    else GLib.idle_add(self._dispatch_model_callback, cb, self.loaded_models.get(mid).get_property(p))
+                )
             )
-            GLib.idle_add(self._dispatch_model_callback, callback, self.loaded_models.get(model_id).get_property(parameter))
+            if threading.current_thread() == threading.main_thread():
+                self._dispatch_model_callback(callback, self.loaded_models.get(model_id).get_property(parameter))
+            else:
+                GLib.idle_add(self._dispatch_model_callback, callback, self.loaded_models.get(model_id).get_property(parameter))
             self._auto_disconnect_on_unroot(callback, model, connection_id)
         elif model_id == 'currentSong':
             #TODO ^ temp code whilst I migrate everything to reference current-state directly
