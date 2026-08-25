@@ -478,7 +478,10 @@ class Player(EventAdapter):
             channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands')/2)]])
         integration = get_current_integration()
         timestamp = struct.get_uint64('stream-time')[1] / 1000000000
-        magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
+        if len(channels) > 1: #stereo spectrum
+            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
+        else: #mono spectrum
+            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[0]))]
         if timestamp and magnitudes:
             if not integration.loaded_models.get('currentSong').get_property('magnitudes'):
                 integration.loaded_models.get('currentSong').set_property('magnitudes', {})
