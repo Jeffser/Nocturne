@@ -135,7 +135,8 @@ class PlayingControlPage(Adw.NavigationPage):
 
     def update_radioStreamUrl(self, radioStreamUrl:str):
         self.radio_homepage_el.set_visible(radioStreamUrl)
-        self.artist_el.set_visible(not radioStreamUrl)
+        self.artist_el.set_can_target(not radioStreamUrl)
+        self.artist_el.set_focusable(not radioStreamUrl)
         self.positive_progress_el.set_visible(not radioStreamUrl)
         self.negative_progress_el.set_visible(not radioStreamUrl)
         self.progress_el.set_visible(not radioStreamUrl)
@@ -154,10 +155,6 @@ class PlayingControlPage(Adw.NavigationPage):
         if artistId:
             self.artist_el.set_action_target_value(GLib.Variant.new_string(artistId))
             self.artist_el.set_action_name("app.show_artist")
-            self.artist_el.set_sensitive(True)
-        else:
-            self.artist_el.set_action_name("")
-            self.artist_el.set_sensitive(False)
 
     def update_album(self, album:str):
         self.album_el.get_child().set_label(album)
@@ -202,4 +199,5 @@ class PlayingControlPage(Adw.NavigationPage):
     def display_artist_changed(self, display_artist:str):
         self.artist_el.get_child().set_label(display_artist)
         self.artist_el.set_tooltip_text(display_artist)
+        self.artist_el.set_visible(bool(display_artist))
 
