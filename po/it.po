@@ -1,0 +1,1922 @@
+# Italian translations for PACKAGE package.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Ubuntu <nocturne@xcalt.anonaddy.com>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-08-16 10:28+0200\n"
+"PO-Revision-Date: 2026-08-16 10:28+0200\n"
+"Last-Translator: vh45f <nocturne@xcalt.anonaddy.com>\n"
+"Language-Team: Italian <tp@lists.linux.it>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: data/com.jeffser.Nocturne.desktop.in:3
+#: data/com.jeffser.Nocturne.metainfo.xml.in:7
+msgid "Nocturne"
+msgstr "Nocturne"
+
+#: data/com.jeffser.Nocturne.desktop.in:11
+msgid "GTK;Navidrome;Jellyfin;Music;"
+msgstr "GTK;Navidrome;Jellyfin;Music;"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:8
+msgid "Bring your music library together"
+msgstr "Riunisci la tua libreria musicale"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:10
+msgid "A modern music client"
+msgstr "Un lettore musicale moderno"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:11
+msgid "Features"
+msgstr "Funzionalità"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:13
+msgid "Compatibility with Jellyfin, OpenSubsonic, Bandcamp and local files"
+msgstr "Compatibilità con Jellyfin, OpenSubsonic, Bandcamp e file locali"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:14
+msgid "Exploration by songs, artists, albums, radios and playlists"
+msgstr "Esplorazione tramite canzoni, artisti, album, radio e playlist"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:15
+msgid "Playlist management"
+msgstr "Gestione playlist"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:16
+msgid "Audio equalizer and audio visualizer"
+msgstr "Equalizzatore audio e visualizzatore audio"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:17
+msgid "Mpris integration"
+msgstr "Integrazione Mpris"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:18
+msgid "Integrated Navidrome instance management"
+msgstr "Gestione integrata di istanze Navidrome"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:19
+msgid "Automatic lyrics fetching"
+msgstr "Recupero automatico dei testi"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:20
+msgid "Downloads and offline mode"
+msgstr "Download e modalità offline"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:21
+msgid "Cool interface"
+msgstr "Interfaccia accattivante"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:66
+msgid "Main homepage"
+msgstr "Pagina principale"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:70
+msgid "Song queue"
+msgstr "Coda"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:74
+#: src/ui/playing/popout_window.blp:93 src/ui/window.blp:195
+#: src/ui/window.blp:247
+msgid "Lyrics"
+msgstr "Testi"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:78
+msgid "Song list"
+msgstr "Elenco dei brani"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:82
+msgid "Album page"
+msgstr "Sezione album"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:86
+msgid "Mini Player"
+msgstr "Lettore Mini"
+
+#: data/com.jeffser.Nocturne.SearchProvider.desktop.in:4
+msgid "Nocturne Search Provider"
+msgstr "Fornitore di ricerca Nocturne"
+
+#: src/actions.py:150 src/widgets/pages/login.py:133
+msgid "Error"
+msgstr "Errore"
+
+#: src/actions.py:151
+msgid "No details provided"
+msgstr "Nessun dettaglio fornito"
+
+#: src/actions.py:153 src/actions.py:300 src/preferences.py:594
+#: src/ui/song/queue.blp:43
+msgid "Close"
+msgstr "Chiudi"
+
+#: src/actions.py:191
+msgid "Not enough data found for Nocturne Playback ({})"
+msgstr "Dati trovati per Nocturne Playback insufficienti"
+
+#: src/actions.py:297 src/ui/song/row.blp:72
+msgid "External File"
+msgstr "File esterni"
+
+#: src/actions.py:298
+msgid ""
+"This track was loaded from an external file, this means it will have less "
+"features compared to a track inside the library"
+msgstr ""
+"Questa traccia è stata caricata da un file esterno, questo significa che"
+"avrà meno funzionalità rispetto ad una traccia all'interno della libreria"
+
+#: src/actions.py:318
+msgid "Navidrome server deleted successfully"
+msgstr "Server Navidrome eliminato con successo"
+
+#: src/actions.py:327
+msgid "Delete Navidrome Server"
+msgstr "Elimina server Navidrome"
+
+#: src/actions.py:328
+msgid "Are you sure you want to delete the integrated Navidrome server?"
+msgstr "Sei sicuro di voler eliminare il server Navidrome integrato?"
+
+#: src/actions.py:330 src/actions.py:469 src/actions.py:503 src/actions.py:681
+#: src/actions.py:759 src/preferences.py:512 src/ui/lyrics/dialog.blp:16
+#: src/ui/lyrics/dialog.blp:17 src/widgets/pages/login.py:181
+msgid "Cancel"
+msgstr "Annulla"
+
+#: src/actions.py:331
+msgid "Keep Data"
+msgstr "Mantieni i dati"
+
+#: src/actions.py:332
+msgid "Delete Everything"
+msgstr "Elimina tutto"
+
+#: src/actions.py:417
+msgid "No Name"
+msgstr "Nessun nome"
+
+#: src/actions.py:436
+msgid "Radio updated successfully"
+msgstr "Radio aggiornata con successo"
+
+#: src/actions.py:436
+msgid "Radio added successfully"
+msgstr "Radio aggiunta con successo"
+
+#: src/actions.py:443
+msgid "Error updating radio"
+msgstr "Si è verificato un errore durante l'aggiornamento della radio"
+
+#: src/actions.py:443
+msgid "Error adding radio"
+msgstr "Si è verificato un errore durante l'aggiunta della radio"
+
+#: src/actions.py:454 src/actions.py:673
+msgid "Name"
+msgstr "Nome"
+
+#: src/actions.py:459
+msgid "Stream Url"
+msgstr "Url flusso"
+
+#: src/actions.py:466
+msgid "Update Radio Station"
+msgstr "Aggiorna stazione radio"
+
+#: src/actions.py:466
+msgid "Add Radio Station"
+msgstr "Aggiungi stazione radio"
+
+#: src/actions.py:470 src/preferences.py:513 src/ui/lyrics/dialog.blp:23
+#: src/ui/lyrics/dialog.blp:24
+msgid "Save"
+msgstr "Salva"
+
+#: src/actions.py:483
+msgid "Radio deleted successfully"
+msgstr "Radio eliminata con successo"
+
+#: src/actions.py:487
+msgid "Error deleting radio"
+msgstr "Si è verificato un errore durante l'eliminazione della radio"
+
+#: src/actions.py:500
+msgid "Delete Radio Station"
+msgstr "Elimina stazione radio"
+
+#: src/actions.py:501 src/actions.py:757
+msgid "Are you sure you want to delete '{}'?"
+msgstr "Sei sicuro di voler eliminare '{}'?"
+
+#: src/actions.py:504 src/actions.py:760 src/constants.py:585
+#: src/constants.py:633
+msgid "Delete"
+msgstr "Elimina"
+
+#: src/actions.py:523 src/actions.py:535 src/actions.py:537 src/actions.py:579
+#: src/actions.py:630
+msgid "Playing Next"
+msgstr "Prossimo in riproduzione"
+
+#: src/actions.py:527 src/actions.py:542 src/actions.py:544 src/actions.py:586
+#: src/actions.py:637
+msgid "Playing Later"
+msgstr "In riproduzione più tardi"
+
+#: src/actions.py:535 src/actions.py:542 src/actions.py:870 src/actions.py:995
+#: src/widgets/playlist/dialog.py:31
+msgid "{} Songs"
+msgstr "{} Brani"
+
+#: src/actions.py:655
+msgid "Playlist updated successfully"
+msgstr "Playlist aggiornata con successo"
+
+#: src/actions.py:655
+msgid "Playlist created successfully"
+msgstr "Playlist creata con successo"
+
+#: src/actions.py:657
+msgid "Error updating playlist"
+msgstr "Si è verificato un errore durante l'aggiornamento della playlist"
+
+#: src/actions.py:657
+msgid "Error creating playlist"
+msgstr "Si è verificato un errore durante la creazione della playlist"
+
+#: src/actions.py:678
+msgid "Update Playlist"
+msgstr "Aggiorna playlist"
+
+#: src/actions.py:678 src/ui/pages/playlists.blp:41
+msgid "Create Playlist"
+msgstr "Crea playlist"
+
+#: src/actions.py:682
+msgid "Update"
+msgstr "Aggiorna"
+
+#: src/actions.py:682
+msgid "Create"
+msgstr "Crea"
+
+#: src/actions.py:695
+msgid "{} Song Removed"
+msgid_plural "{} Songs Removed"
+msgstr[0] "{} Brano rimosso"
+msgstr[1] "{} Brani rimossi"
+
+#: src/actions.py:720 src/actions.py:734
+msgid "{} Song Added"
+msgid_plural "{} Songs Added"
+msgstr[0] "{} Brano aggiunto"
+msgstr[1] "{} Brani aggiunta"
+
+#: src/actions.py:738 src/actions.py:875
+msgid "{} Song Skipped"
+msgid_plural "{} Songs Skipped"
+msgstr[0] "{} Brano saltato"
+msgstr[1] "{} Brani saltati"
+
+#: src/actions.py:749
+msgid "Playlist Deleted"
+msgstr "Playlist eliminata"
+
+#: src/actions.py:756
+msgid "Delete Playlist"
+msgstr "Elimina playlist"
+
+#: src/actions.py:806
+msgid "No songs found"
+msgstr "Nessun brano trovato"
+
+#: src/actions.py:847 src/actions.py:871 src/actions.py:906 src/actions.py:939
+msgid "Download Started"
+msgstr "Download iniziato"
+
+#: src/actions.py:854 src/actions.py:882 src/actions.py:889 src/actions.py:922
+#: src/actions.py:955
+msgid "Already Downloaded"
+msgstr "Già scaricato"
+
+#: src/actions.py:876
+msgid "{} Song ({})"
+msgid_plural "{} Songs ({})"
+msgstr[0] "{} Brano ({})"
+msgstr[1] "{} Brani ({})"
+
+#: src/actions.py:888
+msgid "Download Skipped"
+msgstr "Download saltato"
+
+#: src/actions.py:910 src/actions.py:943
+msgid "Download Started ({} Song Skipped)"
+msgid_plural "Download Started ({} Songs Skipped)"
+msgstr[0] "Download iniziato ({} Brano saltato)"
+msgstr[1] "Download iniziato ({} Brani saltati)"
+
+#: src/actions.py:979 src/actions.py:996
+msgid "Deleted"
+msgstr "Eliminato"
+
+#: src/constants.py:372 src/ui/playing/playback_mode_button.blp:5
+msgid "Consecutive"
+msgstr "Consecutiva"
+
+#: src/constants.py:376
+msgid "Repeat All"
+msgstr "Ripeti tutto"
+
+#: src/constants.py:380
+msgid "Repeat One"
+msgstr "Ripeti uno"
+
+#: src/constants.py:385
+msgid "Low ({})"
+msgstr "Basso ({})"
+
+#: src/constants.py:386
+msgid "Medium ({})"
+msgstr "Medio ({})"
+
+#: src/constants.py:387
+msgid "High ({})"
+msgstr "Alto ({})"
+
+#: src/constants.py:388
+msgid "Ultra ({})"
+msgstr "Ultra ({})"
+
+#: src/constants.py:389
+msgid "Original File"
+msgstr "File Originale"
+
+#. Item
+#: src/constants.py:397 src/ui/pages/home.blp:5
+msgid "Home"
+msgstr "Home"
+
+#. Section
+#: src/constants.py:404 src/ui/artist/page.blp:164
+#: src/ui/pages/albums_all.blp:5 src/ui/pages/albums_all.blp:28
+#: src/ui/pages/home.blp:103 src/ui/preferences.blp:312
+msgid "Albums"
+msgstr "Album"
+
+#. Item
+#: src/constants.py:409 src/constants.py:446 src/constants.py:463
+#: src/constants.py:485
+msgid "All"
+msgstr "Tutto"
+
+#. Item
+#: src/constants.py:414
+msgid "Random"
+msgstr "Casuale"
+
+#. Item
+#: src/constants.py:419 src/constants.py:451 src/constants.py:468
+msgid "Favorites"
+msgstr "Preferiti"
+
+#. Item
+#: src/constants.py:424
+msgid "Recently Added"
+msgstr "Aggiunto di recente"
+
+#. Item
+#: src/constants.py:429
+msgid "Recently Played"
+msgstr "Riprodotto di recente"
+
+#. Item
+#: src/constants.py:434
+msgid "Most Played"
+msgstr "Più riprodotto"
+
+#. Section
+#. list
+#: src/constants.py:441 src/integrations/models.py:163
+#: src/ui/pages/artists.blp:5 src/ui/pages/artists.blp:28
+#: src/ui/pages/home.blp:109 src/ui/preferences.blp:320
+msgid "Artists"
+msgstr "Artisti"
+
+#. Section
+#: src/constants.py:458 src/ui/album/page.blp:160 src/ui/pages/home.blp:97
+#: src/ui/pages/songs_all.blp:5 src/ui/pages/songs_all.blp:28
+#: src/ui/preferences.blp:304
+msgid "Songs"
+msgstr "Brani"
+
+#. Item
+#: src/constants.py:473 src/ui/pages/radios.blp:5 src/ui/pages/radios.blp:13
+msgid "Radios"
+msgstr "Radio"
+
+#. Section
+#. Item (special)
+#: src/constants.py:480 src/constants.py:490 src/ui/pages/home.blp:115
+#: src/ui/pages/playlists.blp:5 src/ui/pages/playlists.blp:28
+#: src/ui/preferences.blp:328
+msgid "Playlists"
+msgstr "Playlist"
+
+#: src/constants.py:499 src/constants.py:550 src/ui/lyrics/dialog.blp:47
+#: src/ui/playing/control_page.blp:172 src/ui/playing/footer.blp:114
+#: src/ui/song/queue.blp:58 src/ui/song/queue.blp:60
+msgid "Play"
+msgstr "Riproduci"
+
+#: src/constants.py:504 src/constants.py:537 src/constants.py:560
+msgid "Shuffle"
+msgstr "Shuffle"
+
+#: src/constants.py:509 src/constants.py:565 src/constants.py:598
+#: src/ui/song/queue.blp:66 src/ui/song/queue.blp:68
+msgid "Play Next"
+msgstr "Riproduci prossimo"
+
+#: src/constants.py:514 src/constants.py:570 src/constants.py:603
+#: src/ui/song/queue.blp:74 src/ui/song/queue.blp:76
+msgid "Play Later"
+msgstr "Riproduci per ultimo"
+
+#: src/constants.py:519 src/constants.py:613 src/ui/song/queue.blp:82
+#: src/ui/song/queue.blp:84
+msgid "Add To Playlist"
+msgstr "Aggiungi ad una playlist"
+
+#: src/constants.py:524 src/constants.py:575 src/constants.py:618
+#: src/ui/pages/setup.blp:23 src/ui/playing/lyrics_page.blp:167
+#: src/ui/playing/lyrics_page.blp:170 src/ui/song/queue.blp:90
+#: src/ui/song/queue.blp:92
+msgid "Download"
+msgstr "Scarica"
+
+#: src/constants.py:529 src/constants.py:628
+#: src/nocturne_search_provider.py.in:10 src/ui/playing/control_page.blp:83
+msgid "Show Artist"
+msgstr "Mostra artista"
+
+#: src/constants.py:542 src/ui/playing/lyrics_page.blp:146
+#: src/widgets/song/row.py:109
+msgid "Radio"
+msgstr "Radio"
+
+#: src/constants.py:555
+msgid "Resume"
+msgstr "Riprendi"
+
+#: src/constants.py:580 src/constants.py:608
+msgid "Edit"
+msgstr "Modifica"
+
+#: src/constants.py:594
+msgid "Select"
+msgstr "Seleziona"
+
+#: src/constants.py:623 src/ui/album/button.blp:49
+#: src/ui/playing/control_page.blp:98
+msgid "Show Album"
+msgstr "Mostra album"
+
+#: src/constants.py:639 src/ui/song/queue.blp:101 src/ui/song/queue.blp:103
+msgid "Remove"
+msgstr "Rimuovi"
+
+#: src/constants.py:644 src/ui/song/queue.blp:112 src/ui/song/queue.blp:114
+msgid "Delete Download"
+msgstr "Elimina Download"
+
+#: src/constants.py:650 src/main.py:158
+msgid "Show Details"
+msgstr "Mostra dettagli"
+
+#: src/constants.py:661
+msgid "Visit Webpage"
+msgstr "Visita la pagina web"
+
+#: src/constants.py:667
+msgid "Update Server"
+msgstr "Aggiorna server"
+
+#: src/constants.py:672
+msgid "Delete Server"
+msgstr "Elimina server"
+
+#: src/constants.py:681
+msgid "Edit Lyrics"
+msgstr "Modifica testi"
+
+#: src/constants.py:686
+msgid "Remove Lyrics"
+msgstr "Rimuovi testi"
+
+#: src/integrations/base.py:306
+msgid "Could not generate SQL database"
+msgstr "Non è stato possibile generare il database SQL"
+
+#: src/integrations/discord_rpc.py:171
+msgid "Browsing"
+msgstr "Sfogliando"
+
+#: src/integrations/discord_rpc.py:189
+msgid "Listening to music"
+msgstr "Ascoltando la musica"
+
+#: src/integrations/jellyfin.py:18
+msgid "Connect to a Jellyfin server."
+msgstr "Connetti ad un server Jellyfin"
+
+#: src/integrations/jellyfin.py:22
+msgid "Jellyfin"
+msgstr "Jellyfin"
+
+#: src/integrations/jellyfin.py:23
+msgid "Use an existing Jellyfin instance"
+msgstr "Usa un'istanza Jellyfin esistente"
+
+#: src/integrations/jellyfin.py:297
+msgid "Could not log in"
+msgstr "Non è stato possibile accedere"
+
+#: src/integrations/jellyfin.py:1162
+msgid "Unknown"
+msgstr "Sconosciuto"
+
+#: src/integrations/local.py:20 src/integrations/local.py:26
+#: src/integrations/local.py:692
+msgid "Local Files"
+msgstr "File locali"
+
+#: src/integrations/local.py:21
+msgid ""
+"Let Nocturne load your local files directly, for big libraries it is "
+"recommended to use a dedicated server."
+msgstr ""
+"Lascia caricare i tuoi file locali a Nocturne, per librerie grandi è "
+"consigliato utilizzare un server dedicato. "
+#: src/integrations/local.py:23 src/ui/pages/setup.blp:67
+#: src/ui/pages/setup.blp:68
+msgid "Continue"
+msgstr "Continua"
+
+#: src/integrations/local.py:27
+msgid "Limited functionality"
+msgstr "Funzionalità limitate"
+
+#. load songs, albums, artists
+#: src/integrations/local.py:68
+msgid "Loading Songs"
+msgstr "Caricamento dei brani"
+
+#: src/integrations/local.py:138 src/integrations/navidrome.py:747
+msgid "Could not locate path, try again"
+msgstr "Non è stato possibile trovare il percorso, riprova"
+
+#: src/integrations/local.py:318
+msgid "No Album"
+msgstr "Nessun album"
+
+#: src/integrations/local.py:704 src/integrations/local.py:713
+msgid "Offline Mode"
+msgstr "Modalità offline"
+
+#: src/integrations/local.py:705
+msgid "Access your downloads"
+msgstr "Accedi ai download"
+
+#: src/integrations/models.py:142 src/ui/album/page.blp:5
+#: src/widgets/album/page.py:128
+msgid "Album"
+msgstr "Album"
+
+#: src/integrations/models.py:144
+msgid "Display Artist"
+msgstr "Mostra Artista"
+
+#: src/integrations/models.py:146
+msgid "MusicBrainz ID"
+msgstr "MusicBrainz ID"
+
+#: src/integrations/models.py:147
+msgid "Track Number"
+msgstr "Numero traccia"
+
+#: src/integrations/models.py:148
+msgid "Year"
+msgstr "Anno"
+
+#: src/integrations/models.py:149
+msgid "Size"
+msgstr "Dimensioni"
+
+#: src/integrations/models.py:150
+msgid "Suffix"
+msgstr "Suffisso"
+
+#: src/integrations/models.py:151 src/widgets/album/button.py:94
+#: src/widgets/album/page.py:144 src/widgets/artist/page.py:109
+#: src/widgets/playing/control_page.py:191 src/widgets/song/row.py:183
+msgid "Favorite"
+msgstr "Preferito"
+
+#: src/integrations/models.py:152
+msgid "Duration"
+msgstr "Durata"
+
+#: src/integrations/models.py:154
+msgid "Bit Rate"
+msgstr "Bit Rate"
+
+#: src/integrations/models.py:155
+msgid "Bit Depth"
+msgstr "Profondità di bit"
+
+#: src/integrations/models.py:156
+msgid "Sampling Rate"
+msgstr "Campionamento"
+
+#: src/integrations/models.py:157
+msgid "Channel Count"
+msgstr "Numero canali"
+
+#: src/integrations/models.py:159
+msgid "Path"
+msgstr "Percorso"
+
+#: src/integrations/models.py:160
+msgid "Disc Number"
+msgstr "Numero disco"
+
+#: src/integrations/models.py:161
+msgid "BPM"
+msgstr "BPM"
+
+#: src/integrations/models.py:162
+msgid "Genres"
+msgstr "Generi"
+
+#. list
+#: src/integrations/models.py:164
+msgid "Track Gain"
+msgstr "Guadagno traccia"
+
+#: src/integrations/models.py:165
+msgid "Album Gain"
+msgstr "Guadagno album"
+
+#: src/integrations/navidrome.py:19
+msgid "Connect to an OpenSubsonic server like Navidrome."
+msgstr "Connetti ad un server OpenSubsonic come Navidrome."
+
+#: src/integrations/navidrome.py:23
+msgid "External Server"
+msgstr "Server esterno"
+
+#: src/integrations/navidrome.py:24
+msgid "Use an existing OpenSubsonic instance"
+msgstr "Usa un'istanza OpenSubsonic esistente"
+
+#: src/integrations/navidrome.py:173
+msgid "Server returned an error"
+msgstr "Il server ha restituito un errore"
+
+#: src/integrations/navidrome.py:173
+msgid "Unknown Error"
+msgstr "Errore sconosciuto"
+
+#: src/integrations/navidrome.py:722 src/integrations/navidrome.py:731
+msgid "Managed Server"
+msgstr "Server gestito"
+
+#: src/integrations/navidrome.py:723
+msgid "Connect to a Navidrome instance directly managed by Nocturne."
+msgstr "Connetti ad un'istanza Navidrome gestita direttamente da Nocturne."
+
+#: src/integrations/navidrome.py:726
+msgid "Manage Server"
+msgstr "Gestisci server"
+
+#: src/integrations/navidrome.py:732
+msgid "Create and use a Navidrome instance"
+msgstr "Crea ed utilizza un'istanza Navidrome"
+
+#: src/integrations/navidrome.py:791
+msgid "Important: Use your Subsonic login information."
+msgstr "Importante: Usa le tue credenziali Subsonic"
+
+#: src/integrations/navidrome.py:794
+msgid "Bandcamp User Settings"
+msgstr "Impostazioni utente Bandcamp"
+
+#: src/integrations/navidrome.py:800
+msgid "Explore your online library"
+msgstr "Esplora la tua libreria online"
+
+#: src/main.py:96
+msgid "Music is Playing"
+msgstr "Musica in riproduzione"
+
+#: src/main.py:109
+msgid "Fullscreen Player Active"
+msgstr "Riproduzione a schermo intero"
+
+#: src/main.py:155
+msgid "Login Failed"
+msgstr "Accesso fallito"
+
+#: src/nocturne_search_provider.py.in:11 src/ui/album/button.blp:21
+msgid "Play Album"
+msgstr "Riproduci album"
+
+#: src/nocturne_search_provider.py.in:12 src/ui/song/button.blp:16
+msgid "Play Song"
+msgstr "Riproduci brano"
+
+#: src/nocturne_search_provider.py.in:13 src/ui/playlist/button.blp:28
+msgid "Play Playlist"
+msgstr "Riproduci playlist"
+
+#: src/nocturne_search_provider.py.in:112
+msgid "Open"
+msgstr "Apri"
+
+#: src/preferences.py:20 src/preferences.py:22
+msgid "Item"
+msgstr "Oggetto"
+
+#: src/preferences.py:27 src/preferences.py:29
+msgid "Section"
+msgstr "Sezione"
+
+#: src/preferences.py:501
+msgid "Settings Page"
+msgstr "Pagina delle Impostazioni"
+
+#: src/preferences.py:504
+msgid "User Token"
+msgstr "Token utente"
+
+#: src/preferences.py:508
+msgid "Link ListenBrainz"
+msgstr "Collega ListenBrainz"
+
+#: src/preferences.py:509
+msgid "Connect your ListenBrainz account with a user token"
+msgstr "Collega il tuo account ListenBrainz con un token utente"
+
+#: src/preferences.py:584
+msgid "Flatpak Sandbox Warning"
+msgstr "Avviso Sandbox Flatpak"
+
+#: src/preferences.py:585
+msgid ""
+"To connect to Discord, an additional permission is required, once you run "
+"the following command, please restart Nocturne"
+msgstr ""
+"Per connettersi a Discord, è un permesso aggiuntivo, una volta eseguito "
+"il comando seguente, riavvia Nocturne"
+#: src/ui/album/button.blp:36 src/ui/album/page.blp:152
+#: src/ui/artist/page.blp:150 src/ui/song/row.blp:115
+msgid "Toggle star"
+msgstr "Attiva/Disattiva stella"
+
+#: src/ui/album/button.blp:61 src/ui/album/page.blp:50 src/ui/album/row.blp:32
+msgid "Album cover art"
+msgstr "Copertina album"
+
+#: src/ui/album/button.blp:87
+msgid "Enter album page"
+msgstr "Accedi alla sezione album"
+
+#: src/ui/album/button.blp:128 src/ui/album/page.blp:85
+#: src/ui/song/button.blp:81
+msgid "Enter artist page"
+msgstr "Accedi alla sezione artista"
+
+#: src/ui/album/page.blp:95 src/ui/artist/page.blp:93
+#: src/ui/playing/control_page.blp:228 src/widgets/containers/context.py:50
+msgid "1 Star"
+msgstr "1 Stella"
+
+#: src/ui/album/page.blp:104 src/ui/artist/page.blp:102
+#: src/ui/playing/control_page.blp:237
+msgid "2 Stars"
+msgstr "2 Stelle"
+
+#: src/ui/album/page.blp:113 src/ui/artist/page.blp:111
+#: src/ui/playing/control_page.blp:246
+msgid "3 Stars"
+msgstr "3 Stelle"
+
+#: src/ui/album/page.blp:122 src/ui/artist/page.blp:120
+#: src/ui/playing/control_page.blp:255
+msgid "4 Stars"
+msgstr "4 Stelle"
+
+#: src/ui/album/page.blp:131 src/ui/artist/page.blp:129
+#: src/ui/playing/control_page.blp:264
+msgid "5 Stars"
+msgstr "5 Stelle"
+
+#: src/ui/album/row.blp:48 src/ui/artist/row.blp:40 src/ui/playlist/row.blp:48
+#: src/ui/song/row.blp:130
+msgid "Options"
+msgstr "Opzioni"
+
+#: src/ui/artist/page.blp:5
+msgid "Artist"
+msgstr "Artista"
+
+#: src/ui/artist/page.blp:83
+msgid "Expand Biography"
+msgstr "Espandi biografia"
+
+#: src/ui/artist/page.blp:159
+msgid "Top Songs"
+msgstr "Brani Migliori"
+
+#: src/ui/artist/page.blp:169
+msgid "Related Artists"
+msgstr "Artisti correlati"
+
+#: src/ui/containers/carousel.blp:44
+msgid "Pan to the Left"
+msgstr "Scorri a sinistra"
+
+#: src/ui/containers/carousel.blp:50
+msgid "Pan to the Right"
+msgstr "Scorri a destra"
+
+#: src/ui/containers/download_row.blp:31
+msgid "Downloaded"
+msgstr "Scaricati"
+
+#: src/ui/containers/download_row.blp:52
+msgid "Remove From Queue"
+msgstr "Rimuovi dalla coda"
+
+#: src/ui/containers/downloads_queue_button.blp:10
+msgid "Downloads Queue"
+msgstr "Coda di download"
+
+#: src/ui/containers/downloads_queue_button.blp:11
+msgid "Downloaded songs are available in offline mode"
+msgstr "I brani scaricati sono disponibili in modalità offline"
+
+#: src/ui/containers/downloads_queue_button.blp:19
+msgid "Clear Done Downloads"
+msgstr "Pulisci download completati"
+
+#: src/ui/lyrics/dialog.blp:5
+msgid "Lyrics Editor"
+msgstr "Modifica testi"
+
+#: src/ui/lyrics/dialog.blp:61 src/ui/playing/control_page.blp:187
+#: src/ui/playing/footer.blp:129
+msgid "Pause"
+msgstr "Pausa"
+
+#: src/ui/lyrics/dialog.blp:98 src/ui/playing/control_page.blp:122
+msgid "Current song progress bar"
+msgstr "Barra di progresso brano corrente"
+
+#: src/ui/lyrics/dialog.blp:103
+msgid "Set Next Line Timestamp to Now"
+msgstr "Imposta timestamp della prossima riga ad Ora"
+
+#: src/ui/lyrics/dialog.blp:112
+msgid "Add Line at Timestamp"
+msgstr "Aggiungi riga a Timestamp"
+
+#: src/ui/lyrics/dialog.blp:133
+msgid "No Lyrics"
+msgstr "Nessun testo"
+
+#: src/ui/lyrics/dialog.blp:134
+msgid "No lyrics found for this track, to get started add a new line"
+msgstr "Nessun testo trovato per questa traccia, per iniziare aggiungi una nuova riga"
+
+#: src/ui/lyrics/edit_row.blp:9
+msgid "Timestamp"
+msgstr "Timestamp"
+
+#: src/ui/lyrics/edit_row.blp:15 src/ui/lyrics/edit_row.blp:17
+msgid "Go to Timestamp"
+msgstr "Vai al timestamp"
+
+#: src/ui/lyrics/edit_row.blp:27 src/ui/lyrics/edit_row.blp:29
+msgid "Set Current Timestamp"
+msgstr "Imposta timestamp corrente"
+
+#: src/ui/lyrics/edit_row.blp:39 src/ui/lyrics/edit_row.blp:41
+msgid "Remove Line"
+msgstr "Rimuovi riga"
+
+#: src/ui/pages/albums_all.blp:15 src/ui/pages/artists.blp:15
+#: src/ui/pages/playlists.blp:15 src/ui/pages/songs_all.blp:15
+#: src/ui/pages/starred.blp:13
+msgid "List"
+msgstr "Elenco"
+
+#: src/ui/pages/albums_all.blp:20 src/ui/pages/artists.blp:20
+#: src/ui/pages/playlists.blp:20 src/ui/pages/songs_all.blp:20
+#: src/ui/pages/starred.blp:18
+msgid "Grid"
+msgstr "Griglia"
+
+#: src/ui/pages/albums_all.blp:31
+msgid "Search albums"
+msgstr "Cerca album"
+
+#: src/ui/pages/albums_all.blp:99 src/ui/pages/albums.blp:53
+#: src/ui/pages/artists.blp:98 src/ui/pages/playlists.blp:111
+#: src/ui/pages/songs_all.blp:100
+msgid "Reached End of List"
+msgstr "Raggiunta la fine dell'elenco"
+
+#: src/ui/pages/albums_all.blp:115 src/ui/pages/albums.blp:69
+msgid "No Albums Found"
+msgstr "Nessun album trovato"
+
+#: src/ui/pages/artists.blp:31
+msgid "Search artists"
+msgstr "Ricerca artisti"
+
+#: src/ui/pages/artists.blp:114 src/widgets/pages/starred.py:44
+msgid "No Artists Found"
+msgstr "Nessun artista trovato"
+
+#: src/ui/pages/home.blp:15
+msgid "Toggle Search"
+msgstr "Attiva/Disattiva ricerca"
+
+#: src/ui/pages/home.blp:24 src/ui/shortcuts-dialog.blp:8
+msgid "Search"
+msgstr "Ricerca"
+
+#: src/ui/pages/home.blp:81
+msgid "Welcome back"
+msgstr "Bentornato"
+
+#: src/ui/pages/home.blp:91
+msgid "On Replay"
+msgstr "A ripetizione"
+
+#: src/ui/pages/home.blp:128
+msgid "No Elements Found"
+msgstr "Nessun elemento trovato"
+
+#. Login Button
+#: src/ui/pages/login.blp:5 src/ui/pages/login.blp:16
+#: src/ui/pages/login.blp:112 src/ui/pages/login.blp:113
+#: src/widgets/pages/login.py:38 src/widgets/pages/login.py:78
+msgid "Login"
+msgstr "Login"
+
+#: src/ui/pages/login.blp:36
+msgid "Server Status"
+msgstr "Stato del server"
+
+#: src/ui/pages/login.blp:37 src/widgets/pages/login.py:52
+msgid "Not Running"
+msgstr "Non in esecuzione"
+
+#: src/ui/pages/login.blp:38
+msgid "Restart Instance"
+msgstr "Riavvia istanza"
+
+#: src/ui/pages/login.blp:51
+msgid "Manage Navidrome Server"
+msgstr "Gestisci server Navidrome"
+
+#: src/ui/pages/login.blp:61
+msgid "Url"
+msgstr "Url"
+
+#: src/ui/pages/login.blp:69
+msgid "More Options"
+msgstr "Più opzioni"
+
+#: src/ui/pages/login.blp:75
+msgid "Trust Server Certificates"
+msgstr "Fidati dei certificati del server"
+
+#: src/ui/pages/login.blp:83
+msgid "Library Directory"
+msgstr "Percorso libreria"
+
+#: src/ui/pages/login.blp:96
+msgid "Username"
+msgstr "Username"
+
+#: src/ui/pages/login.blp:101
+msgid "Password"
+msgstr "Password"
+
+#: src/ui/pages/login.blp:122 src/ui/pages/login.blp:123
+msgid "Use Quick Connect"
+msgstr "Usa Quick Connect"
+
+#: src/ui/pages/playback.blp:5 src/ui/shortcuts-dialog.blp:29
+msgid "Playback"
+msgstr "Riproduzione"
+
+#: src/ui/pages/playback.blp:17
+msgid "Go Home"
+msgstr "Pagina iniziale"
+
+#: src/ui/pages/playback.blp:24
+msgid "Toggle Visualizer"
+msgstr "Attiva/Disattiva visualizzatore"
+
+#: src/ui/pages/playback.blp:54 src/window.py:228
+msgid "Nocturne Playback"
+msgstr "Riproduzione Nocturne"
+
+#: src/ui/pages/playback.blp:64
+msgid "These are your most played songs from last month"
+msgstr "Questi sono i tuoi brani più riprodotti il mese scorso"
+
+#: src/ui/pages/playback.blp:83 src/ui/pages/playback.blp:85
+msgid "Save Playlist"
+msgstr "Salva playlist"
+
+#: src/ui/pages/playback.blp:98 src/ui/pages/playback.blp:100
+msgid "Playlist Added"
+msgstr "Playlist aggiiunta"
+
+#: src/ui/pages/playback.blp:123
+msgid "Thank you for using Nocturne!"
+msgstr "Grazie per usare Nocturne!"
+
+#: src/ui/pages/playlists.blp:31
+msgid "Search playlists"
+msgstr "Cerca playlist"
+
+#: src/ui/pages/playlists.blp:127
+msgid "No Playlists Found"
+msgstr "Nessuna playlist trovata"
+
+#: src/ui/pages/radios.blp:16
+msgid "Search radios"
+msgstr "Cerca radio"
+
+#: src/ui/pages/radios.blp:26
+msgid "Add Radio"
+msgstr "Aggiungi radio"
+
+#: src/ui/pages/radios.blp:61
+msgid "No Radios Found"
+msgstr "Nessuna radio trovata"
+
+#: src/ui/pages/setup.blp:5
+msgid "Setup"
+msgstr "Configurazione"
+
+#: src/ui/pages/setup.blp:19
+msgid "Navidrome Download"
+msgstr "Download Navidrome"
+
+#: src/ui/pages/setup.blp:20
+msgid "Nocturne will download Navidrome automatically"
+msgstr "Nocturne scaricherà Navidrome automaticamente"
+
+#: src/ui/pages/setup.blp:22
+msgid "Download (~20 mb)"
+msgstr "Download (~20 mb)"
+
+#: src/ui/pages/setup.blp:34
+msgid "Downloading"
+msgstr "Download in corso"
+
+#: src/ui/pages/setup.blp:46
+msgid "An Error Occurred"
+msgstr "C'è stato un errore"
+
+#: src/ui/pages/setup.blp:47
+msgid "Please try again later"
+msgstr "Per favore riprova più tardi"
+
+#: src/ui/pages/setup.blp:55
+msgid "Download Successful"
+msgstr "Download completato con successo"
+
+#: src/ui/pages/setup.blp:56
+msgid ""
+"Before continuing make sure you create an admin account and also make sure "
+"all your tracks are inside your music directory"
+msgstr ""
+"Prima di continuare assicurati di creare un account amministratore e che "
+"tutte le tue tracce siano all'interno della tua cartella musica"
+
+#: src/ui/pages/setup.blp:63
+msgid "Instance Webpage"
+msgstr "Pagina web istanza"
+
+#: src/ui/pages/songs_all.blp:31
+msgid "Search songs"
+msgstr "Cerca brani"
+
+#: src/ui/pages/songs_all.blp:116 src/ui/song/queue.blp:140
+msgid "No Songs Found"
+msgstr "Nessun brano trovato"
+
+#: src/ui/pages/starred.blp:29
+msgid "Search favorite songs"
+msgstr "Cerca brani preferiti"
+
+#: src/ui/pages/starred.blp:94
+msgid "No Items Found"
+msgstr "Nessun oggetto trovato"
+
+#: src/ui/pages/welcome.blp:5
+msgid "Welcome"
+msgstr "Benvenuto"
+
+#: src/ui/pages/welcome.blp:16
+msgid "Welcome to Nocturne"
+msgstr "Benvenuto su Nocturne"
+
+#: src/ui/pages/welcome.blp:17
+msgid "Select an instance type to get started"
+msgstr "Seleziona un tipo di istanza per cominciare"
+
+#: src/ui/playing/control_page.blp:5
+msgid "Playing"
+msgstr "In riproduzione"
+
+#: src/ui/playing/control_page.blp:75
+msgid "Visit current radio homepage"
+msgstr "Visita homepage della radio corrente"
+
+#: src/ui/playing/control_page.blp:157 src/ui/playing/footer.blp:99
+msgid "Previous"
+msgstr "Precedente"
+
+#: src/ui/playing/control_page.blp:201 src/ui/playing/footer.blp:143
+msgid "Next"
+msgstr "Prossimo"
+
+#: src/ui/playing/control_page.blp:221
+msgid "Rate"
+msgstr "Valuta"
+
+#: src/ui/playing/control_page.blp:277
+msgid "Star"
+msgstr "Stella"
+
+#: src/ui/playing/control_page.blp:284
+msgid "Toggle Sidebar"
+msgstr "Attiva/Disattiva barra laterale"
+
+#: src/ui/playing/cover_art.blp:35
+msgid "Audio"
+msgstr "Audio"
+
+#: src/ui/playing/cover_art.blp:43 src/ui/song/details_dialog.blp:34
+msgid "Song Cover"
+msgstr "Copertina brano"
+
+#: src/ui/playing/cover_art.blp:49 src/ui/playing/cover_art.blp:57
+msgid "Video"
+msgstr "Video"
+
+#: src/ui/playing/equalizer_page.blp:21
+msgid "Presets"
+msgstr "Preset"
+
+#: src/ui/playing/equalizer_page.blp:26
+msgid "Flat"
+msgstr "Piatto"
+
+#: src/ui/playing/equalizer_page.blp:33
+msgid "Vocal Clarity"
+msgstr "Chiarezza della voce"
+
+#: src/ui/playing/equalizer_page.blp:38
+msgid "Smooth Jazz"
+msgstr "Smooth Jazz"
+
+#: src/ui/playing/equalizer_page.blp:43
+msgid "Rock"
+msgstr "Rock"
+
+#: src/ui/playing/equalizer_page.blp:48
+msgid "Classic"
+msgstr "Classica"
+
+#: src/ui/playing/equalizer_page.blp:53
+msgid "Acoustic"
+msgstr "Acustica"
+
+#: src/ui/playing/footer.blp:12
+msgid "Current song progress indicator"
+msgstr "Indicatore progresso brano corrente"
+
+#: src/ui/playing/footer.blp:45
+msgid "Current song cover art"
+msgstr "Immagine di copertina brano corrente"
+
+#: src/ui/playing/lyrics_page.blp:25 src/ui/playing/lyrics_page.blp:85
+#: src/ui/playing/lyrics_page.blp:115 src/ui/playing/lyrics_page.blp:119
+#: src/ui/playing/lyrics_page.blp:132 src/ui/playing/lyrics_page.blp:136
+msgid "Go Back"
+msgstr "Torna indietro"
+
+#: src/ui/playing/lyrics_page.blp:67
+msgid "Lyrics Options"
+msgstr "Opzioni testi"
+
+#: src/ui/playing/lyrics_page.blp:112
+msgid "No Lyrics Found"
+msgstr "Nessun testo trovato"
+
+#: src/ui/playing/lyrics_page.blp:129
+msgid "Instrumental"
+msgstr "Strumentale"
+
+#: src/ui/playing/lyrics_page.blp:154
+msgid "Not Downloaded"
+msgstr "Non scaricati"
+
+#: src/ui/playing/lyrics_page.blp:156
+msgid ""
+"The lyrics for this song have not been downloaded yet, they might be "
+"available for download"
+msgstr ""
+"I testi per questo brano non sono ancora stati scaricati, potrebbero"
+"essere disponibili per il download"
+
+#: src/ui/playing/lyrics_page.blp:180 src/ui/playing/lyrics_page.blp:183
+msgid "Load Lyrics File"
+msgstr "Carica file di testi"
+
+#: src/ui/playing/popout_window.blp:5
+msgid "Pop-out Window"
+msgstr "Finestra Pop-out"
+
+#: src/ui/playing/popout_window.blp:67 src/ui/song/details_dialog.blp:5
+#: src/ui/window.blp:219
+msgid "Song Details"
+msgstr "Dettagli brano"
+
+#: src/ui/playing/popout_window.blp:87 src/ui/window.blp:185
+#: src/ui/window.blp:241
+msgid "Queue"
+msgstr "Coda"
+
+#: src/ui/playing/popout_window.blp:99 src/ui/window.blp:201
+#: src/ui/window.blp:253
+msgid "Equalizer"
+msgstr "Equalizzatore"
+
+#: src/ui/playing/queue_page.blp:19
+msgid "Generating Next Queue"
+msgstr "Creando la coda"
+
+#: src/ui/playing/queue_page.blp:23
+msgid "Autoplay"
+msgstr "Riproduzione automatica"
+
+#: src/ui/playing/queue_page.blp:24
+msgid "Generate a new queue when the current one ends"
+msgstr "Crea una nuova coda al termine di quella corrente"
+
+#: src/ui/playing/volume_button.blp:5
+msgid "Volume"
+msgstr "Volume"
+
+#: src/ui/playing/volume_button.blp:14
+msgid "Mute"
+msgstr "Muta"
+
+#: src/ui/playing/volume_button.blp:33
+msgid "Full Volume"
+msgstr "Volume massimo"
+
+#: src/ui/playlist/button.blp:41
+msgid "Show Playlist"
+msgstr "Mostra playlist"
+
+#: src/ui/playlist/button.blp:53 src/ui/playlist/page.blp:50
+#: src/ui/playlist/row.blp:32 src/ui/playlist/selector_row.blp:24
+msgid "Playlist cover art"
+msgstr "Immagine di copertina della playlist"
+
+#: src/ui/playlist/button.blp:65
+msgid "Enter playlist page"
+msgstr "Accedi alla sezione playlist"
+
+#: src/ui/playlist/dialog.blp:6 src/ui/playlist/page.blp:5
+#: src/widgets/playlist/page.py:83
+msgid "Playlist"
+msgstr "Playlist"
+
+#: src/ui/playlist/dialog.blp:11
+msgid "Search (or create new playlist)"
+msgstr "Cerca (o crea una nuova playlist)"
+
+#: src/ui/playlist/dialog.blp:20
+msgid "Adding Music to Playlist"
+msgstr "Aggiungendo la musica alla playlist"
+
+#: src/ui/playlist/dialog.blp:34
+msgid "Create New Playlist and Add Songs"
+msgstr "Crea una nuova playlist e aggiungi brani"
+
+#: src/ui/preferences.blp:7 src/ui/shortcuts-dialog.blp:6
+msgid "General"
+msgstr "Generale"
+
+#: src/ui/preferences.blp:10
+msgid "Behavior"
+msgstr "Comportamento"
+
+#: src/ui/preferences.blp:12
+msgid "Restore Queue on Launch"
+msgstr "Ripristina coda all'avvio"
+
+#: src/ui/preferences.blp:15
+msgid "Hide on Close"
+msgstr "Nascondi alla chiusura"
+
+#: src/ui/preferences.blp:18
+msgid "Simulate Word by Word Lyrics"
+msgstr "Simula testi parola per parola"
+
+#: src/ui/preferences.blp:19
+msgid "Used when only line by line lyrics are available"
+msgstr "Utilizzato quando solo i testi riga per riga sono disponibili"
+
+#: src/ui/preferences.blp:22
+msgid "Auto Download Lyrics"
+msgstr "Scaricamento di testi automatico"
+
+#: src/ui/preferences.blp:23
+msgid "Used when the current instance does not provide lyrics"
+msgstr "Utilizzato quando l'istanza corrente non fornisce testi"
+
+#: src/ui/preferences.blp:26
+msgid "Use Track and Album Gain"
+msgstr "Utilizza guadagno traccia ed album"
+
+#: src/ui/preferences.blp:27
+msgid "Adjust the volume based on gain metadata"
+msgstr "Regola il volume secondo i metadata di guadagno"
+
+#: src/ui/preferences.blp:30
+msgid "Default Page on Login"
+msgstr "Pagina predefinita all'accesso"
+
+#: src/ui/preferences.blp:35
+msgid "Maximum Bitrate"
+msgstr "Bitrate massimo"
+
+#: src/ui/preferences.blp:41
+msgid "Gnome Search"
+msgstr "Ricerca Gnome"
+
+#: src/ui/preferences.blp:42
+msgid ""
+"Search for your music directly from the system search bar while Nocturne is "
+"running. You can enable or disable this feature completely in System Settings"
+msgstr ""
+"Cerca la tua musica direttamente dalla barra di ricerca mentre Nocturne è "
+"in funzione. Puoi abilitare o disabilitare questa funzione completamente in Impostazioni del sistema"
+#: src/ui/preferences.blp:45
+msgid "Include Artists"
+msgstr "Includi artisti"
+
+#: src/ui/preferences.blp:48
+msgid "Include Albums"
+msgstr "Includi album"
+
+#: src/ui/preferences.blp:51
+msgid "Include Songs"
+msgstr "Includi brani"
+
+#: src/ui/preferences.blp:54
+msgid "Include Playlists"
+msgstr "Includi playlist"
+
+#: src/ui/preferences.blp:58
+msgid "Session"
+msgstr "Sessione"
+
+#: src/ui/preferences.blp:61
+msgid "Discord Rich Presence"
+msgstr "Discord Rich Presence"
+
+#: src/ui/preferences.blp:62
+msgid "Share the currently playing song on Discord"
+msgstr "Condividi il brano in riproduzione su Discord"
+
+#: src/ui/preferences.blp:66
+msgid "Share Cover Art With Discord"
+msgstr "Condividi l'immagine di copertina con Discord"
+
+#: src/ui/preferences.blp:67
+msgid ""
+"If the instance is not reachable by Discord servers, CoverArtArchive will be "
+"used instead"
+msgstr ""
+"Se l'istanza non è raggiiungibile dai server Discord, verrà "
+"utilizzato CoverArtArchive"
+
+#: src/ui/preferences.blp:73
+msgid "ListenBrainz Link"
+msgstr "Collegamento ListenBrainz"
+
+#: src/ui/preferences.blp:74
+msgid "Keep track of your playback history"
+msgstr "Tieni traccia della tua cronologia di riproduzione"
+
+#: src/ui/preferences.blp:80 src/ui/preferences.blp:81
+msgid "Link"
+msgstr "Collega"
+
+#: src/ui/preferences.blp:89 src/ui/preferences.blp:90
+msgid "Unlink"
+msgstr "Scollega"
+
+#: src/ui/preferences.blp:102
+msgid "User"
+msgstr "Utente"
+
+#: src/ui/preferences.blp:122
+msgid "Delete Image Cache"
+msgstr "Pulisci cache immagini"
+
+#: src/ui/preferences.blp:129
+msgid "Logout"
+msgstr "Esci"
+
+#: src/ui/preferences.blp:139
+msgid "Customization"
+msgstr "Personalizza"
+
+#: src/ui/preferences.blp:142
+msgid "Interface"
+msgstr "Interfaccia"
+
+#: src/ui/preferences.blp:144
+msgid "Show Context Button in Rows"
+msgstr "Mostra menù contestuale nelle righe"
+
+#: src/ui/preferences.blp:145
+msgid "The menu can also be shown by right clicking / long pressing"
+msgstr "Il menù puó essere mostrato anche con un tasto destro / tenendo premuto"
+
+#: src/ui/preferences.blp:148
+msgid "Show Labels in Buttons of Pages"
+msgstr "Mostra etichette nei pulsanti delle pagine"
+
+#: src/ui/preferences.blp:151
+msgid "Show Progressbar in Player Footer"
+msgstr "Mostra la barra di progresso a piè di pagina"
+
+#: src/ui/preferences.blp:154
+msgid "Make Background Translucent in Player"
+msgstr "Rendi lo sfondo traslucido nel lettore"
+
+#: src/ui/preferences.blp:155
+msgid "Does not affect sidebar player"
+msgstr "Non influenza il lettore laterale"
+
+#: src/ui/preferences.blp:158
+msgid "Use Sidebar Player When Possible"
+msgstr "Usa il lettore laterale quando possibile"
+
+#: src/ui/preferences.blp:159
+msgid "Sidebar player is only available when the window is wide enough"
+msgstr "Il lettore laterale è disponibile solo quando la finestra è sufficientemente larga"
+
+#: src/ui/preferences.blp:162
+msgid "Filter Singles"
+msgstr "Escludi singoli"
+
+#: src/ui/preferences.blp:163
+msgid "Hides albums with only one song (does not affect homepage)"
+msgstr "Nasconde album con un singolo brano (non influenza la homepage)"
+
+#: src/ui/preferences.blp:166
+msgid "Button Size"
+msgstr "Dimensioni pulsanti"
+
+#: src/ui/preferences.blp:167
+msgid "Affects albums, artists, playlists and songs"
+msgstr "Influenza album, artisti, playlist e brani"
+
+#: src/ui/preferences.blp:173 src/ui/preferences.blp:174
+msgid "Small"
+msgstr "Piccoli"
+
+#: src/ui/preferences.blp:178 src/ui/preferences.blp:179
+msgid "Big"
+msgstr "Grandi"
+
+#: src/ui/preferences.blp:187
+msgid "Dynamic Background"
+msgstr "Sfondo dinamico"
+
+#: src/ui/preferences.blp:188
+msgid "Background generated based on the album art of the current song"
+msgstr "Sfondo generato basato sulla copertina dell'album del brano corrente"
+
+#: src/ui/preferences.blp:191
+msgid "Use in Main Window"
+msgstr "Usa nella finestra principale"
+
+#: src/ui/preferences.blp:197 src/ui/preferences.blp:198
+#: src/ui/preferences.blp:221 src/ui/preferences.blp:222
+#: src/ui/preferences.blp:245 src/ui/preferences.blp:246
+#: src/ui/preferences.blp:279 src/ui/preferences.blp:280
+msgid "Off"
+msgstr "Spento"
+
+#: src/ui/preferences.blp:202 src/ui/preferences.blp:203
+#: src/ui/preferences.blp:226 src/ui/preferences.blp:227
+#: src/ui/preferences.blp:250 src/ui/preferences.blp:251
+msgid "Gradient"
+msgstr "Gradiente"
+
+#: src/ui/preferences.blp:207 src/ui/preferences.blp:208
+#: src/ui/preferences.blp:231 src/ui/preferences.blp:232
+#: src/ui/preferences.blp:255 src/ui/preferences.blp:256
+msgid "Blur"
+msgstr "Sfocatura"
+
+#: src/ui/preferences.blp:215
+msgid "Use in Player"
+msgstr "Usa nel lettore"
+
+#: src/ui/preferences.blp:239
+msgid "Use in Pop-out Window"
+msgstr "Usa nella finestra Pop-out"
+
+#: src/ui/preferences.blp:263
+msgid "Use as Accent Color"
+msgstr "Usa come colore di accento"
+
+#: src/ui/preferences.blp:268
+msgid "Homepage"
+msgstr "Pagina iniziale"
+
+#: src/ui/preferences.blp:269
+msgid "Reload homepage to see changes"
+msgstr "Ricarica la homepage per vedere cambiamenti"
+
+#: src/ui/preferences.blp:271
+msgid "Welcome Message"
+msgstr "Messaggio di benvenuto"
+
+#: src/ui/preferences.blp:272
+msgid "Where to get user information"
+msgstr "Dove recuperare informazioni sull'utente"
+
+#: src/ui/preferences.blp:284 src/ui/preferences.blp:285
+msgid "Instance"
+msgstr "Istanza"
+
+#: src/ui/preferences.blp:289 src/ui/preferences.blp:290
+msgid "System"
+msgstr "Sistema"
+
+#: src/ui/preferences.blp:296 src/ui/window.blp:156
+msgid "Frequent Albums"
+msgstr "Album frequenti"
+
+#: src/ui/preferences.blp:338
+msgid "Sidebar"
+msgstr "Barra laterale"
+
+#: src/ui/preferences.blp:342
+msgid "Visualizer"
+msgstr "Visualizzatore"
+
+#: src/ui/preferences.blp:346 src/ui/window.blp:270
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: src/ui/preferences.blp:348
+msgid "Show Visualizer in Player"
+msgstr "Mostra visualizzatore nel lettore"
+
+#: src/ui/preferences.blp:349
+msgid "Show an audio spectrum visualizer on top of the album art in the player"
+msgstr "Mostra un visualizzatore di spettro audio sopra alla copertina nel lettore"
+
+#: src/ui/preferences.blp:354
+msgid "Appearance"
+msgstr "Aspetto"
+
+#: src/ui/preferences.blp:358
+msgid "Number of Bars"
+msgstr "Numero di barre"
+
+#: src/ui/preferences.blp:369
+msgid "Visualizer Type"
+msgstr "Tipo visualizzatore"
+
+#: src/ui/preferences.blp:375 src/ui/preferences.blp:376
+msgid "Wave"
+msgstr "Onda"
+
+#: src/ui/preferences.blp:380 src/ui/preferences.blp:381
+msgid "Bars"
+msgstr "Barre"
+
+#: src/ui/preferences.blp:385 src/ui/preferences.blp:386
+msgid "Particles"
+msgstr "Particelle"
+
+#: src/ui/preferences.blp:393
+msgid "Fill Mode"
+msgstr "Riempimento"
+
+#: src/ui/preferences.blp:399 src/ui/preferences.blp:400
+msgid "Solid"
+msgstr "Completo"
+
+#: src/ui/preferences.blp:404 src/ui/preferences.blp:405
+msgid "Translucent"
+msgstr "Traslucido"
+
+#: src/ui/preferences.blp:409 src/ui/preferences.blp:410
+msgid "Border"
+msgstr "Solo bordi"
+
+#: src/ui/preferences.blp:418
+msgid "Color"
+msgstr "Colore"
+
+#: src/ui/preferences.blp:422
+msgid "Use Dynamic Color"
+msgstr "Usa colore dinamico"
+
+#: src/ui/preferences.blp:425
+msgid "Invert Color"
+msgstr "Inverti colore"
+
+#: src/ui/preferences.blp:429
+msgid "Manual Color"
+msgstr "Colore manuale"
+
+#: src/ui/preferences.blp:435
+msgid "Visualizer Color"
+msgstr "Colore visualizzatore"
+
+#: src/ui/shortcuts-dialog.blp:12
+msgid "Reload Page"
+msgstr "Ricarica pagina"
+
+#: src/ui/shortcuts-dialog.blp:16
+msgid "Show Shortcuts"
+msgstr "Mostra scorciatoie"
+
+#: src/ui/shortcuts-dialog.blp:20
+msgid "Show Preferences"
+msgstr "Mostra preferenze"
+
+#: src/ui/shortcuts-dialog.blp:24
+msgid "Quit"
+msgstr "Esci"
+
+#: src/ui/shortcuts-dialog.blp:31
+msgid "Toggle Playback"
+msgstr "Attiva/Disattiva riproduzione"
+
+#: src/ui/shortcuts-dialog.blp:35
+msgid "Next Song"
+msgstr "Prossimo brano"
+
+#: src/ui/shortcuts-dialog.blp:39
+msgid "Previous Song"
+msgstr "Brano precedente"
+
+#: src/ui/shortcuts-dialog.blp:43
+msgid "Raise Volume"
+msgstr "Alza il volume"
+
+#: src/ui/shortcuts-dialog.blp:47
+msgid "Lower Volume"
+msgstr "Abbassa il volume"
+
+#: src/ui/shortcuts-dialog.blp:52
+msgid "Window"
+msgstr "Finestra"
+
+#: src/ui/shortcuts-dialog.blp:54 src/ui/window.blp:280
+#: src/widgets/playing/popout_window.py:46
+msgid "Toggle Fullscreen"
+msgstr "Attiva/Disattiva schermo intero"
+
+#: src/ui/shortcuts-dialog.blp:58 src/ui/window.blp:275
+msgid "Open Pop-Out Window"
+msgstr "Apri finestra Pop-Out"
+
+#: src/ui/song/button.blp:31 src/ui/song/small_row.blp:37
+msgid "Song cover art"
+msgstr "Immagine di copertina del brano"
+
+#: src/ui/song/button.blp:45
+msgid "Play Indicator"
+msgstr "Indicatore di riproduzione"
+
+#: src/ui/song/queue.blp:50 src/ui/song/queue.blp:52
+msgid "Select All"
+msgstr "Seleziona tutto"
+
+#: src/ui/song/row.blp:44
+msgid "Drag icon"
+msgstr "Trascina icona"
+
+#: src/ui/song/row.blp:142
+msgid "Selection box"
+msgstr "Box di selezione"
+
+#: src/ui/window.blp:94
+msgid "Play Random Queue"
+msgstr "Riproduci coda casuale"
+
+#: src/ui/window.blp:102
+msgid "Menu"
+msgstr "Menu"
+
+#: src/ui/window.blp:128
+msgid "Favorite Artists"
+msgstr "Artisti preferiti"
+
+#: src/ui/window.blp:134
+msgid "Favorite Songs"
+msgstr "Brani preferiti"
+
+#: src/ui/window.blp:140
+msgid "Random Albums"
+msgstr "Album casuali"
+
+#: src/ui/window.blp:144
+msgid "Favorite Albums"
+msgstr "Album preferiti"
+
+#: src/ui/window.blp:148
+msgid "Newest Albums"
+msgstr "Album più nuovi"
+
+#: src/ui/window.blp:152
+msgid "Recent Albums"
+msgstr "Album recenti"
+
+#: src/ui/window.blp:179
+msgid "Player"
+msgstr "Lettore"
+
+#: src/ui/window.blp:285
+msgid "See Last Nocturne Playback"
+msgstr "Vedi ultima riproduzione di Nocturne"
+
+#: src/ui/window.blp:290
+msgid "Keyboard Shortcuts"
+msgstr "Scorciatoie da tastiera"
+
+#: src/ui/window.blp:295
+msgid "About Nocturne"
+msgstr "Riguardo a Nocturne"
+
+#: src/widgets/album/button.py:99 src/widgets/album/page.py:149
+#: src/widgets/artist/page.py:114 src/widgets/playing/control_page.py:196
+#: src/widgets/song/row.py:188
+msgid "Not Favorite"
+msgstr "Non preferito"
+
+#: src/widgets/album/page.py:18
+msgid "Disc {}"
+msgstr "Disco {}"
+
+#: src/widgets/artist/button.py:56 src/widgets/artist/row.py:46
+msgid "{} Album"
+msgid_plural "{} Albums"
+msgstr[0] "{} Album"
+msgstr[1] "{} Album"
+
+#: src/widgets/artist/page.py:97
+msgid "Author"
+msgstr "Autore"
+
+#: src/widgets/containers/context.py:50
+msgid "{} Stars"
+msgstr "{} Stelle"
+
+#: src/widgets/lyrics/dialog.py:54
+msgid "No Timestamp"
+msgstr "Nessun timestamp"
+
+#: src/widgets/pages/login.py:52 src/widgets/pages/login.py:131
+msgid "Running"
+msgstr "In esecuzione"
+
+#: src/widgets/pages/login.py:85
+msgid "Extra Menu"
+msgstr "Menu Extra"
+
+#: src/widgets/pages/login.py:120 src/widgets/pages/setup.py:83
+msgid "Music Library"
+msgstr "Libreria musicale"
+
+#: src/widgets/pages/login.py:130
+msgid "Restarted"
+msgstr "Riavviato"
+
+#: src/widgets/pages/login.py:172
+msgid "Quick Connect"
+msgstr "Quick Connect"
+
+#: src/widgets/pages/login.py:173
+msgid "Error getting code"
+msgstr "Errore nella ricezione del codice"
+
+#: src/widgets/pages/login.py:175
+msgid "Quick Connect Page"
+msgstr "Pagina Quick Connect"
+
+#: src/widgets/pages/playback.py:29
+msgid "Nocturne Playback ~ {}"
+msgstr "Riproduzione Nocturne ~ {}"
+
+#: src/widgets/pages/playback.py:48 src/widgets/pages/playback.py:57
+msgid "{} Plays"
+msgstr "{} Riproduzioni"
+
+#: src/widgets/pages/setup.py:70
+msgid "Installing"
+msgstr "Installando"
+
+#: src/widgets/pages/starred.py:42
+msgid "Search favorite artists"
+msgstr "Cerca tra gli artisti preferiti"
+
+#: src/widgets/pages/welcome.py:20 src/widgets/pages/welcome.py:22
+msgid "Integration"
+msgstr "Integrazione"
+
+#: src/widgets/playing/lyrics_page.py:222
+msgid "LRC File"
+msgstr "File LRC"
+
+#: src/widgets/playing/player.py:641
+msgid "Warning: Song changed but volume is set to 0"
+msgstr "Attenzione: il brano è cambiato ma il volume è impostato a 0"
+
+#: src/widgets/playlist/button.py:63 src/widgets/playlist/page.py:115
+#: src/widgets/playlist/row.py:47 src/widgets/playlist/selector_row.py:36
+msgid "{} Song"
+msgid_plural "{} Songs"
+msgstr[0] "{} Brano"
+msgstr[1] "{Brani}"
+
+#: src/widgets/playlist/dialog.py:55
+msgid "New Playlist"
+msgstr "Nuova playlist"
+
+#: src/widgets/playlist/selector_row.py:33
+msgid "Add Songs to '{}'"
+msgstr "Aggiungi brani a '{}'"
+
+#: src/widgets/song/details_dialog.py:22
+msgid "Yes"
+msgstr "Sì"
+
+#: src/widgets/song/details_dialog.py:22
+msgid "No"
+msgstr "No"
+
+#: src/widgets/song/details_dialog.py:27
+msgid "Not Found"
+msgstr "Non trovato"
+
+#: src/widgets/song/row.py:147 src/widgets/song/row.py:152
+msgid "Multiple Artists"
+msgstr "Artisti multipli"
+
+#: src/window.py:229
+msgid "Your Playback queue for {} is available!"
+msgstr "La tua coda di riproduzine per {} è disponibile!"
+
+#: src/window.py:231
+msgid "Show"
+msgstr "Mostra"
+
+#: src/window.py:232
+msgid "Later"
+msgstr "Più tardi"
