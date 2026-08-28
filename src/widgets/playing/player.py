@@ -75,7 +75,7 @@ class PlayerAdapter(MprisAdapter):
             if not (title := current_song_model.get_property("displaySongTitle")):
                 title = song.get_property('title')
             if not (artist := current_song_model.get_property("displaySongArtist")):
-                artist = song.get_property('title')
+                artist = song.get_property('title') #sets station name to artist if the song has a title
             if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
                 artist = urlparse(song.get_property('radioStreamUrl')).netloc
             artists = [artist]
@@ -255,6 +255,7 @@ class Player(EventAdapter):
         except:
             logger.warning("Video dependency not found")
         self.gst.connect("video-changed", self.video_changed)
+        self.gst.connect("about-to-finish", self.preload_next_track)
 
         self.bin = Gst.Bin.new("audio-filter-bin")
 
@@ -317,6 +318,7 @@ class Player(EventAdapter):
         self.bus.connect("message::state-changed", self.handle_message_state_changed)
         self.bus.connect("message::tag", self.handle_message_tag)
         self.bus.connect("message::element", self.handle_message_element)
+        self.bus.connect("message::stream-start", self.handle_stream_start)
 
         self.adapter = PlayerAdapter(self)
         self.mpris = Server("com.jeffser.Nocturne", adapter=self.adapter)
@@ -352,6 +354,9 @@ class Player(EventAdapter):
         integration.connect_to_model('currentSong', 'songId', lambda *_: self.discord_rpc.update())
         integration.connect_to_model('currentSong', 'displaySongTitle', lambda *_: self.discord_rpc.update())
         integration.connect_to_model('currentSong', 'displaySongArtist', lambda *_: self.discord_rpc.update())
+
+        # Track ID of song when it's preloaded
+        self.preloaded_id = ""
 
     def settings_volume_changed(self, settings, key):
         if not self.updating_volume:
@@ -478,7 +483,10 @@ class Player(EventAdapter):
             channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands')/2)]])
         integration = get_current_integration()
         timestamp = struct.get_uint64('stream-time')[1] / 1000000000
-        magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
+        if len(channels) > 1: #stereo spectrum
+            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
+        else: #mono spectrum
+            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[0]))]
         if timestamp and magnitudes:
             if not integration.loaded_models.get('currentSong').get_property('magnitudes'):
                 integration.loaded_models.get('currentSong').set_property('magnitudes', {})
@@ -508,17 +516,61 @@ class Player(EventAdapter):
                 if song_model.get_property('radioStreamUrl'): # is radio
                     if tag_list := message.parse_tag():
                         success_title, title = tag_list.get_string(Gst.TAG_TITLE)
-                        if success_title and title and title != 'null':
-                            current_title = model.get_property('displaySongTitle')
-                            if current_title != title:
-                                model.set_property('displaySongTitle', title.strip())
+                        if not (success_title and title and title != 'null'):
+                            title = ""
                         success_artist, artist = tag_list.get_string(Gst.TAG_ARTIST)
-                        if success_artist and artist and artist != 'null':
-                            current_artist = model.get_property('displaySongArtist')
-                            if current_artist != artist:
-                                model.set_property('displaySongArtist', artist.strip())
-                        if success_title or success_artist:
+                        if not(success_artist and artist and artist != 'null'):
+                            artist = ""
+                        if title and not artist: #Handle Shoutcast metadata
+                            parts = title.split(" - ", 1)
+                            if len(parts) == 2:
+                                artist = parts[0]
+                                title = parts[1]
+                        title = title.strip()
+                        artist = artist.strip()
+                        emit_changes = False
+                        current_title = model.get_property('displaySongTitle')
+                        if title and current_title != title:
+                            model.set_property('displaySongTitle', title)
+                            emit_changes = True
+                        current_artist = model.get_property('displaySongArtist')
+                        if artist and current_artist != artist:
+                            model.set_property('displaySongArtist', artist)
+                            emit_changes = True
+
+                        if emit_changes:
                             self.emit_changes(self.mpris.player, changes=['Metadata', 'PlaybackStatus'])
+
+    def get_next_queue_id(self):
+        integration = get_current_integration()
+        current_song = integration.loaded_models.get('currentSong')
+        id_list = [so.get_string() for so in current_song.get_property('queueModel')]
+
+        next_id = ""
+        if len(id_list) > 0:
+            mode = self.settings.get_value('playback-mode').unpack()
+            if mode == 'repeat-all':
+                try:
+                    next_index = id_list.index(current_song.songId) + 1
+                    next_id = id_list[next_index]
+                except IndexError:
+                    next_id = id_list[0]
+            elif mode == 'repeat-one':
+                next_id = current_song.songId
+            elif mode == 'consecutive':
+                try:
+                    next_index = id_list.index(current_song.songId) + 1
+                    next_id = id_list[next_index]
+                except IndexError:
+                    pass
+            return next_id
+
+    def preload_next_track(self, playbin):
+        integration = get_current_integration()
+        if next_id := self.get_next_queue_id():
+            stream_url = integration.get_stream_url(next_id)
+            self.gst.set_property('uri', stream_url)
+            self.preloaded_id = next_id
 
     def update_stream_progress(self):
         if integration := get_current_integration():
@@ -531,6 +583,10 @@ class Player(EventAdapter):
                 current_song.set_property('positionSeconds', seconds)
         return True
 
+    def handle_stream_start(self, bus, message):
+        if self.preloaded_id:
+            integration = get_current_integration()
+            integration.loaded_models.get('currentSong').set_property('songId', self.preloaded_id)
 
     def restore_play_queue(self):
         integration = get_current_integration()
@@ -642,8 +698,9 @@ class Player(EventAdapter):
                         ))
 
                 if stream_url := integration.get_stream_url(song_id):
-                    self.gst.set_state(Gst.State.READY)
-                    self.gst.set_property('uri', stream_url)
+                    if song_id != self.preloaded_id: #check for preloaded track
+                        self.gst.set_state(Gst.State.READY)
+                        self.gst.set_property('uri', stream_url)
                     if self.pause_next_change:
                         self.gst.set_state(Gst.State.PAUSED)
                         self.pause_next_change = False
@@ -661,4 +718,5 @@ class Player(EventAdapter):
                     self.gst.set_state(Gst.State.NULL)
         else:
             self.gst.set_state(Gst.State.NULL)
+        self.preloaded_id = ""
         gc.collect()

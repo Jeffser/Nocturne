@@ -58,6 +58,21 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               line-spacing: 5;
               justify: fill;
 
+              Gtk.Button artist_el {
+                halign: center;
+                hexpand: true;
+                action-target: "''";
+                tooltip-text: _("Show Artist");
+                child: Gtk.Label {
+                  ellipsize: end;
+                };
+                styles [
+                  "flat",
+                  "dimmed",
+                  "p0"
+                ]
+              }
+
               Gtk.Button radio_homepage_el {
                 halign: center;
                 hexpand: true;
@@ -74,21 +89,6 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 accessibility {
                   label: _("Visit current radio homepage");
                 }
-              }
-
-              Gtk.Button artist_el {
-                halign: center;
-                hexpand: true;
-                action-target: "''";
-                tooltip-text: _("Show Artist");
-                child: Gtk.Label {
-                  ellipsize: end;
-                };
-                styles [
-                  "flat",
-                  "dimmed",
-                  "p0"
-                ]
               }
 
               Gtk.Button album_el {

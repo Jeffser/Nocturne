@@ -222,9 +222,9 @@ class Base(GObject.Object):
             model = self.loaded_models.get(model_id)
             connection_id = model.connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, mid=model_id, cb=callback: cb(self.loaded_models.get(mid).get_property(p))
+                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(cb, self.loaded_models.get(mid).get_property(p))
             )
-            callback(self.loaded_models.get(model_id).get_property(parameter))
+            GLib.idle_add(callback, self.loaded_models.get(model_id).get_property(parameter))
             self._auto_disconnect_on_unroot(callback, model, connection_id)
         return connection_id
 
@@ -670,6 +670,5 @@ class Base(GObject.Object):
         # link : str
         logger.warning('method not implemented')
         return {}
-
 
 
