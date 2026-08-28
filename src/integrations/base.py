@@ -1,6 +1,6 @@
 # base.py
 
-from gi.repository import GObject, GLib, Gdk
+from gi.repository import GObject, GLib, Gdk, Gtk
 from . import models, secret, sql_instance
 from ..constants import get_nocturne_version, INTEGRATIONS_DIR, DATA_DIR
 import requests, urllib3, time, os, json, threading, logging, syncedlyrics
@@ -217,15 +217,42 @@ class Base(GObject.Object):
                 callback(current_song_model.get_property(parameter))
 
     def connect_to_model(self, model_id:str, parameter:str, callback:callable) -> str:
-        # do not modify this function, it works as is in any instance
         connection_id = ""
         if model_id in self.loaded_models:
-            connection_id = self.loaded_models.get(model_id).connect(
+            model = self.loaded_models.get(model_id)
+            connection_id = model.connect(
                 'notify::{}'.format(parameter),
                 lambda *_, p=parameter, mid=model_id, cb=callback: cb(self.loaded_models.get(mid).get_property(p))
             )
             callback(self.loaded_models.get(model_id).get_property(parameter))
+            self._auto_disconnect_on_unroot(callback, model, connection_id)
         return connection_id
+
+    def _auto_disconnect_on_unroot(self, callback:callable, model:GObject.Object, connection_id:int):
+        # Row/button widgets connect to shared, long-lived models here. Without disconnecting
+        # when the widget is removed from the tree (eg. via list_el.remove_all() on page
+        # reset/reload), the model's signal connection keeps the orphaned widget alive forever,
+        # so it keeps receiving updates and mutating its children with no allocation - which
+        # crashes GTK's next snapshot pass.
+        widget = getattr(callback, '__self__', None)
+        if not isinstance(widget, Gtk.Widget):
+            return
+        pending = getattr(widget, '_nocturne_model_connections', None)
+        if pending is None:
+            pending = []
+            widget._nocturne_model_connections = pending
+            # Gtk.Widget has no connectable 'unroot' signal; 'parent' becoming None is the
+            # observable equivalent for widgets removed via list_el.remove()/remove_all().
+            widget.connect('notify::parent', self._disconnect_widget_model_connections)
+        pending.append((model, connection_id))
+
+    def _disconnect_widget_model_connections(self, widget, pspec):
+        if widget.get_parent() is not None:
+            return
+        for model, connection_id in widget._nocturne_model_connections:
+            if model.handler_is_connected(connection_id):
+                model.disconnect(connection_id)
+        widget._nocturne_model_connections = []
 
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
         # do not modify this function, it works as is in any instance
