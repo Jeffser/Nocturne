@@ -253,7 +253,6 @@ def main(version):
                             'display': item.get('display'),
                             'id': item_id
                         })
-                    print(results)
                     exit = True
             elif value:
                 actions_to_call[action] = [GLib.Variant('s', value)] if isinstance(value, str) else []
