@@ -103,6 +103,8 @@ class NocturnePreferences(Adw.PreferencesDialog):
     instance_avatar_el = Gtk.Template.Child()
     instance_icon_el = Gtk.Template.Child()
     instance_el = Gtk.Template.Child()
+    library_combo_el = Gtk.Template.Child()
+    library_expander_el = Gtk.Template.Child()
     discord_rpc_el = Gtk.Template.Child()
     discord_coverart_share_el = Gtk.Template.Child()
 
@@ -262,6 +264,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
         self.session_group_el.set_visible(integration)
         self.instance_el.set_visible(False)
         threading.Thread(target=self.update_instance_row).start()
+
+        ### Library Row
+        self.library_list = []
+        self.library_combo_el.set_visible(False)
+        self.library_expander_el.set_visible(False)
+        threading.Thread(target=self.append_library_row).start()
 
         # Customization
         ## Interface
@@ -465,6 +473,58 @@ class NocturnePreferences(Adw.PreferencesDialog):
             GLib.idle_add(self.instance_avatar_el.set_custom_image, data.get('picture'))
             GLib.idle_add(self.instance_avatar_el.set_text, data.get('username', ''))
             GLib.idle_add(self.instance_el.set_visible, data)
+
+    def append_library_row(self):
+        if integration := get_current_integration():
+            self.library_list, multiselect = integration.getLibraries()
+            if len(self.library_list) > 1 and multiselect:
+                    self.show_library_expander_row()
+            elif self.library_list and not multiselect:
+                    self.show_library_combo_row()
+
+    def show_library_expander_row(self):
+        stored_ids = Gio.Settings(schema_id="com.jeffser.Nocturne").get_strv("library-ids")
+        for library in self.library_list:
+            switch_row = Adw.SwitchRow(
+                title=library["name"],
+                active=library["id"] in stored_ids
+            )
+            switch_row.connect("notify::active", self.library_switch_toggled, library["id"])
+            self.library_expander_el.add_row(switch_row)
+        self.library_expander_el.set_visible(True)
+
+    def library_switch_toggled(self, switch_row, _, library_id):
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        library_ids = settings.get_strv("library-ids")
+
+        on = switch_row.get_active()
+        library_ids.append(library_id) if on else library_ids.remove(library_id)
+        settings.set_strv("library-ids", library_ids)
+        self.get_root().activate_action("app.reset_window")
+
+    def show_library_combo_row(self):
+        gtk_list = Gtk.StringList.new([library["name"] for library in self.library_list])
+        GLib.idle_add(self.library_combo_el.set_model, gtk_list)
+
+        library_ids = Gio.Settings(schema_id="com.jeffser.Nocturne").get_strv("library-ids")
+        if library_ids:
+            stored_id = library_ids[0]
+            index = next((i for i, library in enumerate(self.library_list) if library["id"] == stored_id), 0)
+            GLib.idle_add(self.library_combo_el.set_selected, index)
+        GLib.idle_add(self.library_combo_el.set_visible, True)
+
+    @Gtk.Template.Callback()
+    def library_combo_changed(self, combo_row, ud):
+        if not combo_row.get_mapped(): #prevent combo row creation from changing library
+            return
+        index = combo_row.get_selected()
+        selected_id = self.library_list[index].get("id")
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        library_ids = settings.get_strv("library-ids")
+        stored_id = library_ids[0] if library_ids else ""
+        if combo_row.get_model() and selected_id != stored_id:
+            settings.set_strv("library-ids", [selected_id])
+            self.get_root().activate_action("app.reset_window")
 
     @Gtk.Template.Callback()
     def default_page_changed(self, combo_row, ud):

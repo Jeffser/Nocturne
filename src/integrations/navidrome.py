@@ -93,13 +93,17 @@ class Navidrome(Base):
                 return radioStreamUrl
             elif model.get_property('isExternalFile'):
                 return 'file://{}'.format(model.get_property('path'))
-        max_bitrate = Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('max-bitrate').unpack()
+        max_bitrate = self.settings.get_value('max-bitrate').unpack()
         params = self.get_base_params()
         params['id'] = song_id
         if max_bitrate != 0:
             params['maxBitRate'] = max_bitrate
         query_string = urlencode(params)
         return '{}/rest/stream?{}'.format(self.get_property('url').strip('/'), query_string)
+
+    def getLibraries(self) -> tuple[bool, list]:
+        response = self.make_request('getMusicFolders')
+        return response.get("musicFolders"), True
 
     def getCoverArtBytes(self, model_id:str, size:int) -> bytes:
         try:
@@ -178,7 +182,8 @@ class Navidrome(Base):
         params = {
             'type': list_type,
             'size': size,
-            'offset': offset
+            'offset': offset,
+            'musicFolderId': self.library_ids
         }
         response = self.make_request('getAlbumList2', params)
 
@@ -196,8 +201,11 @@ class Navidrome(Base):
         return album_ids
 
     def getArtists(self, size:int=10) -> list:
+        params = {
+            'musicFolderId': self.library_ids
+        }
         # if size == -1 then it will return every artist id in their names alphabetical order
-        response = self.make_request('getArtists')
+        response = self.make_request('getArtists', params)
 
         artist_dicts = []
         for index in response.get('artists', {}).get('index', []):
@@ -222,8 +230,11 @@ class Navidrome(Base):
         return artist_ids
 
     def getPlaylists(self) -> list:
+        params = {
+            'musicFolderId': self.library_ids
+        }
         # returns list of playlist ids
-        response = self.make_request('getPlaylists')
+        response = self.make_request('getPlaylists', params)
 
         playlist_ids = []
         for playlist_dict in response.get('playlists', {}).get('playlist', []):
@@ -399,9 +410,11 @@ class Navidrome(Base):
         return [s.get('id') for s in songs if s.get('id')]
 
     def getRandomSongs(self, size:int=20) -> list:
-        response = self.make_request('getRandomSongs', {
-            'size': size
-        })
+        params = {
+            'size': size,
+            'musicFolderId': self.library_ids
+        }
+        response = self.make_request('getRandomSongs', params)
         songs = response.get('randomSongs', {}).get('song', [])
         for song in songs:
             self.verifySong(song.get('id'))
@@ -452,7 +465,8 @@ class Navidrome(Base):
             'albumCount': albumCount,
             'albumOffset': albumOffset,
             'songCount': songCount,
-            'songOffset': songOffset
+            'songOffset': songOffset,
+            'musicFolderId': self.library_ids
         })
         search_results = response.get('searchResult3')
         for model in search_results.get('artist') or []:
@@ -489,6 +503,7 @@ class Navidrome(Base):
             'artistCount': 5,
             'albumCount': 5,
             'songCount': 5,
+            'musicFolderId': self.library_ids
         }).get('searchResult3', {})
 
         # Artists
@@ -638,7 +653,8 @@ class Navidrome(Base):
             self.verifyArtist(artist_id, force_update=True, use_threading=False)
         top_songs = self.make_request('getTopSongs', {
             'artist': model.get_property('name'),
-            'count': count
+            'count': count,
+            'musicFolderId': self.library_ids
         }).get('topSongs', {}).get('song', [])
         return [song.get('id') for song in top_songs if song.get('id')]
 

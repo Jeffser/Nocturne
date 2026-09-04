@@ -118,6 +118,15 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
           }
         }
       }
+      Adw.ComboRow library_combo_el {
+        title: _("Music Library");
+        subtitle: _("The music library that will be fetched");
+        notify::selected => $library_combo_changed();
+      }
+      Adw.ExpanderRow library_expander_el {
+        title: _("Music Libraries");
+        subtitle: _("The music libraries that will be fetched");
+      }
       Adw.ButtonRow {
         title: _("Delete Image Cache");
         styles [
