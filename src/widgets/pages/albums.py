@@ -16,6 +16,7 @@ class AlbumsPage(Adw.NavigationPage):
     offset = 0
     loading = False
     skipped_albums = 0
+    lazy_reload = False
 
     def __init__(self):
         super().__init__()
@@ -32,6 +33,11 @@ class AlbumsPage(Adw.NavigationPage):
         GLib.idle_add(self.reset)
         GLib.idle_add(self.end_stack.set_visible_child_name, 'loading')
         threading.Thread(target=self.load_albums, daemon=True).start()
+
+    def do_showing(self):
+        if self.lazy_reload:
+            self.lazy_reload = False
+            self.reload()
 
     def reset(self):
         self.list_el.remove_all()

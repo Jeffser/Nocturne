@@ -21,6 +21,7 @@ class StarredPage(Adw.NavigationPage):
     item_ids = []
     offset = 0
     searching = False
+    lazy_reload = False
 
     def __init__(self):
         super().__init__()
@@ -91,6 +92,11 @@ class StarredPage(Adw.NavigationPage):
             GLib.idle_add(self.wrapbox_el.remove, el)
         integration = get_current_integration()
         self.item_ids = integration.getStarred((self.get_tag().split('-')[0]).removesuffix("s"))
+
+    def do_showing(self):
+        if self.lazy_reload:
+            self.lazy_reload = False
+            GLib.idle_add(self.reload)
 
     def reload(self):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')

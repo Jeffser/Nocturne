@@ -18,6 +18,7 @@ class ArtistsPage(Adw.NavigationPage):
     scrolledwindow = Gtk.Template.Child()
     offset = 0
     searching = False
+    lazy_reload = False
 
     def __init__(self):
         super().__init__()
@@ -38,9 +39,16 @@ class ArtistsPage(Adw.NavigationPage):
             GLib.idle_add(self.on_search, self.search_entry)
 
     def reset(self):
+        offset = 0
         self.list_el.remove_all()
         for el in list(self.wrapbox_el):
             self.wrapbox_el.remove(el)
+
+    def do_showing(self):
+        if self.lazy_reload:
+            self.lazy_reload = False
+            GLib.idle_add(self.reset)
+            GLib.idle_add(self.reload)
 
     def search(self):
         if self.searching:

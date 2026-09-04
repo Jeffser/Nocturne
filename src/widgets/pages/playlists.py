@@ -18,6 +18,7 @@ class PlaylistsPage(Adw.NavigationPage):
     search_entry = Gtk.Template.Child()
     offset = 0
     searching = False
+    lazy_reload = False
 
     def __init__(self):
         super().__init__()
@@ -36,6 +37,12 @@ class PlaylistsPage(Adw.NavigationPage):
     def reload(self):
         if len(list(self.list_el)) + len(list(self.wrapbox_el)) == 0:
             GLib.idle_add(self.on_search, self.search_entry)
+
+    def do_showing(self):
+        if self.lazy_reload:
+            self.lazy_reload = False
+            GLib.idle_add(self.reset)
+            GLib.idle_add(self.reload)
 
     def reset(self):
         self.list_el.remove_all()

@@ -500,7 +500,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
         on = switch_row.get_active()
         library_ids.append(library_id) if on else library_ids.remove(library_id)
         settings.set_strv("library-ids", library_ids)
-        self.get_root().activate_action("app.reset_window")
+        self.get_root().activate_action("app.lazy_reload_window")
 
     def show_library_combo_row(self):
         gtk_list = Gtk.StringList.new([library["name"] for library in self.library_list])
@@ -524,7 +524,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
         stored_id = library_ids[0] if library_ids else ""
         if combo_row.get_model() and selected_id != stored_id:
             settings.set_strv("library-ids", [selected_id])
-            self.get_root().activate_action("app.reset_window")
+            self.get_root().activate_action("app.lazy_reload_window")
 
     @Gtk.Template.Callback()
     def default_page_changed(self, combo_row, ud):
