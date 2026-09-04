@@ -98,6 +98,9 @@ class StarredPage(Adw.NavigationPage):
             self.lazy_reload = False
             GLib.idle_add(self.reload)
 
+    def load(self):
+        self.reload()
+
     def reload(self):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
 

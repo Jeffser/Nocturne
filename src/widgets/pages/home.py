@@ -29,6 +29,11 @@ class HomePage(Adw.NavigationPage):
     album_carousel = Gtk.Template.Child()
     artist_carousel = Gtk.Template.Child()
     playlist_carousel = Gtk.Template.Child()
+    refresh_button_el = Gtk.Template.Child()
+    refresh_stack_el = Gtk.Template.Child()
+
+    loaded = False
+    lazy_reload = False
 
     def __init__(self):
         super().__init__()
@@ -106,15 +111,26 @@ class HomePage(Adw.NavigationPage):
         else:
             self.welcome_container.set_visible(False)
 
+    def load(self):
+        if not self.loaded:
+            self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
+            self.max_songs = self.settings.get_value('n-songs-home').unpack()
+            self.max_albums = self.settings.get_value('n-albums-home').unpack()
+            self.max_artists = self.settings.get_value('n-artists-home').unpack()
+            self.max_playlists = self.settings.get_value('n-playlists-home').unpack()
+            threading.Thread(target=self.search, daemon=True).start()
+            GLib.idle_add(self.search_mode_toggled, self.search_toggle)
+            GLib.idle_add(self.update_welcome_visibility)
+            self.loaded = True
+
     def reload(self):
-        self.max_frequent_albums = self.settings.get_value('n-frequent-albums-home').unpack()
-        self.max_songs = self.settings.get_value('n-songs-home').unpack()
-        self.max_albums = self.settings.get_value('n-albums-home').unpack()
-        self.max_artists = self.settings.get_value('n-artists-home').unpack()
-        self.max_playlists = self.settings.get_value('n-playlists-home').unpack()
-        threading.Thread(target=self.search, daemon=True).start()
-        GLib.idle_add(self.search_mode_toggled, self.search_toggle)
-        GLib.idle_add(self.update_welcome_visibility)
+        self.loaded = False
+        self.lazy_reload = False
+        self.load()
+
+    def do_showing(self):
+        if self.lazy_reload:
+            self.reload()
 
     def reset(self):
         threading.Thread(target=self.frequent_album_carousel.set_widgets, args=([],), daemon=True).start()
@@ -126,6 +142,8 @@ class HomePage(Adw.NavigationPage):
     def search(self):
         if self.searching:
             return
+        self.refresh_stack_el.set_visible_child_name("spinner")
+        self.refresh_button_el.set_sensitive(False)
         self.searching = True
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         if integration := get_current_integration():
@@ -178,6 +196,12 @@ class HomePage(Adw.NavigationPage):
             has_results = False
         GLib.idle_add(self.main_stack.set_visible_child_name, 'content' if has_results else 'no-content')
         self.searching = False
+        self.refresh_stack_el.set_visible_child_name("icon")
+        self.refresh_button_el.set_sensitive(True)
+
+    @Gtk.Template.Callback()
+    def refresh(self, button):
+        self.reload()
 
     @Gtk.Template.Callback()
     def search_mode_toggled(self, button):

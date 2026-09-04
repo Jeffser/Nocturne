@@ -46,6 +46,7 @@
     <file alias="icons/scalable/status/stopwatch-symbolic.svg">icons/stopwatch-symbolic.svg</file>
     <file alias="icons/scalable/status/snapshots-alt-symbolic.svg">icons/snapshots-alt-symbolic.svg</file>
     <file alias="icons/scalable/status/paper-symbolic.svg">icons/paper-symbolic.svg</file>
+    <file alias="icons/scalable/status/refresh-symbolic.svg">icons/refresh-symbolic.svg</file>
     <file alias="icons/scalable/status/globe-symbolic.svg">icons/globe-symbolic.svg</file>
     <file alias="icons/scalable/status/grid-filled-symbolic.svg">icons/grid-filled-symbolic.svg</file>
     <file alias="icons/scalable/status/view-list-bullet-symbolic.svg">icons/view-list-bullet-symbolic.svg</file>

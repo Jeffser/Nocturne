@@ -25,6 +25,37 @@ template $NocturneHomePage: Adw.NavigationPage {
           search-changed => $on_search();
         };
       };
+      [end]
+      Gtk.Button refresh_button_el {
+        icon-name: "refresh-symbolic";
+        tooltip-text: _("Refresh");
+        styles ["flat"]
+
+        // Connect a signal handler from your code
+        clicked => $refresh();
+
+        child: Gtk.Stack refresh_stack_el{
+          transition-type: crossfade;
+
+          Gtk.StackPage {
+            name: "icon";
+            child: Gtk.Image{
+              icon-name: "refresh-symbolic";
+
+              accessibility {
+                label: _("Refresh button");
+              }
+            };
+          }
+
+          Gtk.StackPage {
+            name: "spinner";
+            child: Gtk.Spinner {
+              spinning: true;
+            };
+          }
+        };
+      }
     }
 
     content: Gtk.Stack main_stack {

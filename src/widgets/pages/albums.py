@@ -26,21 +26,26 @@ class AlbumsPage(Adw.NavigationPage):
         if adjustment.get_upper() <= adjustment.get_page_size():
             threading.Thread(target=self.load_albums, daemon=True).start()
 
+    def load(self):
+        if len(list(self.list_el.list_el)) <= 1:
+            GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
+            self.offset = 0
+            self.loading = False
+            self.lazy_reload = False
+            GLib.idle_add(self.reset)
+            GLib.idle_add(self.end_stack.set_visible_child_name, 'loading')
+            threading.Thread(target=self.load_albums, daemon=True).start()
+
     def reload(self):
-        GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
-        self.offset = 0
-        self.loading = False
-        GLib.idle_add(self.reset)
-        GLib.idle_add(self.end_stack.set_visible_child_name, 'loading')
-        threading.Thread(target=self.load_albums, daemon=True).start()
+        self.reset()
+        self.load()
 
     def do_showing(self):
         if self.lazy_reload:
-            self.lazy_reload = False
             self.reload()
 
     def reset(self):
-        self.list_el.remove_all()
+        GLib.idle_add(self.list_el.remove_all)
 
     def load_albums(self):
         if self.loading:

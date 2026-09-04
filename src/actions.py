@@ -270,13 +270,15 @@ def toggle_star(window, model_id:str):
                 model.set_property('starred', True)
 
 def lazy_reload_window(window):
+    def iterate_lazy_load():
+        for page in list(window.main_navigationview):
+            if isinstance(page, Adw.NavigationPage):
+                if hasattr(page, "lazy_reload"):
+                    page.lazy_reload = True
     threading.Thread(target=__replace_queue, args=(window,[]), daemon=True).start()
     page_tag = Gio.Settings(schema_id="com.jeffser.Nocturne").get_string('default-page-tag')
     GLib.idle_add(replace_root_page, window, page_tag)
-    for page in list(window.main_navigationview):
-        if isinstance(page, Adw.NavigationPage):
-            if hasattr(page, "lazy_reload"):
-                page.lazy_reload = True
+    GLib.idle_add(iterate_lazy_load)
     reload(window)
 
 def logout(window):
