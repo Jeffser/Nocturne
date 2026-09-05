@@ -269,12 +269,25 @@ def toggle_star(window, model_id:str):
             if integration.star(model.get_property('id')):
                 model.set_property('starred', True)
 
+def lazy_reload_window(window):
+    def iterate_lazy_load():
+        for page in list(window.main_navigationview):
+            if isinstance(page, Adw.NavigationPage):
+                if hasattr(page, "lazy_reload"):
+                    page.lazy_reload = True
+    threading.Thread(target=__replace_queue, args=(window,[]), daemon=True).start()
+    page_tag = Gio.Settings(schema_id="com.jeffser.Nocturne").get_string('default-page-tag')
+    GLib.idle_add(replace_root_page, window, page_tag)
+    GLib.idle_add(iterate_lazy_load)
+    reload(window)
+
 def logout(window):
     integration = get_current_integration()
     threading.Thread(target=integration.terminate_instance, daemon=True).start()
     settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
     settings.set_string('integration-user', '')
     settings.set_string('selected-instance-type', '')
+    settings.set_strv('library-ids', [])
     threading.Thread(target=__replace_queue, args=(window,[]), daemon=True).start()
     GLib.idle_add(window.main_stack.set_visible_child_name, 'welcome')
     GLib.idle_add(replace_root_page, window, 'home')

@@ -39,7 +39,13 @@ class Jellyfin(Base):
     # Loaded by API
     accessToken = GObject.Property(type=str)
     userId = GObject.Property(type=str)
-    libraryId = GObject.Property(type=str)
+
+    @property
+    def libraryId(self) -> str:
+        stored_id = ""
+        if self.library_ids and self.library_ids[0] != "All":
+            stored_id = self.library_ids[0]
+        return stored_id
 
     @property
     def AUTH_HEADER(self) -> str:
@@ -143,7 +149,7 @@ class Jellyfin(Base):
             elif model.get_property('isExternalFile'):
                 return 'file://{}'.format(model.get_property('path'))
         base_url = self.get_url('Audio/{}/stream'.format(song_id))
-        max_bitrate = Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('max-bitrate').unpack()
+        max_bitrate = self.settings.get_value('max-bitrate').unpack()
         if max_bitrate == 0:
             return '{}?static=true&api_key={}'.format(
                 base_url,
@@ -171,6 +177,17 @@ class Jellyfin(Base):
             secret.store_password(response.get("Secret"))
             return True
         return False
+
+    def getLibraries(self) -> tuple[bool, list]:
+        libraries = self.make_request(
+            action='Users/{userId}/Views',
+            mode='GET'
+        ).get("Items", [])
+
+        library_list = [{"id": library.get("Id"), "name": library.get("Name")} for library in libraries if library.get("CollectionType") == "music"]
+        if len(library_list) > 1: #Add All button if multiple libraries present
+            library_list.insert(0, {"name":_("All"), "id": "All"})
+        return library_list, False
 
     def getCoverArtBytes(self, model_id:str, size:int) -> bytes:
         try:
@@ -276,21 +293,10 @@ class Jellyfin(Base):
             self.set_property('accessToken', response.get('AccessToken'))
             self.set_property('userId', response.get('User', {}).get('Id'))
         if self.get_property('accessToken') and self.get_property('userId'):
-            libraries = self.make_request(
-                action='Users/{userId}/Views',
-                mode='GET'
-            ).get("Items", [])
-            for library in libraries:
-                library_found = False
-                if library.get("CollectionType") == "music":
-                    if not library_found:
-                        library_found = True
-                        self.set_property('libraryId', library.get("Id"))
-                    else: #TODO implement method for selecting a library
-                        self.set_property('libraryId', '')
-                        logger.warning("Multiple music libraries found, reverting to include all Jellyfin libraries.")
-                        break
-
+            if not self.library_ids:
+                libraries, _ = self.getLibraries()
+                if libraries:
+                    self.settings.set_strv("library-ids", [libraries[0].get("id")])
             return super().ping()
         return {
             'status': 'error',
@@ -304,7 +310,7 @@ class Jellyfin(Base):
             "Limit": size,
             "StartIndex": offset,
             "Fields": "ArtistItems,IsFavorite",
-            "ParentId": self.get_property("libraryId")
+            "ParentId": self.libraryId
         }
         if list_type == "random":
             params["SortBy"] = "Random"
@@ -338,7 +344,7 @@ class Jellyfin(Base):
                 "Fields": "Overview,SimilarItems,UserData",
                 "SortBy": "Random",
                 "SortOrder": "Ascending",
-                "ParentId": self.get_property("libraryId")
+                "ParentId": self.libraryId
             }
         ).get('Items', [])
         self.__bulk_verify("MusicArtist", artists)
@@ -371,7 +377,7 @@ class Jellyfin(Base):
                 mode="GET",
                 params={
                     "userId": self.get_property("userId"),
-                    "parentId": self.get_property("libraryId"),
+                    "parentId": self.libraryId,
                     "Recursive": "true",
                     "Filters": "isFavorite"
                 }
@@ -384,7 +390,7 @@ class Jellyfin(Base):
                 "Filters": "IsFavorite"
             }
             if item_type != 'playlist':
-                params["ParentId"] = self.get_property("libraryId")
+                params["ParentId"] = self.libraryId
 
             items = self.make_request(
                 action="Users/{userId}/Items",
@@ -772,7 +778,7 @@ class Jellyfin(Base):
                 "Limit": size,
                 "SortBy": "Random",
                 "MediaTypes": "Audio",
-                "ParentId":self.get_property("libraryId")
+                "ParentId":self.libraryId
             }
         ).get('Items', [])
 
@@ -842,7 +848,7 @@ class Jellyfin(Base):
                 mode="GET",
                 params={
                     "userId": self.get_property("userId"),
-                    "parentId": self.get_property("libraryId"),
+                    "parentId": self.libraryId,
                     "SearchTerm": query,
                     "Recursive": "true",
                     "Limit": limit,
@@ -860,7 +866,7 @@ class Jellyfin(Base):
                 "Fields": fields
             }
             if item_type != "Playlist":
-                params["ParentId"] = self.get_property("libraryId")
+                params["ParentId"] = self.libraryId
             items = self.make_request(
                 action='Users/{userId}/Items',
                 mode="GET",
@@ -1112,7 +1118,7 @@ class Jellyfin(Base):
                 'SortOrder': 'Descending',
                 'Limit': count,
                 'Recursive': 'true',
-                'ParentId': self.get_property("libraryId")
+                'ParentId': self.libraryId
             }
         ).get('Items', [])
         return [song.get('Id') for song in songs if song.get('Id')]

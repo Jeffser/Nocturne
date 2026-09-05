@@ -95,7 +95,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         if page := self.main_navigationview.find_page(page_tag):
             self.main_bottom_sheet.set_open(False)
             self.main_split_view.set_show_content(True)
-            threading.Thread(target=page.reload, daemon=True).start()
+            threading.Thread(target=page.load, daemon=True).start()
             self.main_navigationview.replace([page])
 
     def create_action(self, callback:callable, shortcuts:list=[], parameter_type:str="s"):
@@ -249,6 +249,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.visit_url)
         self.create_action(actions.toggle_star)
         self.create_action(actions.logout, parameter_type=None)
+        self.create_action(actions.lazy_reload_window, parameter_type=None)
         self.create_action(actions.show_external_file_warning, parameter_type=None)
         self.create_action(actions.update_navidrome_server, parameter_type=None)
         self.create_action(actions.delete_navidrome_server, parameter_type=None)

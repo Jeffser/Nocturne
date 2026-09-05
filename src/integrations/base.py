@@ -1,6 +1,6 @@
 # base.py
 
-from gi.repository import GObject, GLib, Gdk
+from gi.repository import GObject, GLib, Gdk, Gio
 from . import models, secret, sql_instance
 from ..constants import get_nocturne_version, INTEGRATIONS_DIR, DATA_DIR
 import requests, urllib3, time, os, json, threading, logging, syncedlyrics
@@ -133,10 +133,18 @@ class Base(GObject.Object):
         'callbacks': {} # param : [list of callbacks]
     }
 
+    # List of library IDs to retrieve from
+    library_ids = []
+
     def __init__(self, *args, **kwargs):
         # do not change
         super().__init__(*args, **kwargs)
+        self.loaded_models = {'currentSong': models.CurrentSong()}
         self.loaded_models.get('currentSong').connect('notify::songId', lambda *_: self.song_changed())
+
+        self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        self.library_ids = self.settings.get_strv("library-ids")
+        self.settings.connect("changed::library-ids", self.changeLibrary)
 
     def current_song_property_changed(self, param:str, value:object):
         # do not change
@@ -277,6 +285,19 @@ class Base(GObject.Object):
         directory = os.path.join(INTEGRATIONS_DIR, self.__gtype_name__)
         os.makedirs(directory, exist_ok=True)
         return directory
+
+    def getLibraries(self) -> tuple[bool, list]:
+        # Used to retrieve a list of dicts containing the names and IDs for the available music libraries
+        # Returns a list of libraries and whether multiple libraries can be selected at once
+        return [], False
+
+    def changeLibrary(self, settings, key):
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        self.library_ids = settings.get_strv(key)
+
+        #reset models
+        self.loaded_models = {'currentSong': models.CurrentSong()}
+        self.loaded_models.get('currentSong').connect('notify::songId', lambda *_: self.song_changed())
 
     def getCoverArtBytes(self, model_id:str, size:int) -> bytes:
         # Used to send bytes to different parts of the codebase instead of full paintables, also called by getCoverArt

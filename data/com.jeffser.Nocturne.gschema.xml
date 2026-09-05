@@ -22,6 +22,9 @@
 	  <key name="default-page-tag" type="s">
 	    <default>'home'</default>
 	  </key>
+	  <key name="library-ids" type="as">
+	    <default>[]</default>
+	  </key>
 	  <key name="max-bitrate" type="i">
 	    <default>0</default>
 	  </key>
