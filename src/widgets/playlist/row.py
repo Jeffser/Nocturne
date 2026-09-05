@@ -15,7 +15,7 @@ class PlaylistRow(Adw.ActionRow):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyPlaylist(self.id)
+        integration.verifyPlaylist(self.id, minimal=True)
         super().__init__()
         self.set_action_target_value(GLib.Variant.new_string(self.id))
 

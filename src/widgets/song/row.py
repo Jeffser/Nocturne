@@ -27,7 +27,7 @@ class SongRow(Adw.ActionRow):
         self.draggable = draggable
         self.removable = removable # used in queue
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         super().__init__(
             action_target=GLib.Variant.new_string(self.id)
         )

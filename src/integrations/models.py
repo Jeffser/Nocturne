@@ -98,6 +98,7 @@ class Song(GObject.Object):
 
     id = GObject.Property(type=str)
     coverArt = GObject.Property(type=str)
+    albumArtCheck = GObject.Property(type=bool, default=False)
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
     title = GObject.Property(type=str)

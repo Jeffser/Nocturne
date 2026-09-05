@@ -251,7 +251,7 @@ class Navidrome(Base):
         items = self.make_request('getStarred').get('starred', {}).get(item_type, [])
         return [item.get('id') for item in items]
 
-    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def update():
             base_response = self.make_request('getArtist', {'id': model_id})
             base_artist = base_response.get('artist', {})
@@ -277,7 +277,7 @@ class Navidrome(Base):
 
         self.threads.submit(self.updateCoverArt, model_id)
 
-    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyAlbum(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def update():
             response = self.make_request('getAlbum', {'id': model_id})
             album_dict = response.get('album', {})
@@ -298,7 +298,7 @@ class Navidrome(Base):
 
         self.threads.submit(self.updateCoverArt, model_id)
 
-    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def update():
             response = self.make_request('getPlaylist', {'id': model_id})
             playlist_dict = response.get('playlist', {})
@@ -319,7 +319,7 @@ class Navidrome(Base):
 
         self.threads.submit(self.updateCoverArt, model_id)
 
-    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True):
+    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def update():
             response = self.make_request('getSong', {'id': model_id})
             song_dict = response.get('song', {})
