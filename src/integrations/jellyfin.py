@@ -1138,6 +1138,10 @@ class Jellyfin(Base):
             logger.error(f"can't download song {model_id}: {e}")
 
     def getSongDetails(self, model_id:str) -> models.SongDetails:
+        if model := self.loaded_models.get(model_id):
+            if isinstance(model, models.Song) and model.get_property('isExternalFile'):
+                return local.Local().getSongDetails(model_id)
+
         song = self.make_request(
             action='Users/{userId}/Items/{id}',
             action_keys={'id': model_id},
