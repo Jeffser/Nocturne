@@ -6,7 +6,7 @@ from .base import Base
 import random, threading, io, pathlib, re, os, time, uuid, pwd, getpass, shutil, logging
 from PIL import Image
 from tinytag import TinyTag
-from ..constants import DOWNLOADS_DIR, COMPATIBLE_EXTENSIONS, get_song_info_from_file
+from ..constants import DOWNLOADS_DIR, COMPATIBLE_EXTENSIONS, get_song_info_from_file, parse_year_tag
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logger = logging.getLogger(__name__)
@@ -672,7 +672,7 @@ class Local(Base):
                 artist=tag.artist,
                 artistId=model.get_property('artistId'),
                 track=tag.track or 0,
-                year=int(tag.year or "0"),
+                year=parse_year_tag(tag.year),
                 size=tag.filesize,
                 suffix=os.path.splitext(model.get_property('path'))[1].replace('.',  ''),
                 starred=model.get_property('starred'),

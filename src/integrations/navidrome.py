@@ -694,6 +694,10 @@ class Navidrome(Base):
         super().scrobble(model_id, submission)
 
     def getSongDetails(self, model_id:str) -> models.SongDetails:
+        if model := self.loaded_models.get(model_id):
+            if isinstance(model, models.Song) and model.get_property('isExternalFile'):
+                return local.Local().getSongDetails(model_id)
+
         song_dict = self.make_request('getSong', {
             'id': model_id,
         }).get('song', {})
