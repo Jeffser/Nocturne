@@ -212,10 +212,10 @@ class Local(Base):
                 shutil.rmtree(directory, ignore_errors=True)
                 os.makedirs(directory, exist_ok=True)
 
-                paintable = self.model.get_property('gdkPaintable')
+                paintable = model.get_property('gdkPaintable')
                 if not paintable:
                     self.updateCoverArt(model_id)
-                    paintable = self.model.get_property('gdkPaintable')
+                    paintable = model.get_property('gdkPaintable')
 
                 if paintable:
                     paintable.save_to_png(path)
