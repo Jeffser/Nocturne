@@ -1,6 +1,6 @@
 # constants.py
 
-import os, subprocess, json, shutil, uuid
+import os, subprocess, json, shutil, uuid, re
 from tinytag import TinyTag
 
 CLI_ARGUMENTS = {
@@ -316,6 +316,15 @@ def _normalize_artists(values:list[str]) -> list[str]:
                 artists.append(artist_name)
     return artists
 
+def parse_year_tag(year:str) -> int:
+    if not year or not year.strip():
+        return 0
+    year = year.strip()
+    match = re.search(r'\b\d{4}\b', year) #any consecutive 4 digits
+    if match:
+        return int(match.group())
+    return 0
+
 def get_song_info_from_file(file_path:str, star_list:list=[], is_external_file:bool=False) -> dict | None:
     tag = TinyTag.get(file_path)
     if not tag:
@@ -324,6 +333,7 @@ def get_song_info_from_file(file_path:str, star_list:list=[], is_external_file:b
     artists = _normalize_artists(tag.as_dict().get('artist', []))
     album_artists = _normalize_artists([tag.albumartist or ""])
     album_artist = album_artists[0] if album_artists else (artists[0] if artists else "")
+    year = parse_year_tag(tag.year)
 
     song = {
         'path': file_path,
@@ -340,7 +350,7 @@ def get_song_info_from_file(file_path:str, star_list:list=[], is_external_file:b
         'track': tag.track or 0,
         'isExternalFile': is_external_file,
         'discNumber': tag.disc or 0,
-        'year':tag.year or 0,
+        'year':year,
         'albumGain': tag.extra.get('replaygain_album_gain') or tag.extra.get('REPLAYGAIN_ALBUM_GAIN') or 1,
         'trackGain': tag.extra.get('replaygain_track_gain') or tag.extra.get('REPLAYGAIN_TRACK_GAIN') or 1
     }
