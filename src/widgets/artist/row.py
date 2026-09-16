@@ -15,7 +15,7 @@ class ArtistRow(Adw.ActionRow):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyArtist(self.id)
+        integration.verifyArtist(self.id, minimal=True)
         super().__init__()
         self.set_action_target_value(GLib.Variant.new_string(self.id))
 

@@ -21,7 +21,7 @@ class AlbumButton(Gtk.Box):
     def __init__(self, id:str, show_year:bool=False):
         self.id = id
         integration = get_current_integration()
-        integration.verifyAlbum(self.id)
+        integration.verifyAlbum(self.id, minimal=True)
         super().__init__()
 
         self.play_el.set_action_target_value(GLib.Variant.new_string(self.id))
@@ -81,8 +81,8 @@ class AlbumButton(Gtk.Box):
 
     def update_artist_id(self, artistId:str):
         if artistId:
-            self.artist_el.set_action_name("app.show_artist")
             self.artist_el.set_action_target_value(GLib.Variant.new_string(artistId))
+            self.artist_el.set_action_name("app.show_artist")
         else:
             self.artist_el.set_action_name("")
 

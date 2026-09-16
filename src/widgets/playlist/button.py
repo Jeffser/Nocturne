@@ -19,7 +19,7 @@ class PlaylistButton(Gtk.Box):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyPlaylist(self.id)
+        integration.verifyPlaylist(self.id, minimal=True)
         super().__init__()
 
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
