@@ -49,15 +49,16 @@ class Jellyfin(Base):
 
     @property
     def AUTH_HEADER(self) -> str:
-        return 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), get_nocturne_version())
+        auth_header = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), get_nocturne_version())
+        if token := self.get_property('accessToken'):
+            auth_header += ', Token="{}"'.format(token)
+        return auth_header
 
     def get_base_header(self) -> dict:
         headers = {
             "Authorization": self.AUTH_HEADER,
             "Accept": "application/json"
         }
-        if token := self.get_property('accessToken'):
-            headers["Authorization"] += ', Token="{}"'.format(token)
         return headers
 
     def get_url(self, action:str, **keys) -> str:
@@ -148,16 +149,16 @@ class Jellyfin(Base):
                 return radioStreamUrl
             elif model.get_property('isExternalFile'):
                 return 'file://{}'.format(model.get_property('path'))
-        stream_url = self.get_url('Audio/{}/universal?api_key={}&userId={}&deviceId={}'.format(
+        stream_url = self.get_url('Audio/{}/universal?ApiKey={}&userId={}&deviceId={}'.format(
             song_id,
             self.get_property('accessToken'),
             self.userId,
             get_device_id()
         ))
         max_bitrate = self.settings.get_int('max-bitrate')
-        if max_bitrate == 0:
+        if max_bitrate == 0: #Direct play
             return '{}&static=true'.format(stream_url)
-        else:
+        else: #Request transcoded stream as opus
             return '{}&maxStreamingBitrate={}&container=opus&audioCodec=opus&transcodingContainer=ogg&transcodingProtocol=hls'.format(
                 stream_url,
                 max_bitrate*1000
