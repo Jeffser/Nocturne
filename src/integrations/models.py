@@ -116,6 +116,8 @@ class Song(GObject.Object):
     userRating = GObject.Property(type=int)
     deleted = GObject.Property(type=bool, default=False)
     radioStreamUrl = GObject.Property(type=str)
+    container = GObject.Property(type=str)
+    codec = GObject.Property(type=str)
 
     path = GObject.Property(type=str) # For use in Local
 
