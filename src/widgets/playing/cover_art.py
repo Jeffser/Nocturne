@@ -109,11 +109,20 @@ class PlayingCoverArt(Gtk.Box, Adw.Swipeable):
         integration.connect_to_current_song('gdkPaintableBig', self.update_cover_art)
         self.spectrum_el.setup()
 
+        self.video_el.connect('map', self.on_video_el_map)
+        self.video_el.connect('unmap', self.on_video_el_unmap)
+
+    def on_video_el_map(self, widget):
         if root := self.get_root():
             if app := root.get_application():
                 if player := app.player:
-                    if video_sink := player.gst.get_property('video-sink'):
-                        self.video_el.set_paintable(video_sink.get_property('paintable'))
+                    player.attach_video_widget(widget)
+
+    def on_video_el_unmap(self, widget):
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.player:
+                    player.release_video_widget(widget)
 
     def update_cover_art(self, paintable):
         if paintable:

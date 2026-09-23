@@ -363,6 +363,23 @@ class Player(GObject.Object):
         # Track ID of song when it's preloaded
         self.preloaded_id = ""
 
+        # gtk4paintablesink only allows one mapped widget to own its paintable at a time
+        self.video_widget = None
+
+    def attach_video_widget(self, widget):
+        if self.video_widget is widget:
+            return
+        if self.video_widget:
+            self.video_widget.set_paintable(None)
+        self.video_widget = widget
+        if video_sink := self.gst.get_property('video-sink'):
+            widget.set_paintable(video_sink.get_property('paintable'))
+
+    def release_video_widget(self, widget):
+        if self.video_widget is widget:
+            widget.set_paintable(None)
+            self.video_widget = None
+
     def settings_volume_changed(self, settings, key):
         if not self.updating_volume:
             self.updating_volume = True
@@ -391,12 +408,17 @@ class Player(GObject.Object):
             pass
 
     def video_changed(self, playbin):
+        # playbin fires this off the main thread; see 410392c159e
+        GLib.idle_add(self._video_changed_main_thread, playbin)
+
+    def _video_changed_main_thread(self, playbin):
         integration = get_current_integration()
         if playbin.get_property('n-video') or 0 > 0:
             songId = integration.get_property('current-state').get_property('songId')
             integration.get_property('current-state').set_property('videoId', songId)
         else:
             integration.get_property('current-state').set_property('videoId', "")
+        return False
 
     # ---
 
