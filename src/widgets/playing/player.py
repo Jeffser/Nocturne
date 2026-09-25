@@ -257,7 +257,7 @@ class Player(GObject.Object):
     __gtype_name__ = 'NocturnePlayer'
 
     application = GObject.Property(type=Adw.Application)
-    gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin", "player"))
+    gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin3", "player"))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -267,7 +267,6 @@ class Player(GObject.Object):
             self.gst.set_property("video-sink", Gst.ElementFactory.make("gtk4paintablesink", "video-sink"))
         except:
             logger.warning("Video dependency not found")
-        self.gst.connect("video-changed", self.video_changed)
         self.gst.connect("about-to-finish", self.preload_next_track)
 
         self.bin = Gst.Bin.new("audio-filter-bin")
@@ -332,6 +331,7 @@ class Player(GObject.Object):
         self.bus.connect("message::tag", self.handle_message_tag)
         self.bus.connect("message::element", self.handle_message_element)
         self.bus.connect("message::stream-start", self.handle_stream_start)
+        self.bus.connect("message::stream-collection", self.on_stream_collection)
 
         self.event_adapter = PlayerEventAdapter(self)
         GLib.timeout_add(64, self.update_stream_progress)
@@ -390,9 +390,13 @@ class Player(GObject.Object):
         except:
             pass
 
-    def video_changed(self, playbin):
+    def on_stream_collection(self, bus, message):
+        collection = message.parse_stream_collection()
         integration = get_current_integration()
-        if playbin.get_property('n-video') or 0 > 0:
+        if any(
+            collection.get_stream(i).get_stream_type() == Gst.StreamType.VIDEO
+            for i in range(collection.get_size())
+        ):
             songId = integration.get_property('current-state').get_property('songId')
             integration.get_property('current-state').set_property('videoId', songId)
         else:

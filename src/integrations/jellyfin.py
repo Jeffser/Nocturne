@@ -49,15 +49,16 @@ class Jellyfin(Base):
 
     @property
     def AUTH_HEADER(self) -> str:
-        return 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), get_nocturne_version())
+        auth_header = 'MediaBrowser Client="Nocturne", Device="{}", DeviceId="{}", Version="{}"'.format(platform.node(), get_device_id(), get_nocturne_version())
+        if token := self.get_property('accessToken'):
+            auth_header += ', Token="{}"'.format(token)
+        return auth_header
 
     def get_base_header(self) -> dict:
         headers = {
             "Authorization": self.AUTH_HEADER,
             "Accept": "application/json"
         }
-        if token := self.get_property('accessToken'):
-            headers["Authorization"] += ', Token="{}"'.format(token)
         return headers
 
     def get_url(self, action:str, **keys) -> str:
@@ -148,18 +149,34 @@ class Jellyfin(Base):
                 return radioStreamUrl
             elif model.get_property('isExternalFile'):
                 return 'file://{}'.format(model.get_property('path'))
-        base_url = self.get_url('Audio/{}/stream'.format(song_id))
-        max_bitrate = self.settings.get_value('max-bitrate').unpack()
-        if max_bitrate == 0:
-            return '{}?static=true&api_key={}'.format(
-                base_url,
-                self.get_property('accessToken')
-            )
         else:
-            return '{}?static=true&audioBitrate={}&api_key={}'.format(
-                base_url,
+            self.verifySong(song_id, use_threading=False)
+            model = self.loaded_models.get(song_id)
+
+        stream_url = self.get_url('Audio/{}/universal?ApiKey={}&userId={}&deviceId={}'.format(
+            song_id,
+            self.get_property('accessToken'),
+            self.userId,
+            get_device_id()
+        ))
+        max_bitrate = self.settings.get_int('max-bitrate')
+        container = model.get_property("container")
+        codec = model.get_property("codec")
+        if max_bitrate == 0: #Direct play
+            return '{}&container={}&audioCodec={}'.format(
+                stream_url,
+                container,
+                codec
+            )
+        else: #Request transcoded stream as opus for uncompressed/lossless files
+            if codec in ["flac", "wav", "alac", "ape", "pcm"]:
+                container = "opus,ogg"
+                codec = "opus"
+            return '{}&maxStreamingBitrate={}&container={}&audioCodec={}&transcodingProtocol=hls'.format(
+                stream_url,
                 max_bitrate*1000,
-                self.get_property('accessToken')
+                container,
+                codec
             )
 
     def initiateQuickConnect(self) -> dict:
@@ -509,11 +526,12 @@ class Jellyfin(Base):
                             "ParentId": model_id,
                             "IncludeItemTypes": "Audio",
                             "Recursive": "true",
-                            "Fields": "RunTimeTicks,IndexNumber,ParentIndexNumber,ProductionYear",
+                            "Fields": "RunTimeTicks,IndexNumber,ParentIndexNumber,ProductionYear,MediaSources",
                             "SortBy": "ParentIndexNumber,IndexNumber",
                             "SortOrder": "Ascending"
                         }
                     ).get("Items", [])
+                    self.__bulk_verify("Audio", songs)
 
                 primary_tag = album.get('ImageTags', {}).get('Primary', '')
                 cover_art = f"Items/{model_id}/Images/Primary?={primary_tag}" if primary_tag else "None"
@@ -592,6 +610,8 @@ class Jellyfin(Base):
                 params["Fields"]=None
                 params["EnableImages"]="false"
                 params["EnableUserData"]="false"
+            else:
+                params["Fields"] += ",MediaSources"
 
             songs_response = self.make_request(
                 action='Playlists/{id}/Items',
@@ -608,6 +628,8 @@ class Jellyfin(Base):
                 duration=duration,
                 entry=[{"id": song.get("Id"), "name": song.get("Name")} for song in songs]
             )
+            if not lite:
+                self.__bulk_verify("Audio", songs)
 
         if not model_id or not model_id.strip():
             logger.debug("Empty Playlist model_id, aborting.")
@@ -628,7 +650,7 @@ class Jellyfin(Base):
             song = song_dict
             if not song:
                 params = {
-                    "Fields": "ArtistItems,AlbumId,RunTimeTicks,UserData,IndexNumber,ParentIndexNumber"
+                    "Fields": "ArtistItems,AlbumId,RunTimeTicks,UserData,IndexNumber,ParentIndexNumber,MediaSources"
                 }
                 song = self.make_request(
                     action='Users/{userId}/Items/{id}',
@@ -652,6 +674,12 @@ class Jellyfin(Base):
                         if primary_tag := album.get('ImageTags', {}).get('Primary', ''):
                             cover_art = f"Items/{album_id}/Images/Primary?={primary_tag}"
                 duration = int(song.get("RunTimeTicks", 0) / 10000000)
+                codec = ""
+                if media_sources := song.get("MediaSources", []):
+                    for stream in media_sources[0].get("MediaStreams", []):
+                        if stream.get("Type") == "Audio":
+                            codec = stream.get("Codec", "").lower()
+
                 self.loaded_models.get(model_id).update_data(
                     id=song.get("Id"),
                     title=song.get("Name"),
@@ -667,7 +695,9 @@ class Jellyfin(Base):
                     discNumber=song.get("ParentIndexNumber") or 0,
                     albumGain=song.get("AlbumNormalizationGain", song.get("NormalizationGain")) or 0.0,
                     trackGain=song.get("NormalizationGain") or 0.0,
-                    userRating=self.get_rating(model_id)
+                    userRating=self.get_rating(model_id),
+                    container=song.get("Container"),
+                    codec=codec
                 )
                 self.threads.submit(self.updateCoverArt, song.get("Id"))
             elif model_id in self.loaded_models:
@@ -760,7 +790,7 @@ class Jellyfin(Base):
                 "UserId": self.get_property("userId"),
                 "Limit": count,
                 "IncludeItemTypes": "Audio",
-                "Fields": "ArtistItems,RunTimeTicks,UserData"
+                "Fields": "ArtistItems,RunTimeTicks,UserData,MediaSources"
             }
         ).get("Items", [])
 
@@ -774,7 +804,7 @@ class Jellyfin(Base):
             params={
                 "IncludeItemTypes": "Audio",
                 "Recursive": "true",
-                "Fields": "RunTimeTicks,UserData,ArtistItems",
+                "Fields": "RunTimeTicks,UserData,ArtistItems,MediaSources",
                 "Limit": size,
                 "SortBy": "Random",
                 "MediaTypes": "Audio",
@@ -1118,7 +1148,8 @@ class Jellyfin(Base):
                 'SortOrder': 'Descending',
                 'Limit': count,
                 'Recursive': 'true',
-                'ParentId': self.libraryId
+                'ParentId': self.libraryId,
+                'Fields': "MediaSources"
             }
         ).get('Items', [])
         return [song.get('Id') for song in songs if song.get('Id')]
