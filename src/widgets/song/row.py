@@ -29,7 +29,7 @@ class SongRow(Adw.ActionRow):
         self.draggable = draggable
         self.removable = removable # used in queue
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         super().__init__(
             model=integration.loaded_models.get(self.id)
         )

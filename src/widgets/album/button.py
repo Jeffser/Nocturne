@@ -20,7 +20,7 @@ class AlbumButton(Gtk.Box):
     def __init__(self, id:str, show_year:bool=False):
         self.id = id
         integration = get_current_integration()
-        integration.verifyAlbum(self.id)
+        integration.verifyAlbum(self.id, minimal=True)
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.settings.connect("changed::button-size", lambda *_: GLib.idle_add(self.update_size))
         super().__init__(
