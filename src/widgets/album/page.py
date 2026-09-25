@@ -102,10 +102,15 @@ class AlbumPage(Adw.NavigationPage):
             threading.Thread(target=run, daemon=True).start()
 
     def update_song_list(self, song_list:list):
+        # Generation token so overlapping calls can't interleave their queued idle mutations.
+        generation = getattr(self, '_song_list_generation', 0) + 1
+        self._song_list_generation = generation
+        def is_current():
+            return getattr(self, '_song_list_generation', None) == generation
         def run():
             integration = get_current_integration()
-            GLib.idle_add(self.song_list_el.list_el.remove_all)
-            GLib.idle_add(self.song_list_el.main_stack.set_visible_child_name, 'content' if len(song_list) > 0 else 'no-content')
+            GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.remove_all())
+            GLib.idle_add(lambda: is_current() and self.song_list_el.main_stack.set_visible_child_name('content' if len(song_list) > 0 else 'no-content'))
             song_ids = [s.get('id') for s in song_list]
             discs = []
             for song_id in song_ids:
@@ -117,12 +122,12 @@ class AlbumPage(Adw.NavigationPage):
                 if discNumber > 0 and discNumber not in discs:
                     discs.append(discNumber)
 
-                GLib.idle_add(self.song_list_el.list_el.append, SongRow(song_id))
+                GLib.idle_add(lambda sid=song_id: is_current() and self.song_list_el.list_el.append(SongRow(sid)))
             for disc in discs:
-                GLib.idle_add(self.song_list_el.list_el.append, DiscIndicator(disc))
+                GLib.idle_add(lambda d=disc: is_current() and self.song_list_el.list_el.append(DiscIndicator(d)))
 
-            GLib.idle_add(self.song_list_el.list_el.invalidate_sort)
-            GLib.idle_add(self.connect_rows)
+            GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.invalidate_sort())
+            GLib.idle_add(lambda: is_current() and self.connect_rows())
         if len(list(self.song_list_el.list_el)) != len(song_list):
             threading.Thread(target=run, daemon=True).start()
 

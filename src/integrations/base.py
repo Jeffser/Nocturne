@@ -230,18 +230,25 @@ class Base(GObject.Object):
             model = self.loaded_models.get(model_id)
             connection_id = model.connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(cb, self.loaded_models.get(mid).get_property(p))
+                lambda *_, p=parameter, mid=model_id, cb=callback: GLib.idle_add(self._dispatch_model_callback, cb, self.loaded_models.get(mid).get_property(p))
             )
-            GLib.idle_add(callback, self.loaded_models.get(model_id).get_property(parameter))
+            GLib.idle_add(self._dispatch_model_callback, callback, self.loaded_models.get(model_id).get_property(parameter))
             self._auto_disconnect_on_unroot(callback, model, connection_id)
         elif model_id == 'currentSong':
             #TODO ^ temp code whilst I migrate everything to reference current-state directly
             connection_id = self.get_property('current-state').connect(
                 'notify::{}'.format(parameter),
-                lambda *_, p=parameter, cb=callback: GLib.idle_add(cb, self.get_property('current-state').get_property(p))
+                lambda *_, p=parameter, cb=callback: GLib.idle_add(self._dispatch_model_callback, cb, self.get_property('current-state').get_property(p))
             )
-            GLib.idle_add(callback, self.get_property('current-state').get_property(parameter))
+            GLib.idle_add(self._dispatch_model_callback, callback, self.get_property('current-state').get_property(parameter))
         return connection_id
+
+    def _dispatch_model_callback(self, cb, *args):
+        # Drops updates already queued for widgets removed from the tree before they ran.
+        widget = getattr(cb, '__self__', None)
+        if isinstance(widget, Gtk.Widget) and getattr(widget, '_nocturne_removed_from_tree', False):
+            return
+        cb(*args)
 
     def _auto_disconnect_on_unroot(self, callback:callable, model:GObject.Object, connection_id:int):
         # Row/button widgets connect to shared, long-lived models here. Without disconnecting
@@ -268,6 +275,7 @@ class Base(GObject.Object):
             if model.handler_is_connected(connection_id):
                 model.disconnect(connection_id)
         widget._nocturne_model_connections = []
+        widget._nocturne_removed_from_tree = True
 
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
         # do not modify this function, it works as is in any instance

@@ -140,7 +140,7 @@ class SongRow(Adw.ActionRow):
             )
             self.artist_container_el.set_child(button)
             self.artist_container_el.set_sensitive(not model.get_property('isExternalFile'))
-        if len(artists) >= 5:
+        elif len(artists) >= 5:
             menu = Gio.Menu()
             for artist in artists:
                 item = Gio.MenuItem.new(
