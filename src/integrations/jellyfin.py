@@ -4,8 +4,9 @@ from gi.repository import GLib, GObject, Gdk, Gio
 from . import secret, models, local, sql_instance
 from .base import Base
 from ..constants import DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, get_nocturne_version, get_device_id
-import os, platform, logging, time, threading, uuid
+import os, platform, logging, time, threading, uuid, requests
 from urllib.parse import urlencode
+from requests.adapters import HTTPAdapter, Retry
 
 logger = logging.getLogger(__name__)
 
@@ -116,19 +117,44 @@ class JellyfinPlaySession():
             self.create_session(item_id)
         threading.Thread(target=run, daemon=True).start()
 
-    def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}) -> dict:
-        #Make requests using headers and session from the Jellyfin integration object
-        #Bypasses integration caching system
+    def quit(self):
+        if not self.play_session_id: return
+
+        if self.timer_id:
+            GLib.source_remove(self.timer_id)
+            self.timer_id = 0
+
+        url = "/Sessions/Playing/Stopped"
+        params = {
+            'ItemId': self.item_id,
+            'PlaySessionId':self.play_session_id
+        }
+        self.make_request(action=url, json=params, timeout=(1.5, 0.5), retries=False) #aggressive timeout for app shutdown
+
+    def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> dict:
+        #Make requests using headers from the Jellyfin integration
+        #Bypasses session pool and integration cache
+        session_adapter = HTTPAdapter(
+            max_retries=Retry(
+                total=2 if retries else 0,
+                backoff_factor=1,
+                status_forcelist=[429, 500, 502, 503, 504]
+            )
+        )
+        session = requests.Session()
+        session.mount("http://", session_adapter)
+        session.mount("https://", session_adapter)
+
         url = self.integration.get_url(action, **action_keys)
         try:
-            with self.integration.session as current_session:
+            with session as current_session:
                 response = current_session.post(
                     url,
                     params=params,
                     json=json,
                     headers=self.integration.get_base_header(),
                     verify=not self.integration.get_property('trustServer'),
-                    timeout=(3.05, 10)
+                    timeout=timeout
                 )
                 if response.status_code in (200, 201, 204):
                     self.last_ping = time.time()
@@ -262,7 +288,7 @@ class Jellyfin(Base):
         return True
 
     def terminate_instance(self):
-        pass
+        self.play_session.quit()
 
     def get_stream_url(self, song_id:str) -> str:
         if model := self.loaded_models.get(song_id):
