@@ -129,7 +129,7 @@ class JellyfinPlaySession():
             'ItemId': self.item_id,
             'PlaySessionId':self.play_session_id
         }
-        self.make_request(action=url, json=params, timeout=(1.5, 0.5), retries=False) #aggressive timeout for app shutdown
+        self.make_request(action=url, json=params, timeout=(3, 0.5), retries=False) #aggressive timeout for app shutdown
 
     def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> dict:
         #Make requests using headers from the Jellyfin integration

@@ -58,27 +58,39 @@ class NocturneWindow(Adw.ApplicationWindow):
     def close_request(self, window):
         if not self.get_hide_on_close():
             if integration := get_current_integration():
-                id_list = [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]
-                queue_origin = integration.get_property('current-state').get_property('queueOrigin')
-                song_id = integration.get_property('current-state').get_property('songId')
-                timestamp = integration.get_property('current-state').get_property('positionSeconds')
-                if model := integration.loaded_models.get(queue_origin):
-                    if isinstance(model, models.Playlist):
-                        integration.savePlaylistResume(
-                            queue_origin_id=queue_origin,
-                            song_id=song_id,
-                            current_timestamp=timestamp
-                        )
+                threading.Thread(target=self.shutdown_integration, args=(self.quit_app,), daemon=True).start()
+                return True #intercept close
+            else:
+                self.quit_app()
 
-                integration.savePlayQueue(id_list, song_id, timestamp * 1000)
-                integration.terminate_instance()
-            self.settings.set_int('default-width', self.get_width())
-            self.settings.set_int('default-height', self.get_height())
-            if app := self.get_application():
-                if player := app.player:
-                    GLib.idle_add(player.discord_rpc.close)
-                    GLib.idle_add(player.event_adapter.mpris.quit)
-                GLib.idle_add(app.quit)
+
+    def shutdown_integration(self, callback):
+        if integration := get_current_integration():
+            id_list = [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]
+            queue_origin = integration.get_property('current-state').get_property('queueOrigin')
+            song_id = integration.get_property('current-state').get_property('songId')
+            timestamp = integration.get_property('current-state').get_property('positionSeconds')
+            if model := integration.loaded_models.get(queue_origin):
+                if isinstance(model, models.Playlist):
+                    integration.savePlaylistResume(
+                        queue_origin_id=queue_origin,
+                        song_id=song_id,
+                        current_timestamp=timestamp
+                    )
+
+            integration.savePlayQueue(id_list, song_id, timestamp * 1000)
+            integration.terminate_instance()
+        callback()
+
+    def quit_app(self):
+        self.settings.set_int('default-width', self.get_width())
+        self.settings.set_int('default-height', self.get_height())
+        if app := self.get_application():
+            if player := app.player:
+                GLib.idle_add(player.discord_rpc.close)
+                GLib.idle_add(player.event_adapter.mpris.quit)
+            GLib.idle_add(app.quit)
+
 
     @Gtk.Template.Callback()
     def on_sidebar_activated(self, sidebar, index):
