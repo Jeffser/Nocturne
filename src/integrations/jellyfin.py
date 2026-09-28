@@ -667,8 +667,11 @@ class Jellyfin(Base):
             similar_request = self.make_request(
                 action='/Items/{id}/Similar?userId={userId}',
                 action_keys={"id": model_id},
-                params={"limit": 12},
-                mode="GET"
+                mode="GET",
+                params={
+                    "limit": 12,
+                    "ParentId":self.libraryId
+                }
             )
             if similar_request:
                 similar = similar_request.get("Items", [])
