@@ -54,6 +54,10 @@ class ArtistPage(Adw.NavigationPage):
         return bool(value)
 
     @Gtk.Template.Callback()
+    def format_condensed_text(self, obj, value) -> str:
+        return value.replace('\n', ' ')
+
+    @Gtk.Template.Callback()
     def format_rating_icon_name(self, obj, rating:int, index):
         return "starred-symbolic" if rating >= index else "non-starred-symbolic"
 
@@ -124,8 +128,10 @@ class ArtistPage(Adw.NavigationPage):
     @Gtk.Template.Callback()
     def on_biography_clicked(self, button):
         if button.get_child().get_ellipsize() == Pango.EllipsizeMode.NONE:
+            button.get_child().set_text(self.model.get_property("biography").replace('\n', ' '))
             button.get_child().set_ellipsize(Pango.EllipsizeMode.END)
         else:
+            button.get_child().set_text(self.model.get_property("biography"))
             button.get_child().set_ellipsize(Pango.EllipsizeMode.NONE)
 
     @Gtk.Template.Callback()
