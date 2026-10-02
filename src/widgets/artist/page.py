@@ -112,7 +112,8 @@ class ArtistPage(Adw.NavigationPage):
             albums = [a.get('id') for a in album_list if isinstance(a, dict)]
             album_buttons = []
             for album in albums:
-                button = AlbumButton(album, show_year=True)
+                button = AlbumButton(album)
+                button.year_el.set_visible(True)
                 button.artist_el.set_visible(False)
                 button.set_halign(Gtk.Align.CENTER)
                 button.name_el.remove_css_class('title-3')

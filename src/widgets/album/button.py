@@ -10,14 +10,14 @@ class AlbumButton(Gtk.Box):
     __gtype_name__ = 'NocturneAlbumButton'
 
     model = GObject.Property(type=models.Album)
-    show_year = GObject.Property(type=bool, default=False)
 
     artist_el = Gtk.Template.Child() # Used in artist page
     star_el = Gtk.Template.Child()
     cover_el = Gtk.Template.Child()
     name_el = Gtk.Template.Child()
+    year_el = Gtk.Template.Child()
 
-    def __init__(self, id:str, show_year:bool=False):
+    def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
         integration.verifyAlbum(self.id)
@@ -25,7 +25,6 @@ class AlbumButton(Gtk.Box):
         self.settings.connect("changed::button-size", lambda *_: GLib.idle_add(self.update_size))
         super().__init__(
             model=integration.loaded_models.get(self.id),
-            show_year=show_year
         )
 
     def update_size(self):
@@ -58,10 +57,6 @@ class AlbumButton(Gtk.Box):
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
         return GLib.Variant(variant, value)
-
-    @Gtk.Template.Callback()
-    def format_year(self, obj, year:str, show_year:bool) -> str:
-        return year if show_year else ''
 
     @Gtk.Template.Callback()
     def format_gdkPaintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:

@@ -112,7 +112,7 @@ template $NocturneAlbumButton: Gtk.Box {
         visible: false;
         ellipsize: end;
         max-width-chars: 1;
-        label: bind $format_year(template.model as <$NocturneModelAlbum> .year, template.show-year);
+        label: bind template.model as <$NocturneModelAlbum> .year;
       }
     };
 
