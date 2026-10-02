@@ -16,7 +16,7 @@ class AlbumRow(Adw.ActionRow):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyAlbum(self.id)
+        integration.verifyAlbum(self.id, minimal=True)
         super().__init__(
             model=integration.loaded_models.get(self.id)
         )

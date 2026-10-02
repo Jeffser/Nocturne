@@ -18,7 +18,7 @@ class ArtistButton(Gtk.Button):
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
-        integration.verifyArtist(self.id)
+        integration.verifyArtist(self.id, minimal=True)
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.settings.connect("changed::button-size", lambda *_: self.update_size())
         super().__init__(

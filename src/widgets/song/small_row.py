@@ -19,7 +19,7 @@ class SongSmallRow(Gtk.Button):
     def __init__(self, id:str, show_album_name:bool=False):
         self.id = id
         integration = get_current_integration()
-        integration.verifySong(self.id)
+        integration.verifySong(self.id, minimal=True)
         super().__init__(
             model=integration.loaded_models.get(self.id),
             show_album_name=show_album_name
