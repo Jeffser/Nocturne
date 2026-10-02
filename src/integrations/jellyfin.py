@@ -556,7 +556,7 @@ class Jellyfin(Base):
             params={
                 "Limit": size,
                 "Recursive": "true",
-                "Fields": "Overview,SimilarItems,UserData",
+                "Fields": "Overview",
                 "SortBy": "Random",
                 "SortOrder": "Ascending",
                 "ParentId": self.libraryId
@@ -594,6 +594,7 @@ class Jellyfin(Base):
                     "userId": self.get_property("userId"),
                     "parentId": self.libraryId,
                     "Recursive": "true",
+                    "Fields": "Overview",
                     "Filters": "isFavorite"
                 }
             ).get('Items', [])
@@ -624,7 +625,8 @@ class Jellyfin(Base):
             artist = self.make_request(
                 action='Users/{userId}/Items/{id}',
                 action_keys={"id": model_id},
-                mode="GET"
+                mode="GET",
+                params={"Fields": "Overview"}
             )
             if artist.get("Id"):
                 artist_dict = self.__compile_response_json(artist, MediaType.ARTIST)
@@ -670,7 +672,8 @@ class Jellyfin(Base):
                 mode="GET",
                 params={
                     "limit": 12,
-                    "ParentId":self.libraryId
+                    "ParentId":self.libraryId,
+                    "Fields": "Overview"
                 }
             )
             if similar_request:
@@ -1252,7 +1255,7 @@ class Jellyfin(Base):
 
     def search(self, query:str, artistCount:int=0, artistOffset:int=0, albumCount:int=0, albumOffset:int=0, songCount:int=0, songOffset:int=0, playlistCount:int=0, playlistOffset:int=0) -> dict:
         return {
-            'artist': [item.get("Id") for item in self.__fetch_type(MediaType.ARTIST, query, artistCount, artistOffset, verify=True)],
+            'artist': [item.get("Id") for item in self.__fetch_type(MediaType.ARTIST, query, artistCount, artistOffset, fields="Overview", verify=True)],
             'album': [item.get("Id") for item in self.__fetch_type(MediaType.ALBUM, query, albumCount, albumOffset, verify=True)],
             'song': [item.get("Id") for item in self.__fetch_type(MediaType.SONG, query, songCount, songOffset, verify=True)],
             'playlist': [item.get("Id") for item in self.__fetch_type(MediaType.PLAYLIST, query, playlistCount, playlistOffset, verify=True)]
