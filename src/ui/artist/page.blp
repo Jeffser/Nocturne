@@ -80,7 +80,7 @@ template $NocturneArtistPage: Adw.NavigationPage {
                   valign: center;
                   hexpand: true;
                   max-width-chars: 1;
-                  label: bind template.model as <$NocturneModelArtist> .biography;
+                  label: bind $format_condensed_text(template.model as <$NocturneModelArtist> .biography);
                 }
                 visible: bind $format_to_bool(template.model as <$NocturneModelArtist> .biography);
                 tooltip-text: _("Expand Biography");
