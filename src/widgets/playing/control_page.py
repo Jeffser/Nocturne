@@ -95,6 +95,8 @@ class PlayingControlPage(Adw.NavigationPage):
                 Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
                 nanoseconds
             )
+            integration.get_property('current-state').set_property('positionSeconds', val)
+            integration.playbackReport("progress")
         GLib.timeout_add(500, lambda v=value: change_time(v) if v == scale_el.get_adjustment().get_value() else None)
 
     @Gtk.Template.Callback()

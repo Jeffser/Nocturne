@@ -580,6 +580,12 @@ class Base(GObject.Object):
         # see navidrome.py for example
         logger.warning('method not implemented')
 
+    def playbackReport(self, report_type:str):
+        # reports current song, play/pause status, and song position to server
+        # pulls information from current-state object
+        # currently only used in jellyfin.py
+        pass
+
     def scrobble(self, model_id:str, submission:bool=True):
         # the id is for a Song, this is how views are stored
         # called when a song is played

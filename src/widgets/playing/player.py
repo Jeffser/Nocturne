@@ -181,6 +181,8 @@ class PlayerMprisAdapter(MprisAdapter):
             time*1000
         )
         self.player.emit_changes(self.player.mpris.player, changes=['Position'])
+        integration.get_property('current-state').set_property('positionSeconds', time/Gst.MSECOND)
+        integration.playbackReport("progress")
 
     def set_maximum_rate(self, value:Rate):
         # Idk
@@ -515,6 +517,7 @@ class Player(GObject.Object):
                     integration.get_property('current-state').set_property("buttonState", 'pause' if is_playing else 'play')
                     self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
                     self.discord_rpc.update()
+                    integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
 
     def handle_message_tag(self, bus, message):
         integration = get_current_integration()
@@ -694,6 +697,7 @@ class Player(GObject.Object):
             if song_id != self.last_song:
                 self.last_song = song_id
                 threading.Thread(target=integration.scrobble, args=(song_id,), kwargs={'submission': False}, daemon=True).start()
+                integration.get_property('current-state').set_property('positionSeconds', 0.0)
 
                 # Volume warning
                 if self.gst.get_property('volume') == 0:
