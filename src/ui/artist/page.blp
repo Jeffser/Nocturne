@@ -165,6 +165,7 @@ template $NocturneArtistPage: Adw.NavigationPage {
           }
 
           $NocturneWrapbox album_wrapbox {
+            visible: bind $format_to_bool(template.model as <$NocturneModelArtist> .albumCount) as <bool>;
             header-label: _("Albums");
             header-icon-name: "music-queue-symbolic";
           }
