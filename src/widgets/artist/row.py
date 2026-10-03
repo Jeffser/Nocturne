@@ -35,6 +35,8 @@ class ArtistRow(Adw.ActionRow):
 
     @Gtk.Template.Callback()
     def format_album_count_label(self, obj, albumCount:int) -> str:
+        if albumCount == -1:
+            return _("Loading…")
         return ngettext("{} Album", "{} Albums", albumCount).format(albumCount)
 
     @Gtk.Template.Callback()

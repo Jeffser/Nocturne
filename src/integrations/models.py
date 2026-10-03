@@ -43,7 +43,7 @@ class Artist(GObject.Object):
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
     name = GObject.Property(type=str)
-    albumCount = GObject.Property(type=int)
+    albumCount = GObject.Property(type=int, default=-1)
     album = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     guestAlbum = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     guestAlbumCount = GObject.Property(type=int, default=-1)

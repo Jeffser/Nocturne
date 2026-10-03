@@ -41,7 +41,7 @@ template $NocturneArtistButton: Gtk.Button {
       ]
       ellipsize: end;
       max-width-chars: 1;
-      visible: bind $format_to_bool(template.model as <$NocturneModelArtist> .albumCount);
+      visible: bind $format_negative_bool(template.model as <$NocturneModelArtist> .albumCount);
       label: bind $format_album_count_label(template.model as <$NocturneModelArtist> .albumCount);
     }
   };
