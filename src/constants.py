@@ -423,7 +423,7 @@ SIDEBAR_MENU = {
             },
             'albums-random': { # Item
                 'title': _("Random"),
-                'icon-name': "playlist-shuffle-symbolic",
+                'icon-name': "media-playlist-shuffle-symbolic",
                 'page-tag': 'albums-random'
             },
             'albums-starred': { # Item
@@ -513,7 +513,7 @@ CONTEXT_ALBUM = {
     },
     "shuffle": {
         "name": _("Shuffle"),
-        "icon-name": "playlist-shuffle-symbolic",
+        "icon-name": "media-playlist-shuffle-symbolic",
         "action-name": "app.play_album_shuffle"
     },
     "play-next": {
@@ -546,7 +546,7 @@ CONTEXT_ALBUM = {
 CONTEXT_ARTIST = {
     "shuffle": {
         "name": _("Shuffle"),
-        "icon-name": "playlist-shuffle-symbolic",
+        "icon-name": "media-playlist-shuffle-symbolic",
         "action-name": "app.play_shuffle_artist"
     },
     "radio": {
