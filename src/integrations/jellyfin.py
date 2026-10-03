@@ -637,6 +637,29 @@ class Jellyfin(Base):
                 albumCount=albums_request.get("TotalRecordCount"),
                 album=[{"id": alb.get("Id"), "name": alb.get("Name")} for alb in albums],
             )
+            if lite:
+                return #don't fetch guest albums in lite mode
+
+            #Fetch guest appearance albums
+            excluded_albums = [album.get("Id") for album in albums]
+            all_albums_request = self.make_request(
+                action='Users/{userId}/Items',
+                mode='GET',
+                params={
+                    'ArtistIds': model_id,
+                    'IncludeItemTypes': "MusicAlbum",
+                    'SortBy': 'PremiereDate',
+                    'Recursive': 'true'
+                }
+            )
+
+            all_albums = all_albums_request.get("Items", [])
+            guest_albums = [album for album in all_albums if album.get("Id") not in excluded_albums]
+            self.__bulk_verify("MusicAlbum", guest_albums)
+            self.loaded_models.get(model_id).update_data(
+                guestAlbumCount=all_albums_request.get("TotalRecordCount"),
+                guestAlbum=[{"id": album.get("Id"), "name": album.get("Name")} for album in guest_albums],
+            )
 
         def get_similar():
             similar = self.make_request(

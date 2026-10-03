@@ -41,8 +41,10 @@ class ArtistButton(Gtk.Button):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
-    def format_to_bool(self, obj, value) -> bool:
-        return bool(value)
+    def format_negative_bool(self, obj, value) -> bool:
+        if value == -1:
+            return False
+        return True
 
     @Gtk.Template.Callback()
     def format_album_count_label(self, obj, albumCount:int) -> str:
