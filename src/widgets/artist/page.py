@@ -23,6 +23,7 @@ class ArtistPage(Adw.NavigationPage):
     star_el = Gtk.Template.Child()
     top_songs_wrapbox = Gtk.Template.Child()
     album_wrapbox = Gtk.Template.Child()
+    guest_album_wrapbox = Gtk.Template.Child()
     artist_carousel = Gtk.Template.Child()
     rating_container = Gtk.Template.Child()
     context_wrap_el = Gtk.Template.Child()
@@ -38,6 +39,7 @@ class ArtistPage(Adw.NavigationPage):
         for btn in context_buttons:
             self.context_wrap_el.append(btn)
         integration.connect_to_model(self.id, 'album', self.update_album_list)
+        integration.connect_to_model(self.id, 'guestAlbum', self.update_guest_album_list)
         integration.connect_to_model(self.id, 'similarArtist', self.update_artist_list)
         self.top_songs_wrapbox.list_el.set_justify(Adw.JustifyMode.FILL)
         self.top_songs_wrapbox.list_el.set_justify_last_line(True)
@@ -119,6 +121,20 @@ class ArtistPage(Adw.NavigationPage):
                 button.name_el.remove_css_class('title-3')
                 album_buttons.append(button)
             self.album_wrapbox.set_widgets(album_buttons)
+
+    def update_guest_album_list(self, album_list:list):
+        if album_list:
+            albums = [a.get('id') for a in album_list if isinstance(a, dict)]
+            album_buttons = []
+            for album in albums:
+                button = AlbumButton(album)
+                button.year_el.set_visible(True)
+                button.artist_el.set_visible(False)
+                button.set_halign(Gtk.Align.CENTER)
+                button.name_el.remove_css_class('title-3')
+                album_buttons.append(button)
+            self.guest_album_wrapbox.set_widgets(album_buttons)
+            self.guest_album_wrapbox.set_visible(True)
 
     def update_artist_list(self, artist_list:list):
         artists = [a.get('id') for a in artist_list]
