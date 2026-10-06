@@ -86,7 +86,7 @@ class ArtistPage(Adw.NavigationPage):
         # call update_top_songs on background thread
 
         def configure():
-            widgets = [SongSmallRow(song_id, show_album_name=True) for song_id in top_songs]
+            widgets = [SongSmallRow(song_id, show_album_name=True) for song_id in top_songs[:10]]
             for row in widgets:
                 row.set_action_name(None)
                 row.set_action_target_value(GLib.Variant('a{sv}', {
@@ -95,7 +95,24 @@ class ArtistPage(Adw.NavigationPage):
                     'originId': GLib.Variant('s', self.id)
                 }))
                 row.set_action_name('app.play_song_from_list')
+            button = Gtk.Button(
+                action_name = 'app.show_artist_songs',
+                action_target = GLib.Variant.new_string(self.model.get_property('id')),
+                sensitive = True,
+                child = Gtk.Label(
+                    ellipsize=Pango.EllipsizeMode.END,
+                    label="Top Songs",
+                    css_classes=['subtitle']
+                ),
+                css_classes = ['p0', 'flat'],
+                tooltip_text="Top Songs"
+            )
+            widgets.append(button)
             self.top_songs_wrapbox.set_widgets(widgets)
+            if widgets:
+                self.top_songs_wrapbox.header_button.set_sensitive(True)
+                self.top_songs_wrapbox.header_button.action_name = "app.show_artist_songs"
+                self.top_songs_wrapbox.header_button.action_target = GLib.Variant.new_string(self.model.get_property("id"))
 
         top_songs = None
         if root := self.get_root():

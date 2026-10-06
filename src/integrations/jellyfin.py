@@ -1258,7 +1258,8 @@ class Jellyfin(Base):
                 "trackGain": item.get("NormalizationGain") or 0.0,
                 "userRating": self.get_rating(item.get("Id")),
                 "container": item.get("Container"),
-                "codec": codec
+                "codec": codec,
+                "playCount": item.get("UserData", {}).get("PlayCount")
             }
 
     def search(self, query:str, artistCount:int=0, artistOffset:int=0, albumCount:int=0, albumOffset:int=0, songCount:int=0, songOffset:int=0, playlistCount:int=0, playlistOffset:int=0) -> dict:

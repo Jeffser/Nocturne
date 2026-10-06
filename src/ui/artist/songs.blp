@@ -1,0 +1,68 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $NocturneArtistSongsPage: Adw.NavigationPage {
+  title: _("Top Songs");
+
+  child: Adw.ToolbarView {
+    [top]
+    Adw.HeaderBar {
+      [end]
+      Gtk.ToggleButton heart_toggle {
+        icon-name: "heart-outline-thick-symbolic";
+        tooltip-text: _("Show only starred songs");
+        toggled => $favorites_mode_toggled();
+      }
+
+      title-widget: Gtk.SearchEntry search_entry_el {
+        hexpand: true;
+        key-capture-widget: main_stack;
+        placeholder-text: bind template.title;
+        search-changed => $on_search();
+        accessibility {
+          label: _("Search favorite songs");
+        }
+      };
+    }
+
+
+    content: Gtk.Stack main_stack {
+      transition-type: crossfade;
+      Gtk.StackPage {
+        name: "loading";
+        child: Adw.Spinner {};
+      }
+      Gtk.StackPage {
+        name: "content";
+        child: Gtk.ScrolledWindow scrolledwindow {
+          propagate-natural-width: true;
+          propagate-natural-height: true;
+          edge-reached => $scroll_edge_reached();
+
+          child: Adw.Clamp {
+            maximum-size: 2000;
+            tightening-threshold: 800;
+
+            Adw.Bin {
+
+              $NocturneSongQueue list_el {
+                styles [
+                  "boxed-list",
+                  "m10"
+                ]
+                valign: start;
+              }
+            }
+          };
+        };
+      }
+      Gtk.StackPage {
+        name: "no-content";
+        child: Adw.StatusPage failed_status_el {
+          icon-name: "sad-computer-symbolic";
+          title: _("No Items Found");
+        };
+      }
+    };
+  };
+}

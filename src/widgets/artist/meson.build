@@ -5,6 +5,7 @@ widgets = [
   'button.py',
   'page.py',
   'row.py',
+  'songs.py'
 ]
 
 install_data(widgets, install_dir: moduledir)

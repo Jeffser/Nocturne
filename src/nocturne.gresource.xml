@@ -111,6 +111,7 @@
     <file alias="artist/button.ui">ui/artist/button.ui</file>
     <file alias="artist/page.ui">ui/artist/page.ui</file>
     <file alias="artist/row.ui">ui/artist/row.ui</file>
+    <file alias="artist/songs.ui">ui/artist/songs.ui</file>
 
     <file alias="playlist/button.ui">ui/playlist/button.ui</file>
     <file alias="playlist/page.ui">ui/playlist/page.ui</file>

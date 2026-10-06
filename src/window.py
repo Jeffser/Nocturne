@@ -330,6 +330,7 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.create_action(actions.delete_playlist)
 
         self.create_action(actions.show_artist)
+        self.create_action(actions.show_artist_songs)
         self.create_action(actions.show_artist_from_song)
         self.create_action(actions.show_artist_from_album)
         self.create_action(actions.play_shuffle_artist)
