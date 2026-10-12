@@ -603,6 +603,10 @@ class Base(GObject.Object):
         logger.warning('method not implemented')
         return []
 
+    def getArtistSongs(self, artist_id:str) -> list:
+        # returns a list of song IDs of every song for an artist
+        return []
+
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         # from constants.py
         # file_title does NOT include extension (.mp3, .flac, etc)

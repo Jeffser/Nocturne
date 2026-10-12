@@ -53,7 +53,6 @@ class Artist(GObject.Object):
     biography = GObject.Property(type=str)
     similarArtist = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     userRating = GObject.Property(type=int)
-    topSongs = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
 
     verified = GObject.Property(type=bool, default=False)
 
@@ -127,6 +126,7 @@ class Song(GObject.Object):
     radioStreamUrl = GObject.Property(type=str)
     container = GObject.Property(type=str)
     codec = GObject.Property(type=str)
+    playCount = GObject.Property(type=int)
 
     verified = GObject.Property(type=bool, default=False)
 

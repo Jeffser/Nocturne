@@ -2,16 +2,17 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturneArtistSongsPage: Adw.NavigationPage {
-  title: _("Top Songs");
+  title: _("Songs");
 
   child: Adw.ToolbarView {
     [top]
     Adw.HeaderBar {
       [end]
-      Gtk.ToggleButton heart_toggle {
-        icon-name: "heart-outline-thick-symbolic";
-        tooltip-text: _("Show only starred songs");
-        toggled => $favorites_mode_toggled();
+      Gtk.MenuButton filter_button {
+        styles ["menu"]
+        icon-name: "filter-symbolic";
+        tooltip-text: _("Filter & Sort");
+        menu-model: sort_menu;
       }
 
       title-widget: Gtk.SearchEntry search_entry_el {
@@ -20,7 +21,7 @@ template $NocturneArtistSongsPage: Adw.NavigationPage {
         placeholder-text: bind template.title;
         search-changed => $on_search();
         accessibility {
-          label: _("Search favorite songs");
+          label: _("Search songs");
         }
       };
     }
@@ -44,7 +45,6 @@ template $NocturneArtistSongsPage: Adw.NavigationPage {
             tightening-threshold: 800;
 
             Adw.Bin {
-
               $NocturneSongQueue list_el {
                 styles [
                   "boxed-list",
@@ -65,4 +65,37 @@ template $NocturneArtistSongsPage: Adw.NavigationPage {
       }
     };
   };
+}
+
+menu sort_menu {
+  section{
+    item {
+      label: _("Favorites");
+      action: "sort.favorites-only";
+    }
+  }
+
+  section {
+    label: _("Sort");
+    item {
+      label: _("Top Plays");
+      action: "sort.sort-order";
+      target: "playCount";
+    }
+    item {
+      label: _("Name");
+      action: "sort.sort-order";
+      target: "title";
+    }
+    item {
+      label: _("Album");
+      action: "sort.sort-order";
+      target: "album";
+    }
+    item {
+      label: _("Random");
+      action: "sort.sort-order";
+      target: "random";
+    }
+  }
 }
