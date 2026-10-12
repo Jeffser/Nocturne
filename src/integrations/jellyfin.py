@@ -1505,6 +1505,39 @@ class Jellyfin(Base):
         self.__bulk_compile(MediaType.SONG, songs)
         return [song.get('Id') for song in songs if song.get('Id')]
 
+    def getArtistSongs(self, artist_id:str) -> list:
+        def fetch_album(album_id) -> list:
+            self.verifyAlbum(album_id, use_threading=False)
+            if album_model := self.loaded_models.get(album_id):
+                songs = [s.get('id') for s in album_model.get_property('song')]
+                return songs
+            return []
+
+        def fetch_guest_tracks(album_id) -> list:
+            guest_songs = []
+            self.verifyAlbum(album_id, use_threading=False)
+            if album_model := self.loaded_models.get(album_id):
+                for song in album_model.get_property('song'):
+                    song_id = song.get('id')
+                    artists = self.loaded_models.get(song_id).get_property("artists")
+                    if any(d.get("id") == artist_id for d in artists):
+                        guest_songs.append(song_id)
+            return guest_songs
+
+        self.verifyArtist(artist_id, use_threading=False)
+        songs = []
+        if model := self.loaded_models.get(artist_id):
+            with ThreadPoolExecutor() as executor:
+                futures = []
+                for album in model.get_property('album'):
+                    futures.append(executor.submit(fetch_album, album.get('id')))
+                for guest_album in model.get_property('guestAlbum'):
+                    futures.append(executor.submit(fetch_guest_tracks, guest_album.get('id')))
+                wait(futures)
+                for future in futures:
+                    songs.extend(future.result())
+        return songs
+
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         try:
             with self.session.get(self.get_url('Items/{id}/Download', id=model_id), headers=self.get_base_header(), stream=True) as r:
