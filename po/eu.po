@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nocturne\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-13 19:04+0200\n"
-"PO-Revision-Date: 2026-09-14 21:37+0200\n"
+"POT-Creation-Date: 2026-10-16 17:44+0200\n"
+"PO-Revision-Date: 2026-10-17 13:33+0200\n"
 "Last-Translator: Ibai Oihanguren Sala <ibaios@disroot.org>\n"
 "Language-Team: Basque\n"
 "Language: eu\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 50.0\n"
+"X-Generator: Gtranslator 51.0\n"
 
 #: data/com.jeffser.Nocturne.desktop.in:2
 #: data/com.jeffser.Nocturne.metainfo.xml.in:7
@@ -85,8 +85,8 @@ msgid "Song queue"
 msgstr "Abestien ilara"
 
 #: data/com.jeffser.Nocturne.metainfo.xml.in:74
-#: src/ui/playing/popout_window.blp:93 src/ui/window.blp:195
-#: src/ui/window.blp:247
+#: src/ui/playing/popout_window.blp:93 src/ui/window.blp:202
+#: src/ui/window.blp:254
 msgid "Lyrics"
 msgstr "Hitzak"
 
@@ -126,33 +126,57 @@ msgstr "musika"
 msgid "gtk"
 msgstr "gtk"
 
+#: data/com.jeffser.Nocturne.metainfo.xml.in:103
+msgid "New"
+msgstr "Berria"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:105
+msgid "General improvements to UI and usability"
+msgstr "Hobekuntza orokorrak interfazean eta erabilgarritasunean"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:106
+msgid "Better gapless playback"
+msgstr "Isilune gabeko erreprodukzio hobea"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:107
+msgid "New translations"
+msgstr "Itzulpen berriak"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:109
+msgid "Fixes"
+msgstr "Zuzenketak"
+
+#: data/com.jeffser.Nocturne.metainfo.xml.in:111
+msgid "Multiple fixes and optimizations for Jellyfin instance"
+msgstr "Hainbat zuzenketa eta hobekuntza Jellyfin instantziarentzat"
+
 #: data/com.jeffser.Nocturne.SearchProvider.desktop.in:3
 msgid "Nocturne Search Provider"
 msgstr "Nocturne bilaketa-hornitzailea"
 
-#: src/actions.py:150 src/widgets/pages/login.py:133
+#: src/actions.py:146 src/widgets/pages/login.py:133
 msgid "Error"
 msgstr "Errorea"
 
-#: src/actions.py:151
+#: src/actions.py:147
 msgid "No details provided"
 msgstr "Ez da xehetasunik eman"
 
-#: src/actions.py:153 src/actions.py:313 src/preferences.py:654
+#: src/actions.py:149 src/actions.py:306 src/preferences.py:665
 #: src/ui/song/queue.blp:43
 msgid "Close"
 msgstr "Itxi"
 
-#: src/actions.py:191
+#: src/actions.py:186
 #, python-brace-format
 msgid "Not enough data found for Nocturne Playback ({})"
 msgstr "Ez da behar beste datu aurkitu Nocturne entzunaldirako ({})"
 
-#: src/actions.py:310 src/ui/song/row.blp:72
+#: src/actions.py:303 src/ui/song/row.blp:81
 msgid "External File"
 msgstr "Kanpoko fitxategia"
 
-#: src/actions.py:311
+#: src/actions.py:304
 msgid ""
 "This track was loaded from an external file, this means it will have less "
 "features compared to a track inside the library"
@@ -160,407 +184,407 @@ msgstr ""
 "Pista hau kanpoko fitxategi batetik kargatu da, eta beraz, liburutegiko "
 "pista batek baino eginbide gutxiago izango ditu"
 
-#: src/actions.py:331
+#: src/actions.py:324
 msgid "Navidrome server deleted successfully"
 msgstr "Navidrome zerbitzaria behar bezala ezabatu da"
 
-#: src/actions.py:340
+#: src/actions.py:333
 msgid "Delete Navidrome Server"
 msgstr "Ezabatu Navidrome zerbitzaria"
 
-#: src/actions.py:341
+#: src/actions.py:334
 msgid "Are you sure you want to delete the integrated Navidrome server?"
 msgstr "Ziur Navidrome zerbitzaria ezabatu nahi duzula?"
 
-#: src/actions.py:343 src/actions.py:482 src/actions.py:516 src/actions.py:694
-#: src/actions.py:772 src/preferences.py:572 src/ui/lyrics/dialog.blp:16
+#: src/actions.py:336 src/actions.py:472 src/actions.py:506 src/actions.py:682
+#: src/actions.py:759 src/preferences.py:580 src/ui/lyrics/dialog.blp:16
 #: src/ui/lyrics/dialog.blp:17 src/widgets/pages/login.py:181
 msgid "Cancel"
 msgstr "Utzi"
 
-#: src/actions.py:344
+#: src/actions.py:337
 msgid "Keep Data"
 msgstr "Mantendu datuak"
 
-#: src/actions.py:345
+#: src/actions.py:338
 msgid "Delete Everything"
 msgstr "Ezabatu dena"
 
-#: src/actions.py:430
+#: src/actions.py:421
 msgid "No Name"
 msgstr "Izenik ez"
 
-#: src/actions.py:449
+#: src/actions.py:439
 msgid "Radio updated successfully"
 msgstr "Irratia behar bezala eguneratu da"
 
-#: src/actions.py:449
+#: src/actions.py:439
 msgid "Radio added successfully"
 msgstr "Irratia behar bezala gehitu da"
 
-#: src/actions.py:456
+#: src/actions.py:446
 msgid "Error updating radio"
 msgstr "Errorea irratia eguneratzean"
 
-#: src/actions.py:456
+#: src/actions.py:446
 msgid "Error adding radio"
 msgstr "Errorea irratia gehitzean"
 
-#: src/actions.py:467 src/actions.py:686
+#: src/actions.py:457 src/actions.py:674
 msgid "Name"
 msgstr "Izena"
 
-#: src/actions.py:472
+#: src/actions.py:462
 msgid "Stream Url"
 msgstr "Jarioaren URLa"
 
-#: src/actions.py:479
+#: src/actions.py:469
 msgid "Update Radio Station"
 msgstr "Eguneratu irrati-estazioa"
 
-#: src/actions.py:479
+#: src/actions.py:469
 msgid "Add Radio Station"
 msgstr "Gehitu irrati-estazioa"
 
-#: src/actions.py:483 src/preferences.py:573 src/ui/lyrics/dialog.blp:23
+#: src/actions.py:473 src/preferences.py:581 src/ui/lyrics/dialog.blp:23
 #: src/ui/lyrics/dialog.blp:24
 msgid "Save"
 msgstr "Gorde"
 
-#: src/actions.py:496
+#: src/actions.py:486
 msgid "Radio deleted successfully"
 msgstr "Irratia behar bezala ezabatu da"
 
-#: src/actions.py:500
+#: src/actions.py:490
 msgid "Error deleting radio"
 msgstr "Errorea irratia ezabatzean"
 
-#: src/actions.py:513
+#: src/actions.py:503
 msgid "Delete Radio Station"
 msgstr "Ezabatu irrati-estazioa"
 
-#: src/actions.py:514 src/actions.py:770
+#: src/actions.py:504 src/actions.py:757
 #, python-brace-format
 msgid "Are you sure you want to delete '{}'?"
 msgstr "Ziur '{}' ezabatu nahi duzula?"
 
-#: src/actions.py:517 src/actions.py:773 src/constants.py:585
-#: src/constants.py:633
+#: src/actions.py:507 src/actions.py:760 src/constants.py:598
+#: src/constants.py:646
 msgid "Delete"
 msgstr "Ezabatu"
 
-#: src/actions.py:536 src/actions.py:548 src/actions.py:550 src/actions.py:592
-#: src/actions.py:643
+#: src/actions.py:526 src/actions.py:538 src/actions.py:540 src/actions.py:580
+#: src/actions.py:631
 msgid "Playing Next"
 msgstr "Hurrena entzungai"
 
-#: src/actions.py:540 src/actions.py:555 src/actions.py:557 src/actions.py:599
-#: src/actions.py:650
+#: src/actions.py:530 src/actions.py:545 src/actions.py:547 src/actions.py:587
+#: src/actions.py:638
 msgid "Playing Later"
 msgstr "Geroago entzungai"
 
-#: src/actions.py:548 src/actions.py:555 src/actions.py:883 src/actions.py:1008
+#: src/actions.py:538 src/actions.py:545 src/actions.py:867 src/actions.py:989
 #: src/widgets/playlist/dialog.py:31
 #, python-brace-format
 msgid "{} Songs"
 msgstr "{} abesti"
 
-#: src/actions.py:668
+#: src/actions.py:656
 msgid "Playlist updated successfully"
 msgstr "Erreprodukzio-zerrenda behar bezala eguneratu da"
 
-#: src/actions.py:668
+#: src/actions.py:656
 msgid "Playlist created successfully"
 msgstr "Erreprodukzio-zerrenda behar bezala sortu da"
 
-#: src/actions.py:670
+#: src/actions.py:658
 msgid "Error updating playlist"
 msgstr "Errorea erreprodukzio-zerrenda eguneratzean"
 
-#: src/actions.py:670
+#: src/actions.py:658
 msgid "Error creating playlist"
 msgstr "Errorea erreprodukzio-zerrenda sortzean"
 
-#: src/actions.py:691
+#: src/actions.py:679
 msgid "Update Playlist"
 msgstr "Eguneratu erreprodukzio-zerrenda"
 
-#: src/actions.py:691 src/ui/pages/playlists.blp:41
+#: src/actions.py:679 src/ui/pages/playlists.blp:41
 msgid "Create Playlist"
 msgstr "Sortu erreprodukzio-zerrenda"
 
-#: src/actions.py:695
+#: src/actions.py:683
 msgid "Update"
 msgstr "Eguneratu"
 
-#: src/actions.py:695
+#: src/actions.py:683
 msgid "Create"
 msgstr "Sortu"
 
-#: src/actions.py:708
+#: src/actions.py:695
 #, python-brace-format
 msgid "{} Song Removed"
 msgid_plural "{} Songs Removed"
 msgstr[0] "Abesti {} kendu da"
 msgstr[1] "{} abesti kendu dira"
 
-#: src/actions.py:733 src/actions.py:747
+#: src/actions.py:720 src/actions.py:734
 #, python-brace-format
 msgid "{} Song Added"
 msgid_plural "{} Songs Added"
 msgstr[0] "Abesti {} gehitu da"
 msgstr[1] "{} abesti gehitu dira"
 
-#: src/actions.py:751 src/actions.py:888
+#: src/actions.py:738 src/actions.py:872
 #, python-brace-format
 msgid "{} Song Skipped"
 msgid_plural "{} Songs Skipped"
 msgstr[0] "Abesti {} saltatu da"
 msgstr[1] "{} abesti saltatu dira"
 
-#: src/actions.py:762
+#: src/actions.py:749
 msgid "Playlist Deleted"
 msgstr "Erreprodukzio-zerrenda ezabatu da"
 
-#: src/actions.py:769
+#: src/actions.py:756
 msgid "Delete Playlist"
 msgstr "Ezabatu erreprodukzio-zerrenda"
 
-#: src/actions.py:819
+#: src/actions.py:804
 msgid "No songs found"
 msgstr "Ez da abestirik aurkitu"
 
-#: src/actions.py:860 src/actions.py:884 src/actions.py:919 src/actions.py:952
+#: src/actions.py:845 src/actions.py:868 src/actions.py:903 src/actions.py:936
 msgid "Download Started"
 msgstr "Deskarga hasi da"
 
-#: src/actions.py:867 src/actions.py:895 src/actions.py:902 src/actions.py:935
-#: src/actions.py:968
+#: src/actions.py:852 src/actions.py:879 src/actions.py:886 src/actions.py:919
+#: src/actions.py:952
 msgid "Already Downloaded"
 msgstr "Dagoeneko deskargatua"
 
-#: src/actions.py:889
+#: src/actions.py:873
 #, python-brace-format
 msgid "{} Song ({})"
 msgid_plural "{} Songs ({})"
 msgstr[0] "Abesti {} ({})"
 msgstr[1] "{} abesti ({})"
 
-#: src/actions.py:901
+#: src/actions.py:885
 msgid "Download Skipped"
 msgstr "Deskarga saltatu da"
 
-#: src/actions.py:923 src/actions.py:956
+#: src/actions.py:907 src/actions.py:940
 #, python-brace-format
 msgid "Download Started ({} Song Skipped)"
 msgid_plural "Download Started ({} Songs Skipped)"
 msgstr[0] "Deskarga hasita (abesti {} saltatu da)"
 msgstr[1] "Deskarga hasita ({} abesti saltatu dira)"
 
-#: src/actions.py:992 src/actions.py:1009
+#: src/actions.py:974 src/actions.py:990
 msgid "Deleted"
 msgstr "Ezabatuta"
 
-#: src/constants.py:372 src/ui/playing/playback_mode_button.blp:5
+#: src/constants.py:383 src/ui/playing/playback_mode_button.blp:5
 msgid "Consecutive"
 msgstr "Jarraian"
 
-#: src/constants.py:376
+#: src/constants.py:387
 msgid "Repeat All"
 msgstr "Errepikatu dena"
 
-#: src/constants.py:380
+#: src/constants.py:391
 msgid "Repeat One"
 msgstr "Errepikatu bat"
 
-#: src/constants.py:385
+#: src/constants.py:396
 #, python-brace-format
 msgid "Low ({})"
 msgstr "Baxua ({})"
 
-#: src/constants.py:386
+#: src/constants.py:397
 #, python-brace-format
 msgid "Medium ({})"
 msgstr "Tartekoa ({})"
 
-#: src/constants.py:387
+#: src/constants.py:398
 #, python-brace-format
 msgid "High ({})"
 msgstr "Altua ({})"
 
-#: src/constants.py:388
+#: src/constants.py:399
 #, python-brace-format
 msgid "Ultra ({})"
 msgstr "Ultra ({})"
 
-#: src/constants.py:389
+#: src/constants.py:400
 msgid "Original File"
 msgstr "Fitxateg. jatorrizkoa"
 
 #. Item
-#: src/constants.py:397 src/ui/pages/home.blp:5
+#: src/constants.py:410 src/ui/pages/home.blp:5
 msgid "Home"
 msgstr "Hasiera"
 
 #. Section
-#: src/constants.py:404 src/ui/artist/page.blp:164
+#: src/constants.py:417 src/ui/artist/page.blp:168
 #: src/ui/pages/albums_all.blp:5 src/ui/pages/albums_all.blp:28
-#: src/ui/pages/home.blp:134 src/ui/preferences.blp:321
+#: src/ui/pages/home.blp:134 src/ui/preferences.blp:351
 msgid "Albums"
 msgstr "Albumak"
 
 #. Item
 #. Add All button if multiple libraries present
-#: src/constants.py:409 src/constants.py:446 src/constants.py:463
-#: src/constants.py:485 src/integrations/jellyfin.py:189
+#: src/constants.py:422 src/constants.py:459 src/constants.py:476
+#: src/constants.py:498 src/integrations/jellyfin.py:377
 msgid "All"
 msgstr "Guztiak"
 
 #. Item
-#: src/constants.py:414
+#: src/constants.py:427
 msgid "Random"
 msgstr "Ausaz"
 
 #. Item
-#: src/constants.py:419 src/constants.py:451 src/constants.py:468
+#: src/constants.py:432 src/constants.py:464 src/constants.py:481
 msgid "Favorites"
 msgstr "Gogokoak"
 
 #. Item
-#: src/constants.py:424
+#: src/constants.py:437
 msgid "Recently Added"
 msgstr "Gehitu berriak"
 
 #. Item
-#: src/constants.py:429
+#: src/constants.py:442
 msgid "Recently Played"
 msgstr "Entzun berriak"
 
 #. Item
-#: src/constants.py:434
+#: src/constants.py:447
 msgid "Most Played"
 msgstr "Entzunenak"
 
 #. Section
 #. list
-#: src/constants.py:441 src/integrations/models.py:163
+#: src/constants.py:454 src/integrations/models.py:175
 #: src/ui/pages/artists.blp:5 src/ui/pages/artists.blp:28
-#: src/ui/pages/home.blp:140 src/ui/preferences.blp:329
+#: src/ui/pages/home.blp:140 src/ui/preferences.blp:359
 msgid "Artists"
 msgstr "Artistak"
 
 #. Section
-#: src/constants.py:458 src/ui/album/page.blp:160 src/ui/pages/home.blp:128
+#: src/constants.py:471 src/ui/album/page.blp:171 src/ui/pages/home.blp:128
 #: src/ui/pages/songs_all.blp:5 src/ui/pages/songs_all.blp:28
-#: src/ui/preferences.blp:313
+#: src/ui/preferences.blp:343
 msgid "Songs"
 msgstr "Abestiak"
 
 #. Item
-#: src/constants.py:473 src/ui/pages/radios.blp:5 src/ui/pages/radios.blp:13
+#: src/constants.py:486 src/ui/pages/radios.blp:5 src/ui/pages/radios.blp:13
 msgid "Radios"
 msgstr "Irratiak"
 
 #. Section
 #. Item (special)
-#: src/constants.py:480 src/constants.py:490 src/ui/pages/home.blp:146
+#: src/constants.py:493 src/constants.py:503 src/ui/pages/home.blp:146
 #: src/ui/pages/playlists.blp:5 src/ui/pages/playlists.blp:28
-#: src/ui/preferences.blp:337
+#: src/ui/preferences.blp:367
 msgid "Playlists"
 msgstr "Erreprodukzio-zerrendak"
 
-#: src/constants.py:499 src/constants.py:550 src/ui/lyrics/dialog.blp:47
-#: src/ui/playing/control_page.blp:172 src/ui/playing/footer.blp:114
+#: src/constants.py:512 src/constants.py:563 src/ui/lyrics/dialog.blp:48
+#: src/ui/playing/control_page.blp:235 src/ui/playing/footer.blp:105
 #: src/ui/song/queue.blp:58 src/ui/song/queue.blp:60
 msgid "Play"
 msgstr "Erreproduzitu"
 
-#: src/constants.py:504 src/constants.py:537 src/constants.py:560
+#: src/constants.py:517 src/constants.py:550 src/constants.py:573
 msgid "Shuffle"
 msgstr "Nahastu"
 
-#: src/constants.py:509 src/constants.py:565 src/constants.py:598
+#: src/constants.py:522 src/constants.py:578 src/constants.py:611
 #: src/ui/song/queue.blp:66 src/ui/song/queue.blp:68
 msgid "Play Next"
 msgstr "Erreproduzitu hurrena"
 
-#: src/constants.py:514 src/constants.py:570 src/constants.py:603
+#: src/constants.py:527 src/constants.py:583 src/constants.py:616
 #: src/ui/song/queue.blp:74 src/ui/song/queue.blp:76
 msgid "Play Later"
 msgstr "Erreproduzitu geroago"
 
-#: src/constants.py:519 src/constants.py:613 src/ui/song/queue.blp:82
+#: src/constants.py:532 src/constants.py:626 src/ui/song/queue.blp:82
 #: src/ui/song/queue.blp:84
 msgid "Add To Playlist"
 msgstr "Gehitu erreprodukzio-zerrendara"
 
-#: src/constants.py:524 src/constants.py:575 src/constants.py:618
+#: src/constants.py:537 src/constants.py:588 src/constants.py:631
 #: src/ui/pages/setup.blp:23 src/ui/playing/lyrics_page.blp:167
 #: src/ui/playing/lyrics_page.blp:170 src/ui/song/queue.blp:90
 #: src/ui/song/queue.blp:92
 msgid "Download"
 msgstr "Deskargatu"
 
-#: src/constants.py:529 src/constants.py:628
-#: src/nocturne_search_provider.py.in:10 src/ui/playing/control_page.blp:65
+#: src/constants.py:542 src/constants.py:641
+#: src/nocturne_search_provider.py.in:10
 msgid "Show Artist"
 msgstr "Erakutsi artista"
 
-#: src/constants.py:542 src/ui/playing/lyrics_page.blp:146
-#: src/widgets/song/row.py:109
+#: src/constants.py:555 src/ui/playing/lyrics_page.blp:146
+#: src/widgets/song/row.py:55 src/widgets/song/row.py:135
 msgid "Radio"
 msgstr "Irratia"
 
-#: src/constants.py:555
+#: src/constants.py:568
 msgid "Resume"
 msgstr "Berrekin"
 
-#: src/constants.py:580 src/constants.py:608
+#: src/constants.py:593 src/constants.py:621
 msgid "Edit"
 msgstr "Editatu"
 
-#: src/constants.py:594
+#: src/constants.py:607
 msgid "Select"
 msgstr "Hautatu"
 
-#: src/constants.py:623 src/ui/album/button.blp:49
-#: src/ui/playing/control_page.blp:98
+#: src/constants.py:636
 msgid "Show Album"
 msgstr "Erakutsi albuma"
 
-#: src/constants.py:639 src/ui/song/queue.blp:101 src/ui/song/queue.blp:103
+#: src/constants.py:652 src/ui/preferences.blp:211 src/ui/preferences.blp:212
+#: src/ui/song/queue.blp:101 src/ui/song/queue.blp:103
 msgid "Remove"
 msgstr "Kendu"
 
-#: src/constants.py:644 src/ui/song/queue.blp:112 src/ui/song/queue.blp:114
+#: src/constants.py:657 src/ui/song/queue.blp:112 src/ui/song/queue.blp:114
 msgid "Delete Download"
 msgstr "Ezabatu deskarga"
 
-#: src/constants.py:650 src/main.py:158
+#: src/constants.py:663 src/main.py:162
 msgid "Show Details"
 msgstr "Erakutsi xehetasunak"
 
-#: src/constants.py:661
+#: src/constants.py:674
 msgid "Visit Webpage"
 msgstr "Bisitatu webgunea"
 
-#: src/constants.py:667
+#: src/constants.py:680
 msgid "Update Server"
 msgstr "Eguneratu zerbitzaria"
 
-#: src/constants.py:672
+#: src/constants.py:685
 msgid "Delete Server"
 msgstr "Ezabatu zerbitzaria"
 
-#: src/constants.py:681
+#: src/constants.py:694
 msgid "Edit Lyrics"
 msgstr "Editatu hitzak"
 
-#: src/constants.py:686
+#: src/constants.py:699
 msgid "Remove Lyrics"
 msgstr "Ezabatu hitzak"
 
-#: src/integrations/base.py:327
+#: src/integrations/base.py:333
 msgid "Could not generate SQL database"
 msgstr "Ezin izan da SQL datu-basea sortu"
 
@@ -572,23 +596,23 @@ msgstr "Arakatzen"
 msgid "Listening to music"
 msgstr "Musika entzuten"
 
-#: src/integrations/jellyfin.py:18
+#: src/integrations/jellyfin.py:181
 msgid "Connect to a Jellyfin server."
 msgstr "Konektatu Jellyfin zerbitzari batera."
 
-#: src/integrations/jellyfin.py:22
+#: src/integrations/jellyfin.py:185
 msgid "Jellyfin"
 msgstr "Jellyfin"
 
-#: src/integrations/jellyfin.py:23
+#: src/integrations/jellyfin.py:186
 msgid "Use an existing Jellyfin instance"
 msgstr "Erabili existitzen den Jellyfin zerbitzari bat"
 
-#: src/integrations/jellyfin.py:303
+#: src/integrations/jellyfin.py:518
 msgid "Could not log in"
 msgstr "Ezin izan da saioa hasi"
 
-#: src/integrations/jellyfin.py:1168
+#: src/integrations/jellyfin.py:1591
 msgid "Unknown"
 msgstr "Ezezaguna"
 
@@ -619,7 +643,7 @@ msgstr "Funtzionalitate mugatua"
 msgid "Loading Songs"
 msgstr "Abestiak kargatzen"
 
-#: src/integrations/local.py:138 src/integrations/navidrome.py:763
+#: src/integrations/local.py:138 src/integrations/navidrome.py:767
 msgid "Could not locate path, try again"
 msgstr "Ezin izan da bidea aurkitu, saiatu berriz"
 
@@ -635,83 +659,81 @@ msgstr "Offline modua"
 msgid "Access your downloads"
 msgstr "Atzitu zure deskargak"
 
-#: src/integrations/models.py:142 src/ui/album/page.blp:5
-#: src/widgets/album/page.py:128
+#: src/integrations/models.py:154
 msgid "Album"
 msgstr "Albuma"
 
-#: src/integrations/models.py:144
+#: src/integrations/models.py:156
 msgid "Display Artist"
 msgstr "Artistaren izena"
 
-#: src/integrations/models.py:146
+#: src/integrations/models.py:158
 msgid "MusicBrainz ID"
 msgstr "MusicBrainz IDa"
 
-#: src/integrations/models.py:147
+#: src/integrations/models.py:159
 msgid "Track Number"
 msgstr "Pista zenbakia"
 
-#: src/integrations/models.py:148
+#: src/integrations/models.py:160
 msgid "Year"
 msgstr "Urtea"
 
-#: src/integrations/models.py:149
+#: src/integrations/models.py:161
 msgid "Size"
 msgstr "Tamaina"
 
-#: src/integrations/models.py:150
+#: src/integrations/models.py:162
 msgid "Suffix"
 msgstr "Atzizkia"
 
-#: src/integrations/models.py:151 src/widgets/album/button.py:94
-#: src/widgets/album/page.py:144 src/widgets/artist/page.py:109
-#: src/widgets/playing/control_page.py:188 src/widgets/song/row.py:183
+#: src/integrations/models.py:163 src/widgets/album/button.py:45
+#: src/widgets/album/page.py:173 src/widgets/song/row.py:209
 msgid "Favorite"
 msgstr "Gogokoa"
 
-#: src/integrations/models.py:152
+#: src/integrations/models.py:164
 msgid "Duration"
 msgstr "Iraupena"
 
-#: src/integrations/models.py:154
+#: src/integrations/models.py:166
 msgid "Bit Rate"
 msgstr "Bit-tasa"
 
-#: src/integrations/models.py:155
+#: src/integrations/models.py:167
 msgid "Bit Depth"
 msgstr "Bit sakonera"
 
-#: src/integrations/models.py:156
+#: src/integrations/models.py:168
 msgid "Sampling Rate"
 msgstr "Laginketa-tasa"
 
-#: src/integrations/models.py:157
+#: src/integrations/models.py:169
 msgid "Channel Count"
 msgstr "Kanal kopurua"
 
-#: src/integrations/models.py:159
+#: src/integrations/models.py:171
 msgid "Path"
 msgstr "Bidea"
 
-#: src/integrations/models.py:160
+#: src/integrations/models.py:172
 msgid "Disc Number"
 msgstr "Disko zenbakia"
 
-#: src/integrations/models.py:161
+#: src/integrations/models.py:173
 msgid "BPM"
 msgstr "BPM"
 
-#: src/integrations/models.py:162
+#: src/integrations/models.py:174
 msgid "Genres"
 msgstr "Generoak"
 
 #. list
-#: src/integrations/models.py:164
+#: src/integrations/models.py:176
 msgid "Track Gain"
 msgstr "Pistaren irabazia"
 
-#: src/integrations/models.py:165
+#: src/integrations/models.py:177
 msgid "Album Gain"
 msgstr "Albumaren irabazia"
 
@@ -735,44 +757,44 @@ msgstr "Zerbitzariak errorea itzuli du"
 msgid "Unknown Error"
 msgstr "Errore ezezaguna"
 
-#: src/integrations/navidrome.py:738 src/integrations/navidrome.py:747
+#: src/integrations/navidrome.py:742 src/integrations/navidrome.py:751
 msgid "Managed Server"
 msgstr "Zerbitzari kudeatua"
 
-#: src/integrations/navidrome.py:739
+#: src/integrations/navidrome.py:743
 msgid "Connect to a Navidrome instance directly managed by Nocturne."
 msgstr ""
 "Konektatu Nocturnek zuzenean kudea dezakeen Navidrome instantzia batera."
 
-#: src/integrations/navidrome.py:742
+#: src/integrations/navidrome.py:746
 msgid "Manage Server"
 msgstr "Kudeatu zerbitzaria"
 
-#: src/integrations/navidrome.py:748
+#: src/integrations/navidrome.py:752
 msgid "Create and use a Navidrome instance"
 msgstr "Sortu eta erabili Navidrome instantzia"
 
-#: src/integrations/navidrome.py:807
+#: src/integrations/navidrome.py:811
 msgid "Important: Use your Subsonic login information."
 msgstr "Garrantzitsua: Erabili zure Subsonic saioa hasteko informazioa"
 
-#: src/integrations/navidrome.py:810
+#: src/integrations/navidrome.py:814
 msgid "Bandcamp User Settings"
 msgstr "Bandcampeko erabiltzaile-ezarpenak"
 
-#: src/integrations/navidrome.py:816
+#: src/integrations/navidrome.py:820
 msgid "Explore your online library"
 msgstr "Arakatu lineako liburutegia"
 
-#: src/main.py:96
+#: src/main.py:99
 msgid "Music is Playing"
 msgstr "Musika erreproduzitzen"
 
-#: src/main.py:109
+#: src/main.py:112
 msgid "Fullscreen Player Active"
 msgstr "Pantaila osoko erreproduzitzailea aktibo"
 
-#: src/main.py:155
+#: src/main.py:159
 msgid "Login Failed"
 msgstr "Saio hasierak huts egin du"
 
@@ -780,7 +802,7 @@ msgstr "Saio hasierak huts egin du"
 msgid "Play Album"
 msgstr "Erreproduzitu albuma"
 
-#: src/nocturne_search_provider.py.in:12 src/ui/song/button.blp:16
+#: src/nocturne_search_provider.py.in:12
 msgid "Play Song"
 msgstr "Erreproduzitu abestia"
 
@@ -800,27 +822,27 @@ msgstr "Elementua"
 msgid "Section"
 msgstr "Atala"
 
-#: src/preferences.py:561
+#: src/preferences.py:569
 msgid "Settings Page"
 msgstr "Ezarpenen orria"
 
-#: src/preferences.py:564
+#: src/preferences.py:572
 msgid "User Token"
 msgstr "Erabiltzaile-tokena"
 
-#: src/preferences.py:568
+#: src/preferences.py:576
 msgid "Link ListenBrainz"
 msgstr "Lotu ListenBrainz"
 
-#: src/preferences.py:569
+#: src/preferences.py:577
 msgid "Connect your ListenBrainz account with a user token"
 msgstr "Konektatu zure ListenBrainz kontua erabiltzaile-token bidez"
 
-#: src/preferences.py:644
+#: src/preferences.py:655
 msgid "Flatpak Sandbox Warning"
 msgstr "Flatpak ingurune isolatuaren abisua"
 
-#: src/preferences.py:645
+#: src/preferences.py:656
 msgid ""
 "To connect to Discord, an additional permission is required, once you run "
 "the following command, please restart Nocturne"
@@ -828,67 +850,71 @@ msgstr ""
 "Discordera konektatzeko baimen gehigarri bat behar da. Ondorengo komandoa "
 "exekutatu ondoren berrabiarazi Nocturne"
 
-#: src/ui/album/button.blp:36 src/ui/album/page.blp:152
-#: src/ui/artist/page.blp:150 src/ui/song/row.blp:115
+#: src/preferences.py:681
+msgid "Image"
+msgstr "Irudia"
+
+#: src/ui/album/button.blp:35 src/ui/album/page.blp:156
+#: src/ui/artist/page.blp:151 src/ui/song/row.blp:121
 msgid "Toggle star"
 msgstr "Eman/kendu izarra"
 
-#: src/ui/album/button.blp:61 src/ui/album/page.blp:50 src/ui/album/row.blp:32
+#: src/ui/album/button.blp:66 src/ui/album/page.blp:43 src/ui/album/row.blp:36
 msgid "Album cover art"
 msgstr "Albumaren azala"
 
-#: src/ui/album/button.blp:87
+#: src/ui/album/button.blp:92
 msgid "Enter album page"
 msgstr "Sartu albumaren orrira"
 
-#: src/ui/album/button.blp:128 src/ui/album/page.blp:85
-#: src/ui/song/button.blp:81
+#: src/ui/album/button.blp:137 src/ui/album/page.blp:83
+#: src/ui/song/button.blp:82
 msgid "Enter artist page"
 msgstr "Sartu artistaren orrira"
 
-#: src/ui/album/page.blp:95 src/ui/artist/page.blp:93
-#: src/ui/playing/control_page.blp:228 src/widgets/containers/context.py:50
+#: src/ui/album/page.blp:101 src/ui/artist/page.blp:96
+#: src/ui/playing/control_page.blp:302 src/widgets/containers/context.py:50
 msgid "1 Star"
 msgstr "Izar 1"
 
-#: src/ui/album/page.blp:104 src/ui/artist/page.blp:102
-#: src/ui/playing/control_page.blp:237
+#: src/ui/album/page.blp:110 src/ui/artist/page.blp:105
+#: src/ui/playing/control_page.blp:314
 msgid "2 Stars"
 msgstr "2 izar"
 
-#: src/ui/album/page.blp:113 src/ui/artist/page.blp:111
-#: src/ui/playing/control_page.blp:246
+#: src/ui/album/page.blp:119 src/ui/artist/page.blp:114
+#: src/ui/playing/control_page.blp:326
 msgid "3 Stars"
 msgstr "3 izar"
 
-#: src/ui/album/page.blp:122 src/ui/artist/page.blp:120
-#: src/ui/playing/control_page.blp:255
+#: src/ui/album/page.blp:128 src/ui/artist/page.blp:123
+#: src/ui/playing/control_page.blp:338
 msgid "4 Stars"
 msgstr "4 izar"
 
-#: src/ui/album/page.blp:131 src/ui/artist/page.blp:129
-#: src/ui/playing/control_page.blp:264
+#: src/ui/album/page.blp:137 src/ui/artist/page.blp:132
+#: src/ui/playing/control_page.blp:350
 msgid "5 Stars"
 msgstr "5 izar"
 
-#: src/ui/album/row.blp:48 src/ui/artist/row.blp:40 src/ui/playlist/row.blp:48
-#: src/ui/song/row.blp:130
+#: src/ui/album/row.blp:52 src/ui/artist/row.blp:43 src/ui/playlist/row.blp:48
+#: src/ui/song/row.blp:141
 msgid "Options"
 msgstr "Aukerak"
 
-#: src/ui/artist/page.blp:5
-msgid "Artist"
-msgstr "Artista"
-
-#: src/ui/artist/page.blp:83
+#: src/ui/artist/page.blp:86
 msgid "Expand Biography"
 msgstr "Biografia hedatua"
 
-#: src/ui/artist/page.blp:159
+#: src/ui/artist/page.blp:162
 msgid "Top Songs"
 msgstr "Abesti entzunenak"
 
-#: src/ui/artist/page.blp:169
+#: src/ui/artist/page.blp:174
+msgid "Appears On"
+msgstr "Hemen azaltzen da"
+
+#: src/ui/artist/page.blp:179
 msgid "Related Artists"
 msgstr "Artista erlazionatuak"
 
@@ -924,28 +950,28 @@ msgstr "Garbitu amaitutako deskargak"
 msgid "Lyrics Editor"
 msgstr "Hitzen editorea"
 
-#: src/ui/lyrics/dialog.blp:61 src/ui/playing/control_page.blp:187
-#: src/ui/playing/footer.blp:129
+#: src/ui/lyrics/dialog.blp:62 src/ui/playing/control_page.blp:250
+#: src/ui/playing/footer.blp:120
 msgid "Pause"
 msgstr "Pausatu"
 
-#: src/ui/lyrics/dialog.blp:98 src/ui/playing/control_page.blp:122
+#: src/ui/lyrics/dialog.blp:100 src/ui/playing/control_page.blp:169
 msgid "Current song progress bar"
 msgstr "Uneko abestiaren aurrerapen-barra"
 
-#: src/ui/lyrics/dialog.blp:103
+#: src/ui/lyrics/dialog.blp:105
 msgid "Set Next Line Timestamp to Now"
 msgstr "Ezarri une hau hurrengo lerroaren denbora-markan"
 
-#: src/ui/lyrics/dialog.blp:112
+#: src/ui/lyrics/dialog.blp:114
 msgid "Add Line at Timestamp"
 msgstr "Gehitu lerroa denbora-marka honetan"
 
-#: src/ui/lyrics/dialog.blp:133
+#: src/ui/lyrics/dialog.blp:135
 msgid "No Lyrics"
 msgstr "Hitzik ez"
 
-#: src/ui/lyrics/dialog.blp:134
+#: src/ui/lyrics/dialog.blp:136
 msgid "No lyrics found for this track, to get started add a new line"
 msgstr "Ez da hitzik aurkitu pista honentzako, gehitu lerro berria hasteko"
 
@@ -1090,7 +1116,7 @@ msgstr "Joan Hasierara"
 msgid "Toggle Visualizer"
 msgstr "Erakutsi / ezkutatu bistaratzailea"
 
-#: src/ui/pages/playback.blp:54 src/window.py:228
+#: src/ui/pages/playback.blp:54 src/window.py:245
 msgid "Nocturne Playback"
 msgstr "Nocturne entzunaldia"
 
@@ -1206,39 +1232,39 @@ msgstr "Hautatu instantzia mota hasteko"
 msgid "Playing"
 msgstr "Erreproduzitzen"
 
-#: src/ui/playing/control_page.blp:90
+#: src/ui/playing/control_page.blp:124
 msgid "Visit current radio homepage"
 msgstr "Bisitatu uneko irratiaren webgunea"
 
-#: src/ui/playing/control_page.blp:157 src/ui/playing/footer.blp:99
+#: src/ui/playing/control_page.blp:219 src/ui/playing/footer.blp:89
 msgid "Previous"
 msgstr "Aurrekoa"
 
-#: src/ui/playing/control_page.blp:201 src/ui/playing/footer.blp:143
+#: src/ui/playing/control_page.blp:264 src/ui/playing/footer.blp:134
 msgid "Next"
 msgstr "Hurrengoa"
 
-#: src/ui/playing/control_page.blp:221
+#: src/ui/playing/control_page.blp:287
 msgid "Rate"
 msgstr "Puntuatu"
 
-#: src/ui/playing/control_page.blp:277
+#: src/ui/playing/control_page.blp:366
 msgid "Star"
 msgstr "Eman izarra"
 
-#: src/ui/playing/control_page.blp:284
+#: src/ui/playing/control_page.blp:377
 msgid "Toggle Sidebar"
 msgstr "Erakutsi / ezkutatu alboko barra"
 
-#: src/ui/playing/cover_art.blp:35
+#: src/ui/playing/cover_art.blp:40
 msgid "Audio"
 msgstr "Audioa"
 
-#: src/ui/playing/cover_art.blp:43 src/ui/song/details_dialog.blp:34
+#: src/ui/playing/cover_art.blp:45 src/ui/song/details_dialog.blp:34
 msgid "Song Cover"
 msgstr "Abestiaren azala"
 
-#: src/ui/playing/cover_art.blp:49 src/ui/playing/cover_art.blp:57
+#: src/ui/playing/cover_art.blp:52 src/ui/playing/cover_art.blp:60
 msgid "Video"
 msgstr "Bideoa"
 
@@ -1270,11 +1296,7 @@ msgstr "Klasikoa"
 msgid "Acoustic"
 msgstr "Akustikoa"
 
-#: src/ui/playing/footer.blp:12
-msgid "Current song progress indicator"
-msgstr "Uneko abestiaren aurrerapen adierazlea"
-
-#: src/ui/playing/footer.blp:45
+#: src/ui/playing/footer.blp:33
 msgid "Current song cover art"
 msgstr "Uneko abestiaren azala"
 
@@ -1317,17 +1339,17 @@ msgid "Pop-out Window"
 msgstr "Leiho gainerakorra"
 
 #: src/ui/playing/popout_window.blp:67 src/ui/song/details_dialog.blp:5
-#: src/ui/window.blp:219
+#: src/ui/window.blp:226
 msgid "Song Details"
 msgstr "Abestiaren xehetasunak"
 
-#: src/ui/playing/popout_window.blp:87 src/ui/window.blp:185
-#: src/ui/window.blp:241
+#: src/ui/playing/popout_window.blp:87 src/ui/window.blp:192
+#: src/ui/window.blp:248
 msgid "Queue"
 msgstr "Ilara"
 
-#: src/ui/playing/popout_window.blp:99 src/ui/window.blp:201
-#: src/ui/window.blp:253
+#: src/ui/playing/popout_window.blp:99 src/ui/window.blp:208
+#: src/ui/window.blp:260
 msgid "Equalizer"
 msgstr "Ekualizadorea"
 
@@ -1335,11 +1357,11 @@ msgstr "Ekualizadorea"
 msgid "Generating Next Queue"
 msgstr "Hurrengoen ilara sortzen"
 
-#: src/ui/playing/queue_page.blp:23
+#: src/ui/playing/queue_page.blp:24
 msgid "Autoplay"
 msgstr "Erreprodukzio automatikoa"
 
-#: src/ui/playing/queue_page.blp:24
+#: src/ui/playing/queue_page.blp:25
 msgid "Generate a new queue when the current one ends"
 msgstr "Sortu ilara berria unekoa amaitzean"
 
@@ -1492,262 +1514,270 @@ msgstr "ListenBrainz esteka"
 
 #: src/ui/preferences.blp:74
 msgid "Keep track of your playback history"
-msgstr "Erregistratu zure erreprodukzioen historia"
+msgstr "Erregistratu zure entzunaldien historia"
 
 #: src/ui/preferences.blp:80 src/ui/preferences.blp:81
 msgid "Link"
 msgstr "Lotu"
 
-#: src/ui/preferences.blp:89 src/ui/preferences.blp:90
+#: src/ui/preferences.blp:90 src/ui/preferences.blp:91
 msgid "Unlink"
 msgstr "Askatu"
 
-#: src/ui/preferences.blp:102
+#: src/ui/preferences.blp:104
 msgid "User"
 msgstr "Erabiltzailea"
 
-#: src/ui/preferences.blp:122 src/widgets/pages/login.py:120
+#: src/ui/preferences.blp:124 src/widgets/pages/login.py:120
 #: src/widgets/pages/setup.py:83
 msgid "Music Library"
 msgstr "Musika-liburutegia"
 
-#: src/ui/preferences.blp:123
+#: src/ui/preferences.blp:125
 msgid "The music library that will be fetched"
 msgstr "Musika eskuratzeko erabiliko den liburutegia"
 
-#: src/ui/preferences.blp:127
+#: src/ui/preferences.blp:129
 msgid "Music Libraries"
 msgstr "Musika-liburutegiak"
 
-#: src/ui/preferences.blp:128
+#: src/ui/preferences.blp:130
 msgid "The music libraries that will be fetched"
 msgstr "Musika eskuratzeko erabiliko diren liburutegiak"
 
-#: src/ui/preferences.blp:131
+#: src/ui/preferences.blp:133
 msgid "Delete Image Cache"
 msgstr "Ezabatu irudien cachea"
 
-#: src/ui/preferences.blp:138
+#: src/ui/preferences.blp:140
 msgid "Logout"
 msgstr "Amaitu saioa"
 
-#: src/ui/preferences.blp:148
+#: src/ui/preferences.blp:150
 msgid "Customization"
 msgstr "Pertsonalizazioa"
 
-#: src/ui/preferences.blp:151
+#: src/ui/preferences.blp:153
 msgid "Interface"
 msgstr "Interfazea"
 
-#: src/ui/preferences.blp:153
+#: src/ui/preferences.blp:155
 msgid "Show Context Button in Rows"
 msgstr "Erakutsi kontestu-botoia lerroetan"
 
-#: src/ui/preferences.blp:154
+#: src/ui/preferences.blp:156
 msgid "The menu can also be shown by right clicking / long pressing"
 msgstr "Menua erakusteko eskuin-klika erabili edo luze sakatu"
 
-#: src/ui/preferences.blp:157
+#: src/ui/preferences.blp:159
 msgid "Show Labels in Buttons of Pages"
 msgstr "Erakutsi orrietako botoien etiketak"
 
-#: src/ui/preferences.blp:160
-msgid "Show Progressbar in Player Footer"
-msgstr "Erakutsi aurrerapen-barra erreproduzitzailearen oinean"
-
-#: src/ui/preferences.blp:163
+#: src/ui/preferences.blp:162
 msgid "Make Background Translucent in Player"
 msgstr "Erreproduzitzailearen atzeko plano zeharrargia"
 
-#: src/ui/preferences.blp:164
+#: src/ui/preferences.blp:163
 msgid "Does not affect sidebar player"
 msgstr "Ez dio alboko barrako erreproduzitzaileari eragiten"
 
-#: src/ui/preferences.blp:167
+#: src/ui/preferences.blp:166
 msgid "Use Sidebar Player When Possible"
 msgstr "Erakutsi erreproduzitzailea alboko barran ahal dela"
 
-#: src/ui/preferences.blp:168
+#: src/ui/preferences.blp:167
 msgid "Sidebar player is only available when the window is wide enough"
 msgstr ""
 "Alboko barrako erreproduzitzailea leihoa behar bezain zabala denean soilik "
 "erakuts daiteke"
 
-#: src/ui/preferences.blp:171
+#: src/ui/preferences.blp:170
 msgid "Filter Singles"
 msgstr "Iragazi singleak"
 
-#: src/ui/preferences.blp:172
+#: src/ui/preferences.blp:171
 msgid "Hides albums with only one song (does not affect homepage)"
 msgstr ""
 "Abesti bakarreko albumak ezkutatzen ditu (ez dio hasierako orriari eragiten)"
 
-#: src/ui/preferences.blp:175
+#: src/ui/preferences.blp:174
 msgid "Button Size"
 msgstr "Botoien tamaina"
 
-#: src/ui/preferences.blp:176
+#: src/ui/preferences.blp:175
 msgid "Affects albums, artists, playlists and songs"
 msgstr "Album, artista, erreprodukzio-zerrenda eta abestiei eragiten die"
 
-#: src/ui/preferences.blp:182 src/ui/preferences.blp:183
+#: src/ui/preferences.blp:181 src/ui/preferences.blp:182
 msgid "Small"
 msgstr "Txikia"
 
-#: src/ui/preferences.blp:187 src/ui/preferences.blp:188
+#: src/ui/preferences.blp:186 src/ui/preferences.blp:187
 msgid "Big"
 msgstr "Handia"
 
-#: src/ui/preferences.blp:196
+#: src/ui/preferences.blp:194
+msgid "Sidebar Decoration"
+msgstr "Alboko barraren apaindura"
+
+#: src/ui/preferences.blp:195
+msgid "Add a small image to the bottom of the left sidebar"
+msgstr "Gehitu irudi txiki bat ezkerreko albo-barraren behealdean"
+
+#: src/ui/preferences.blp:201 src/ui/preferences.blp:202
+msgid "Add"
+msgstr "Gehitu"
+
+#: src/ui/preferences.blp:226
 msgid "Dynamic Background"
 msgstr "Atzeko plano dinamikoa"
 
-#: src/ui/preferences.blp:197
+#: src/ui/preferences.blp:227
 msgid "Background generated based on the album art of the current song"
 msgstr "Atzeko planoa uneko abestiaren album azalean oinarrituz sortzen da"
 
-#: src/ui/preferences.blp:200
+#: src/ui/preferences.blp:230
 msgid "Use in Main Window"
 msgstr "Erabili leiho nagusian"
 
-#: src/ui/preferences.blp:206 src/ui/preferences.blp:207
-#: src/ui/preferences.blp:230 src/ui/preferences.blp:231
-#: src/ui/preferences.blp:254 src/ui/preferences.blp:255
-#: src/ui/preferences.blp:288 src/ui/preferences.blp:289
+#: src/ui/preferences.blp:236 src/ui/preferences.blp:237
+#: src/ui/preferences.blp:260 src/ui/preferences.blp:261
+#: src/ui/preferences.blp:284 src/ui/preferences.blp:285
+#: src/ui/preferences.blp:318 src/ui/preferences.blp:319
 msgid "Off"
 msgstr "Ez"
 
-#: src/ui/preferences.blp:211 src/ui/preferences.blp:212
-#: src/ui/preferences.blp:235 src/ui/preferences.blp:236
-#: src/ui/preferences.blp:259 src/ui/preferences.blp:260
+#: src/ui/preferences.blp:241 src/ui/preferences.blp:242
+#: src/ui/preferences.blp:265 src/ui/preferences.blp:266
+#: src/ui/preferences.blp:289 src/ui/preferences.blp:290
 msgid "Gradient"
 msgstr "Gradientea"
 
-#: src/ui/preferences.blp:216 src/ui/preferences.blp:217
-#: src/ui/preferences.blp:240 src/ui/preferences.blp:241
-#: src/ui/preferences.blp:264 src/ui/preferences.blp:265
+#: src/ui/preferences.blp:246 src/ui/preferences.blp:247
+#: src/ui/preferences.blp:270 src/ui/preferences.blp:271
+#: src/ui/preferences.blp:294 src/ui/preferences.blp:295
 msgid "Blur"
 msgstr "Lausoa"
 
-#: src/ui/preferences.blp:224
+#: src/ui/preferences.blp:254
 msgid "Use in Player"
 msgstr "Erabili erreproduzitzailean"
 
-#: src/ui/preferences.blp:248
+#: src/ui/preferences.blp:278
 msgid "Use in Pop-out Window"
 msgstr "Erabili leiho gainerakorrean"
 
-#: src/ui/preferences.blp:272
+#: src/ui/preferences.blp:302
 msgid "Use as Accent Color"
 msgstr "Erabili nabarmentze kolore gisa"
 
-#: src/ui/preferences.blp:277
+#: src/ui/preferences.blp:307
 msgid "Homepage"
 msgstr "Hasiera orria"
 
-#: src/ui/preferences.blp:278
+#: src/ui/preferences.blp:308
 msgid "Reload homepage to see changes"
 msgstr "Birkargatu hasiera orria aldaketak ikusteko"
 
-#: src/ui/preferences.blp:280
+#: src/ui/preferences.blp:310
 msgid "Welcome Message"
 msgstr "Ongietorri mezua"
 
-#: src/ui/preferences.blp:281
+#: src/ui/preferences.blp:311
 msgid "Where to get user information"
 msgstr "Erabiltzaile-informazioa nondik eskuratu"
 
-#: src/ui/preferences.blp:293 src/ui/preferences.blp:294
+#: src/ui/preferences.blp:323 src/ui/preferences.blp:324
 msgid "Instance"
 msgstr "Instantzia"
 
-#: src/ui/preferences.blp:298 src/ui/preferences.blp:299
+#: src/ui/preferences.blp:328 src/ui/preferences.blp:329
 msgid "System"
 msgstr "Sistema"
 
-#: src/ui/preferences.blp:305 src/ui/window.blp:156
+#: src/ui/preferences.blp:335 src/ui/window.blp:163
 msgid "Frequent Albums"
 msgstr "Ohiko albumak"
 
-#: src/ui/preferences.blp:347
+#: src/ui/preferences.blp:377
 msgid "Sidebar"
 msgstr "Alboko barra"
 
-#: src/ui/preferences.blp:351
+#: src/ui/preferences.blp:381
 msgid "Visualizer"
 msgstr "Bistaratzailea"
 
-#: src/ui/preferences.blp:355 src/ui/window.blp:270
+#: src/ui/preferences.blp:385 src/ui/window.blp:277
 msgid "Preferences"
 msgstr "Hobespenak"
 
-#: src/ui/preferences.blp:357
+#: src/ui/preferences.blp:387
 msgid "Show Visualizer in Player"
 msgstr "Erakutsi espektroa erreproduzitzailean"
 
-#: src/ui/preferences.blp:358
+#: src/ui/preferences.blp:388
 msgid "Show an audio spectrum visualizer on top of the album art in the player"
 msgstr ""
 "Erakutsi audio-espektroaren bistaratzea album azalaren gainean, "
 "erreproduzitzailean"
 
-#: src/ui/preferences.blp:363
+#: src/ui/preferences.blp:393
 msgid "Appearance"
 msgstr "Itxura"
 
-#: src/ui/preferences.blp:367
+#: src/ui/preferences.blp:397
 msgid "Number of Bars"
 msgstr "Barra kopurua"
 
-#: src/ui/preferences.blp:378
+#: src/ui/preferences.blp:408
 msgid "Visualizer Type"
 msgstr "Bistaratzaile mota"
 
-#: src/ui/preferences.blp:384 src/ui/preferences.blp:385
+#: src/ui/preferences.blp:414 src/ui/preferences.blp:415
 msgid "Wave"
 msgstr "Uhina"
 
-#: src/ui/preferences.blp:389 src/ui/preferences.blp:390
+#: src/ui/preferences.blp:419 src/ui/preferences.blp:420
 msgid "Bars"
 msgstr "Barrak"
 
-#: src/ui/preferences.blp:394 src/ui/preferences.blp:395
+#: src/ui/preferences.blp:424 src/ui/preferences.blp:425
 msgid "Particles"
 msgstr "Partikulak"
 
-#: src/ui/preferences.blp:402
+#: src/ui/preferences.blp:432
 msgid "Fill Mode"
 msgstr "Betetze modua"
 
-#: src/ui/preferences.blp:408 src/ui/preferences.blp:409
+#: src/ui/preferences.blp:438 src/ui/preferences.blp:439
 msgid "Solid"
 msgstr "Solidoa"
 
-#: src/ui/preferences.blp:413 src/ui/preferences.blp:414
+#: src/ui/preferences.blp:443 src/ui/preferences.blp:444
 msgid "Translucent"
 msgstr "Zeharrargia"
 
-#: src/ui/preferences.blp:418 src/ui/preferences.blp:419
+#: src/ui/preferences.blp:448 src/ui/preferences.blp:449
 msgid "Border"
 msgstr "Ertzak"
 
-#: src/ui/preferences.blp:427
+#: src/ui/preferences.blp:457
 msgid "Color"
 msgstr "Kolorea"
 
-#: src/ui/preferences.blp:431
+#: src/ui/preferences.blp:461
 msgid "Use Dynamic Color"
 msgstr "Erabili kolore dinamikoa"
 
-#: src/ui/preferences.blp:434
+#: src/ui/preferences.blp:464
 msgid "Invert Color"
 msgstr "Alderantzi kolorea"
 
-#: src/ui/preferences.blp:438
+#: src/ui/preferences.blp:468
 msgid "Manual Color"
 msgstr "Kolore zehatza"
 
-#: src/ui/preferences.blp:444
+#: src/ui/preferences.blp:474
 msgid "Visualizer Color"
 msgstr "Bistaratzailearen kolorea"
 
@@ -1791,16 +1821,16 @@ msgstr "Jaitsi bolumena"
 msgid "Window"
 msgstr "Leihoa"
 
-#: src/ui/shortcuts-dialog.blp:54 src/ui/window.blp:280
-#: src/widgets/playing/popout_window.py:46
+#: src/ui/shortcuts-dialog.blp:54 src/ui/window.blp:287
+#: src/widgets/playing/popout_window.py:45
 msgid "Toggle Fullscreen"
 msgstr "Pantaila osoa gaitu / ezgaitu"
 
-#: src/ui/shortcuts-dialog.blp:58 src/ui/window.blp:275
+#: src/ui/shortcuts-dialog.blp:58 src/ui/window.blp:282
 msgid "Open Pop-Out Window"
 msgstr "Ireki leiho gainerakorra"
 
-#: src/ui/song/button.blp:31 src/ui/song/small_row.blp:37
+#: src/ui/song/button.blp:31 src/ui/song/small_row.blp:29
 msgid "Song cover art"
 msgstr "Abestiaren azala"
 
@@ -1812,11 +1842,11 @@ msgstr "Erreprodukzio-adierazlea"
 msgid "Select All"
 msgstr "Hautatu dena"
 
-#: src/ui/song/row.blp:44
+#: src/ui/song/row.blp:51
 msgid "Drag icon"
 msgstr "Arrastatze ikonoa"
 
-#: src/ui/song/row.blp:142
+#: src/ui/song/row.blp:153
 msgid "Selection box"
 msgstr "Hautapen kutxa"
 
@@ -1828,49 +1858,48 @@ msgstr "Erreproduzitu ausazko ilara"
 msgid "Menu"
 msgstr "Menua"
 
-#: src/ui/window.blp:128
+#: src/ui/window.blp:135
 msgid "Favorite Artists"
 msgstr "Gogoko artistak"
 
-#: src/ui/window.blp:134
+#: src/ui/window.blp:141
 msgid "Favorite Songs"
 msgstr "Gogoko abestiak"
 
-#: src/ui/window.blp:140
+#: src/ui/window.blp:147
 msgid "Random Albums"
 msgstr "Albumak ausaz"
 
-#: src/ui/window.blp:144
+#: src/ui/window.blp:151
 msgid "Favorite Albums"
 msgstr "Gogoko albumak"
 
-#: src/ui/window.blp:148
+#: src/ui/window.blp:155
 msgid "Newest Albums"
 msgstr "Album berrienak"
 
-#: src/ui/window.blp:152
+#: src/ui/window.blp:159
 msgid "Recent Albums"
 msgstr "Oraintsuko albumak"
 
-#: src/ui/window.blp:179
+#: src/ui/window.blp:186
 msgid "Player"
 msgstr "Erreproduzitzailea"
 
-#: src/ui/window.blp:285
+#: src/ui/window.blp:292
 msgid "See Last Nocturne Playback"
 msgstr "Ikusi Nocturneko azken entzunaldia"
 
-#: src/ui/window.blp:290
+#: src/ui/window.blp:297
 msgid "Keyboard Shortcuts"
 msgstr "Teklatuko lasterbideak"
 
-#: src/ui/window.blp:295
+#: src/ui/window.blp:302
 msgid "About Nocturne"
 msgstr "Nocturneri buruz"
 
-#: src/widgets/album/button.py:99 src/widgets/album/page.py:149
-#: src/widgets/artist/page.py:114 src/widgets/playing/control_page.py:193
-#: src/widgets/song/row.py:188
+#: src/widgets/album/button.py:45 src/widgets/album/page.py:173
+#: src/widgets/song/row.py:214
 msgid "Not Favorite"
 msgstr "Ez gogokoa"
 
@@ -1879,16 +1908,16 @@ msgstr "Ez gogokoa"
 msgid "Disc {}"
 msgstr "{} diskoa"
 
-#: src/widgets/artist/button.py:56 src/widgets/artist/row.py:46
+#: src/widgets/artist/button.py:51 src/widgets/artist/row.py:40
 #, python-brace-format
 msgid "{} Album"
 msgid_plural "{} Albums"
 msgstr[0] "Album {}"
 msgstr[1] "{} album"
 
-#: src/widgets/artist/page.py:97
-msgid "Author"
-msgstr "Egilea"
+#: src/widgets/artist/row.py:39
+msgid "Loading…"
+msgstr "Kargatzen…"
 
 #: src/widgets/containers/context.py:50
 #, python-brace-format
@@ -1926,7 +1955,7 @@ msgstr "Konexio bizkorrerako orria"
 #: src/widgets/pages/playback.py:29
 #, python-brace-format
 msgid "Nocturne Playback ~ {}"
-msgstr "Nocturne erreprodukzioa ~ {}"
+msgstr "Nocturne entzunaldia ~ {}"
 
 #: src/widgets/pages/playback.py:48 src/widgets/pages/playback.py:57
 #, python-brace-format
@@ -1949,7 +1978,7 @@ msgstr "Integrazioa"
 msgid "LRC File"
 msgstr "LRC fitxategia"
 
-#: src/widgets/playing/player.py:698
+#: src/widgets/playing/player.py:676
 msgid "Warning: Song changed but volume is set to 0"
 msgstr "Abisua: Abestia aldatu da, baina bolumena zeroan dago"
 
@@ -1982,22 +2011,34 @@ msgstr "Ez"
 msgid "Not Found"
 msgstr "Ez da aurkitu"
 
-#: src/widgets/song/row.py:147 src/widgets/song/row.py:152
+#: src/widgets/song/row.py:173 src/widgets/song/row.py:178
 msgid "Multiple Artists"
 msgstr "Hainbat artista"
 
-#: src/window.py:229
+#: src/window.py:246
 #, python-brace-format
 msgid "Your Playback queue for {} is available!"
 msgstr "{}(e)rako erreprodukzio-ilara prest dago!"
 
-#: src/window.py:231
+#: src/window.py:248
 msgid "Show"
 msgstr "Erakutsi"
 
-#: src/window.py:232
+#: src/window.py:249
 msgid "Later"
 msgstr "Geroago"
+
+#~ msgid "Artist"
+#~ msgstr "Artista"
+
+#~ msgid "Current song progress indicator"
+#~ msgstr "Uneko abestiaren aurrerapen adierazlea"
+
+#~ msgid "Show Progressbar in Player Footer"
+#~ msgstr "Erakutsi aurrerapen-barra erreproduzitzailearen oinean"
+
+#~ msgid "Author"
+#~ msgstr "Egilea"
 
 #~ msgid "Jeffry Samuel Eduarte Rojas"
 #~ msgstr "Jeffry Samuel Eduarte Rojas"
