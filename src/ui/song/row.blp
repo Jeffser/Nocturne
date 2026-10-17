@@ -28,8 +28,10 @@ template $NocturneSongRow: Adw.ActionRow {
     ]
 
     spacing: 10;
-    margin-top: 5;
     orientation: horizontal;
+    valign: center;
+    vexpand: true;
+    hexpand: true;
 
     Gtk.Image icon_el {
       valign: center;
@@ -52,18 +54,34 @@ template $NocturneSongRow: Adw.ActionRow {
       }
     }
 
+    Gtk.Image cover_el {
+      styles [
+        "card"
+      ]
+      accessibility {
+        label: _("Song cover art");
+      }
+      height-request: 48;
+      width-request: 48;
+      overflow: hidden;
+      valign: center;
+      halign: center;
+      paintable: bind template.model as <$NocturneModelSong> .gdkPaintable;
+      pixel-size: bind $format_pixel_size(template.model as <$NocturneModelSong> .gdkPaintable);
+    }
+
     Gtk.Box {
       orientation: vertical;
       valign: center;
       vexpand: true;
       hexpand: true;
       spacing: 2;
+      margin-top: 5;
 
       Gtk.Label title_el {
         styles [
           "heading",
         ]
-
         ellipsize: end;
         halign: start;
         label: bind template.model as <$NocturneModelSong> .title;

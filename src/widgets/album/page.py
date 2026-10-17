@@ -107,6 +107,10 @@ class AlbumPage(Adw.NavigationPage):
         self._song_list_generation = generation
         def is_current():
             return getattr(self, '_song_list_generation', None) == generation
+        def add_row(song_id):
+            song_row = SongRow(song_id)
+            song_row.cover_el.set_visible(False)
+            self.song_list_el.list_el.append(song_row)
         def run():
             integration = get_current_integration()
             GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.remove_all())
@@ -121,8 +125,7 @@ class AlbumPage(Adw.NavigationPage):
                 discNumber = model.get_property('discNumber')
                 if discNumber > 0 and discNumber not in discs:
                     discs.append(discNumber)
-
-                GLib.idle_add(lambda sid=song_id: is_current() and self.song_list_el.list_el.append(SongRow(sid)))
+                GLib.idle_add(lambda sid=song_id: is_current() and add_row(sid))
             for disc in discs:
                 GLib.idle_add(lambda d=disc: is_current() and self.song_list_el.list_el.append(DiscIndicator(d)))
 
@@ -193,3 +196,4 @@ class AlbumPage(Adw.NavigationPage):
 
     def reload(self):
         pass
+

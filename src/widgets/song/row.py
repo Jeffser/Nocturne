@@ -16,6 +16,7 @@ class SongRow(Adw.ActionRow):
     removable = GObject.Property(type=bool, default=False)
 
     icon_el = Gtk.Template.Child()
+    cover_el = Gtk.Template.Child()
     title_el = Gtk.Template.Child()
     duration_el = Gtk.Template.Child()
     artist_container_el = Gtk.Template.Child()
@@ -232,6 +233,10 @@ class SongRow(Adw.ActionRow):
             self.artist_container_el.set_child(button)
 
     # -- Callbacks --
+
+    @Gtk.Template.Callback()
+    def format_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
+        return 48 if paintable else -1
 
     @Gtk.Template.Callback()
     def on_drop(self, drop_target, row, x, y):
