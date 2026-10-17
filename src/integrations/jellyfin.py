@@ -1143,8 +1143,9 @@ class Jellyfin(Base):
         # Method exclusive to Jellyfin, helper for searches
         items = []
         if item_type == MediaType.ARTIST:
+            action = 'Artists' if query else 'Artists/AlbumArtists' #search all artists if there's a query
             items = self.make_request(
-                action='Artists/AlbumArtists',
+                action=action,
                 mode="GET",
                 params={
                     "userId": self.get_property("userId"),

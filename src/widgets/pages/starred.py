@@ -54,7 +54,7 @@ class StarredPage(Adw.NavigationPage):
             for item_id in self.item_ids:
                 if model := integration.loaded_models.get(item_id):
                     if 'songs' in self.get_tag():
-                        checker = model.get_property('title') + model.get_property('artist')
+                        checker = f"{model.get_property('title')} {' '.join([artist['name'] for artist in model.get_property('artists')])}"
                     elif 'artists' in self.get_tag():
                         checker = model.get_property('name')
                     if re.search(query, checker, re.IGNORECASE):
