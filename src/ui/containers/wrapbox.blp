@@ -21,8 +21,8 @@ template $NocturneWrapbox: Gtk.Box {
     };
     tooltip-text: bind template.header-label;
     visible: bind $handle_visible_bind(template.header-label);
-    action-name: bind $handle_action_name_bind(template.header-page-tag);
-    action-target: bind $handle_action_target_bind(template.header-page-tag);
+    action-name: bind template.header-action-name;
+    action-target: bind $handle_action_target_bind(template.header-action-target);
   }
 
   Adw.WrapBox list_el {
