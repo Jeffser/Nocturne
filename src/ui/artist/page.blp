@@ -161,6 +161,8 @@ template $NocturneArtistPage: Adw.NavigationPage {
           $NocturneWrapbox top_songs_wrapbox {
             header-label: _("Top Songs");
             header-icon-name: "music-note-symbolic";
+            header-action-name: "app.show_artist_songs";
+            header-action-target: bind template.model as <$NocturneModelArtist> .id;
           }
 
           $NocturneWrapbox album_wrapbox {
