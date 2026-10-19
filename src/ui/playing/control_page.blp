@@ -75,7 +75,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .artistId,
                   's'
                 );
-                action-name: "app.show_artist";
+                action-name: bind $format_show_artist(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl);
                 tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
                 sensitive: bind $format_to_bool(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
