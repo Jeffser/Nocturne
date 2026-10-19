@@ -234,4 +234,6 @@ toggle-group > toggle.image-button:checked {
   color: var(--accent-color);
 }
 
-
+button.keep-bright:disabled {
+  filter: none;
+}
