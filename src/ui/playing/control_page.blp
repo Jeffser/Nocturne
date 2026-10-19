@@ -81,6 +81,10 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   true
                 );
+                visible: bind $format_to_bool(
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist,
+                  false
+                );
                 child: Gtk.Label {
                   ellipsize: end;
                   label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
