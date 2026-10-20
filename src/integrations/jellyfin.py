@@ -366,7 +366,7 @@ class Jellyfin(Base):
             return True
         return False
 
-    def getLibraries(self) -> tuple[bool, list]:
+    def getLibraries(self) -> tuple[list, bool]:
         libraries = self.make_request(
             action='Users/{userId}/Views',
             mode='GET'
@@ -509,7 +509,7 @@ class Jellyfin(Base):
             self.set_property('userId', response.get('User', {}).get('Id'))
         if self.get_property('accessToken') and self.get_property('userId'):
             if not self.library_ids:
-                libraries, _ = self.getLibraries()
+                libraries = self.getLibraries()[0]
                 if libraries:
                     self.settings.set_strv("library-ids", [libraries[0].get("id")])
             return super().ping()

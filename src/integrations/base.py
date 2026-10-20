@@ -293,7 +293,7 @@ class Base(GObject.Object):
         os.makedirs(directory, exist_ok=True)
         return directory
 
-    def getLibraries(self) -> tuple[bool, list]:
+    def getLibraries(self) -> tuple[list, bool]:
         # Used to retrieve a list of dicts containing the names and IDs for the available music libraries
         # Returns a list of libraries and whether multiple libraries can be selected at once
         return [], False

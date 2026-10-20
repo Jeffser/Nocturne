@@ -101,7 +101,7 @@ class Navidrome(Base):
         query_string = urlencode(params)
         return '{}/rest/stream?{}'.format(self.get_property('url').strip('/'), query_string)
 
-    def getLibraries(self) -> tuple[bool, list]:
+    def getLibraries(self) -> tuple[list, bool]:
         response = self.make_request('getMusicFolders')
         return response.get("musicFolders"), True
 
