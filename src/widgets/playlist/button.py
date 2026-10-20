@@ -43,7 +43,7 @@ class PlaylistButton(Gtk.Box):
 
     @Gtk.Template.Callback()
     def format_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        self.update_size()
+        GLib.idle_add(self.update_size)
         return paintable
 
     @Gtk.Template.Callback()
