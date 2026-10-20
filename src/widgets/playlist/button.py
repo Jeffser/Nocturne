@@ -22,10 +22,10 @@ class PlaylistButton(Gtk.Box):
         self.id = id
         integration = get_current_integration()
         integration.verifyPlaylist(self.id, minimal=True)
+        self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         super().__init__(
             model=integration.loaded_models.get(self.id)
         )
-        self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.settings.connect("changed::button-size", lambda *_: self.update_size())
 
     def update_size(self):

@@ -709,7 +709,7 @@ def prompt_add_song_to_playlist(app, model_id:str):
     dialog = Widgets.playlist.PlaylistDialog([model_id])
     GLib.idle_add(dialog.present, app.props.active_window)
 
-def prompt_add_album_to_playlist(wiappndow, model_id:str):
+def prompt_add_album_to_playlist(app, model_id:str):
     integration = app.get_property('integration')
     integration.verifyAlbum(model_id, force_update=True, use_threading=False)
     if model := integration.loaded_models.get(model_id):
