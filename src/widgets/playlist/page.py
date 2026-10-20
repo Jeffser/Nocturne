@@ -30,7 +30,7 @@ class PlaylistPage(Adw.NavigationPage):
         context = CONTEXT_PLAYLIST.copy()
         del context['edit']
         del context['delete']
-        if 'no-downloads' in get_current_integration().limitations:
+        if 'no-downloads' in integration.limitations:
             del context['download']
         context_buttons = get_context_buttons_list(context, self.id)
         for btn in context_buttons:

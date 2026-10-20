@@ -44,14 +44,18 @@ class SongSmallRow(Gtk.Button):
                 wrapbox.remove(self)
 
     def generate_context_menu(self) -> ContextContainer:
-        integration = get_current_integration()
+        integration = None
+        if root := self.get_root():
+            if app := root.get_application():
+                integration = app.get_property('integration')
         context_dict = CONTEXT_SONG.copy()
         del context_dict["edit-radio"]
         del context_dict["delete-radio"]
         del context_dict["remove"]
         del context_dict["select"]
 
-        context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
+        if integration:
+            context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
 
         currentSongId = ''
         if root := self.get_root():
@@ -62,11 +66,11 @@ class SongSmallRow(Gtk.Button):
         context_dict["play-next"]["sensitive"] = currentSongId != self.id
         context_dict["play-later"]["sensitive"] = currentSongId != self.id
 
-        if integration.__gtype_name__ == 'NocturneIntegrationOffline':
+        if integration and integration.__gtype_name__ == 'NocturneIntegrationOffline':
             context_dict["delete-download"]["sensitive"] = currentSongId != self.id
         else:
             del context_dict["delete-download"]
-        if 'no-downloads' in integration.limitations:
+        if not integration or 'no-downloads' in integration.limitations:
             del context_dict["download"]
         return ContextContainer(context_dict, self.id)
 

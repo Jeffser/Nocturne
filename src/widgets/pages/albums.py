@@ -1,7 +1,6 @@
 # albums.py
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
 from ..album import AlbumButton
 import threading
 
@@ -52,29 +51,32 @@ class AlbumsPage(Adw.NavigationPage):
             return
 
         self.loading = True
-        integration = get_current_integration()
-        hide_singles = Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('hide-singles').unpack()
         self.skipped_albums = 0
-        
-        albums = integration.getAlbumList(
-            list_type=self.get_tag().split('-')[1],
-            size=20,
-            offset=self.offset
-        )
+        hide_singles = Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('hide-singles').unpack()
+        albums = []
 
-        for album_id in albums:
-            should_skip = False
-            if hide_singles:
-                if model := integration.loaded_models.get(album_id):
-                    if model.get_property('songCount') <= 1:
-                        self.skipped_albums += 1
-                        should_skip = True
-            results = [button for button in list(self.list_el.list_el) if getattr(button, 'id', None) == album_id]
-            if len(results) > 0:
-                GLib.idle_add(results[0].set_visible, not should_skip)
-            elif not should_skip:
-                button = AlbumButton(album_id)
-                GLib.idle_add(self.list_el.list_el.append, button)
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    albums = integration.getAlbumList(
+                        list_type=self.get_tag().split('-')[1],
+                        size=20,
+                        offset=self.offset
+                    )
+
+                    for album_id in albums:
+                        should_skip = False
+                        if hide_singles:
+                            if model := integration.loaded_models.get(album_id):
+                                if model.get_property('songCount') <= 1:
+                                    self.skipped_albums += 1
+                                    should_skip = True
+                        results = [button for button in list(self.list_el.list_el) if getattr(button, 'id', None) == album_id]
+                        if len(results) > 0:
+                            GLib.idle_add(results[0].set_visible, not should_skip)
+                        elif not should_skip:
+                            button = AlbumButton(album_id)
+                            GLib.idle_add(self.list_el.list_el.append, button)
 
         GLib.idle_add(self.end_stack.set_visible_child_name, 'end' if len(albums) - self.skipped_albums < 20 else 'loading')
         self.offset += 20

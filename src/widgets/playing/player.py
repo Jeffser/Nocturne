@@ -7,7 +7,7 @@ from mpris_server.events import EventAdapter
 from mpris_server.server import Server
 from mpris_server import Metadata, ValidMetadata, Track, Position, Volume, Rate, PlayState, DbusObj, MetadataObj, ActivePlaylist, PlaylistEntry, MprisInterface
 
-from ...integrations import get_current_integration, models
+from ...integrations import models
 from ...integrations.discord_rpc import DiscordRPC
 from urllib.parse import urlparse
 import threading, io, base64, logging, gc
@@ -63,7 +63,7 @@ class PlayerMprisAdapter(MprisAdapter):
 
         if self.last_cover_art.get('id') != song.get_property('id'):
             self.last_cover_art['id'] = song.get_property('id')
-            if integration := get_current_integration():
+            if integration := self.player.gst_player.get_property('application').get_property('integration'):
                 self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
 
         if song.get_property('radioStreamUrl'):
@@ -393,7 +393,7 @@ class Player(GObject.Object):
     def on_source_setup(self, playbin, source):
         try:
             if GObject.type_is_a(source, Gst.ElementFactory.find("souphttpsrc").get_element_type()):
-                if integration := get_current_integration():
+                if integration := self.get_property('application').get_property('integration'):
                     source.set_property("ssl-strict", not integration.get_property('trustServer'))
         except:
             pass
@@ -417,8 +417,8 @@ class Player(GObject.Object):
             if song := self.get_property('currentSong'):
                 duration = song.get_property('duration') if song else 0
                 if action == "end" or (duration > 0 and position >= (duration / 2)):
-                    integration = get_current_integration()
-                    threading.Thread(target=integration.scrobble, args=(current_song_id,), daemon=True).start()
+                    if integration := self.get_property('application').get_property('integration'):
+                        threading.Thread(target=integration.scrobble, args=(current_song_id,), daemon=True).start()
 
         mode = self.settings.get_value('playback-mode').unpack()
 
@@ -517,39 +517,39 @@ class Player(GObject.Object):
                     self.set_property("buttonState", 'pause' if is_playing else 'play')
                     self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
                     self.discord_rpc.update()
-                    if integration := get_current_integration():
+                    if integration := self.get_property('application').get_property('integration'):
                         integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
 
     def handle_message_tag(self, bus, message):
-        integration = get_current_integration()
-        if song_model := integration.loaded_models.get(self.get_property('songId')):
-            if song_model.get_property('radioStreamUrl'): # is radio
-                if tag_list := message.parse_tag():
-                    success_title, title = tag_list.get_string(Gst.TAG_TITLE)
-                    if not (success_title and title and title != 'null'):
-                        title = ""
-                    success_artist, artist = tag_list.get_string(Gst.TAG_ARTIST)
-                    if not(success_artist and artist and artist != 'null'):
-                        artist = ""
-                    if title and not artist: #Handle Shoutcast metadata
-                        parts = title.split(" - ", 1)
-                        if len(parts) == 2:
-                            artist = parts[0]
-                            title = parts[1]
-                    title = title.strip()
-                    artist = artist.strip()
-                    emit_changes = False
-                    current_title = self.get_property('displaySongTitle')
-                    if title and current_title != title:
-                        self.set_property('displaySongTitle', title)
-                        emit_changes = True
-                    current_artist = self.get_property('displaySongArtist')
-                    if artist and current_artist != artist:
-                        self.set_property('displaySongArtist', artist)
-                        emit_changes = True
+        if integration := self.get_property('application').get_property('integration'):
+            if song_model := integration.loaded_models.get(self.get_property('songId')):
+                if song_model.get_property('radioStreamUrl'): # is radio
+                    if tag_list := message.parse_tag():
+                        success_title, title = tag_list.get_string(Gst.TAG_TITLE)
+                        if not (success_title and title and title != 'null'):
+                            title = ""
+                        success_artist, artist = tag_list.get_string(Gst.TAG_ARTIST)
+                        if not(success_artist and artist and artist != 'null'):
+                            artist = ""
+                        if title and not artist: #Handle Shoutcast metadata
+                            parts = title.split(" - ", 1)
+                            if len(parts) == 2:
+                                artist = parts[0]
+                                title = parts[1]
+                        title = title.strip()
+                        artist = artist.strip()
+                        emit_changes = False
+                        current_title = self.get_property('displaySongTitle')
+                        if title and current_title != title:
+                            self.set_property('displaySongTitle', title)
+                            emit_changes = True
+                        current_artist = self.get_property('displaySongArtist')
+                        if artist and current_artist != artist:
+                            self.set_property('displaySongArtist', artist)
+                            emit_changes = True
 
-                    if emit_changes:
-                        self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
+                        if emit_changes:
+                            self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def get_next_queue_id(self):
         id_list = [so.get_string() for so in self.get_property('queueModel')]
@@ -574,11 +574,11 @@ class Player(GObject.Object):
             return next_id
 
     def preload_next_track(self, playbin):
-        integration = get_current_integration()
-        if next_id := self.get_next_queue_id():
-            stream_url = integration.get_stream_url(next_id)
-            self.gst.set_property('uri', stream_url)
-            self.set_property('preloadedSongId', next_id)
+        if integration := self.get_property('application').get_property('integration'):
+            if next_id := self.get_next_queue_id():
+                stream_url = integration.get_stream_url(next_id)
+                self.gst.set_property('uri', stream_url)
+                self.set_property('preloadedSongId', next_id)
 
     def update_stream_progress(self):
         if self.get_property('seeking'):
@@ -595,25 +595,25 @@ class Player(GObject.Object):
             self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def restore_play_queue(self):
-        integration = get_current_integration()
-        songs = self.application.external_songs
-        if songs:
-            for song in songs:
-                integration.loaded_models[song.id] = song
-            song_list = [s.id for s in songs]
-            current_id = song_list[0]
-        else:
-            current_id, song_list = integration.getPlayQueue()
-            for song in song_list:
-                integration.verifySong(song)
-        if len(song_list) > 0:
-            if len(self.application.external_songs) == 0:
-               self.pause_next_change = True
-            self.application.get_active_window().activate_action(
-                "app.play_songs",
-                GLib.Variant("as", song_list)
-            )
-        self.application.external_songs = []
+        if integration := self.get_property('application').get_property('integration'):
+            songs = self.application.external_songs
+            if songs:
+                for song in songs:
+                    integration.loaded_models[song.id] = song
+                song_list = [s.id for s in songs]
+                current_id = song_list[0]
+            else:
+                current_id, song_list = integration.getPlayQueue()
+                for song in song_list:
+                    integration.verifySong(song)
+            if len(song_list) > 0:
+                if len(self.application.external_songs) == 0:
+                   self.pause_next_change = True
+                self.application.get_active_window().activate_action(
+                    "app.play_songs",
+                    GLib.Variant("as", song_list)
+                )
+            self.application.external_songs = []
 
     def update_palette(self, paintable):
         # Load Image
@@ -672,67 +672,66 @@ class Player(GObject.Object):
         self.set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else '')
 
     def song_changed(self, song_id:str):
-        integration = get_current_integration()
-
         if song_id:
-            if song_id != self.last_song:
-                self.last_song = song_id
-                threading.Thread(target=integration.scrobble, args=(song_id,), kwargs={'submission': False}, daemon=True).start()
-                self.set_property('positionSeconds', 0.0)
+            if integration := self.get_property('application').get_property('integration'):
+                if song_id != self.last_song:
+                    self.last_song = song_id
+                    threading.Thread(target=integration.scrobble, args=(song_id,), kwargs={'submission': False}, daemon=True).start()
+                    self.set_property('positionSeconds', 0.0)
 
-                # Volume warning
-                if self.gst.get_property('volume') == 0:
-                    if active_window := self.application.props.active_window:
-                        active_window.toast_overlay.add_toast(Adw.Toast(
-                            title=_("Warning: Song changed but volume is set to 0")
-                        ))
+                    # Volume warning
+                    if self.gst.get_property('volume') == 0:
+                        if active_window := self.application.props.active_window:
+                            active_window.toast_overlay.add_toast(Adw.Toast(
+                                title=_("Warning: Song changed but volume is set to 0")
+                            ))
 
-                if stream_url := integration.get_stream_url(song_id):
-                    if song_id != self.get_property('preloadedSongId'): #check for preloaded track
-                        self.gst.set_state(Gst.State.READY)
-                        self.gst.set_property('uri', stream_url)
-                    if self.pause_next_change:
-                        self.gst.set_state(Gst.State.PAUSED)
-                        self.pause_next_change = False
-                    else:
-                        self.gst.set_state(Gst.State.PLAYING)
+                    if stream_url := integration.get_stream_url(song_id):
+                        if song_id != self.get_property('preloadedSongId'): #check for preloaded track
+                            self.gst.set_state(Gst.State.READY)
+                            self.gst.set_property('uri', stream_url)
+                        if self.pause_next_change:
+                            self.gst.set_state(Gst.State.PAUSED)
+                            self.pause_next_change = False
+                        else:
+                            self.gst.set_state(Gst.State.PLAYING)
 
-                    # Model stuff
-                    if model := integration.loaded_models.get(song_id):
-                        # Fix duration (if for whatever reason it was not set in the model data)
-                        if not model.get_property('duration'):
-                            self.gst.get_state(Gst.CLOCK_TIME_NONE)
-                            success, duration = self.gst.query_duration(Gst.Format.TIME)
-                            if success:
-                                model.set_property('duration', duration / Gst.SECOND)
-                        # Title and Artists (it could also be changed by radio dynamic tags)
-                        self.set_property('displaySongTitle', model.get_property('title'))
-                        artists = model.get_property('artists')
-                        self.set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else model.get_property('artist'))
+                        # Model stuff
+                        if model := integration.loaded_models.get(song_id):
+                            # Fix duration (if for whatever reason it was not set in the model data)
+                            if not model.get_property('duration'):
+                                self.gst.get_state(Gst.CLOCK_TIME_NONE)
+                                success, duration = self.gst.query_duration(Gst.Format.TIME)
+                                if success:
+                                    model.set_property('duration', duration / Gst.SECOND)
+                            # Title and Artists (it could also be changed by radio dynamic tags)
+                            self.set_property('displaySongTitle', model.get_property('title'))
+                            artists = model.get_property('artists')
+                            self.set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else model.get_property('artist'))
 
-                        # Gains
-                        gain_set = False
-                        if self.settings.get_value('use-gain').unpack():
-                            if trackGain := model.get_property('trackGain'):
-                                self.rg_volume.set_property('fallback-gain', trackGain)
+                            # Gains
+                            gain_set = False
+                            if self.settings.get_value('use-gain').unpack():
+                                if trackGain := model.get_property('trackGain'):
+                                    self.rg_volume.set_property('fallback-gain', trackGain)
+                                    self.rg_volume.set_property('album-mode', False)
+                                    gain_set = True
+                                elif albumGain := model.get_property('albumGain'):
+                                    self.rg_volume.set_property('fallback-gain', albumGain)
+                                    self.rg_volume.set_property('album-mode', True)
+                                    gain_set = True
+                            if not gain_set:
+                                self.rg_volume.set_property('fallback-gain', 0.0)
                                 self.rg_volume.set_property('album-mode', False)
-                                gain_set = True
-                            elif albumGain := model.get_property('albumGain'):
-                                self.rg_volume.set_property('fallback-gain', albumGain)
-                                self.rg_volume.set_property('album-mode', True)
-                                gain_set = True
-                        if not gain_set:
-                            self.rg_volume.set_property('fallback-gain', 0.0)
-                            self.rg_volume.set_property('album-mode', False)
 
-                        # Paintable
-                        threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintable'),), daemon=True).start()
+                            # Paintable
+                            threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintable'),), daemon=True).start()
 
-                        # Misc
-                        self.set_property('currentSong', model)
-                        self.discord_rpc.update()
-                else:
-                    self.gst.set_state(Gst.State.NULL)
+                            # Misc
+                            self.set_property('currentSong', model)
+                            self.discord_rpc.update()
+                    else:
+                        self.gst.set_state(Gst.State.NULL)
         else:
             self.gst.set_state(Gst.State.NULL)
         self.set_property('preloadedSongId', "")

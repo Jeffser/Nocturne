@@ -1,7 +1,6 @@
 # radios.py
 
 from gi.repository import Gtk, Adw, GLib
-from ...integrations import get_current_integration
 from ..song import SongRow
 import re
 
@@ -15,8 +14,11 @@ class RadiosPage(Adw.NavigationPage):
     def load(self):
         # call in different thread
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
-        integration = get_current_integration()
-        radios = integration.getInternetRadioStations()
+        radios = []
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    radios = integration.getInternetRadioStations()
         GLib.idle_add(self.reset)
         for id in radios:
             GLib.idle_add(self.list_el.append, SongRow(id))

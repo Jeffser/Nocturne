@@ -1,7 +1,6 @@
 # lyrics_page.py
 
 from gi.repository import Gtk, GObject, GLib, Gio, Pango, Gst
-from ...integrations import get_current_integration
 from ..lyrics.helpers import prepare_lrc
 from ...constants import CONTEXT_LYRICS
 from ..containers import ContextContainer
@@ -120,16 +119,16 @@ class PlayingLyricsPage(Gtk.Stack):
         # We have to do this both before and after downloading the lyrics
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
 
-        integration = get_current_integration()
         lyrics_type, raw_content = '', ''
         if root := self.get_root():
             if app := root.get_application():
                 if player := app.get_property('player'):
-                    if player.get_property('songId') != song_id:
-                        return
-                    lyrics_type, raw_content = integration.getLyrics(song_id, attempt_download)
-                    if player.get_property('songId') != song_id: # Check before AND after getLyrics just in case
-                        return
+                    if integration := app.get_property('integration'):
+                        if player.get_property('songId') != song_id:
+                            return
+                        lyrics_type, raw_content = integration.getLyrics(song_id, attempt_download)
+                        if player.get_property('songId') != song_id: # Check before AND after getLyrics just in case
+                            return
 
         if settings.get_value('auto-download-lyrics').unpack() and lyrics_type == 'not-found-locally':
             thread = threading.Thread(target=self.update_lyrics, args=(song_id, True), daemon=True)
@@ -151,8 +150,11 @@ class PlayingLyricsPage(Gtk.Stack):
                     if i + 1 < len(content):
                         duration_ms = content[i+1].get('ms') - line.get('ms')
                     else:
-                        if model := integration.loaded_models.get(song_id):
-                            duration_ms = model.get_property('duration') * 1000 - line.get('ms')
+                        if root := self.get_root():
+                            if app := root.get_application():
+                                if integration := app.get_property('integration'):
+                                    if model := integration.loaded_models.get(song_id):
+                                        duration_ms = model.get_property('duration') * 1000 - line.get('ms')
                 else:
                     duration_ms = 0
                 row = LyricRow(
@@ -227,7 +229,6 @@ class PlayingLyricsPage(Gtk.Stack):
 
     @Gtk.Template.Callback()
     def lyric_load_requested(self, button):
-        integration = get_current_integration()
         file_filter = Gtk.FileFilter(
             name=_("LRC File")
         )
@@ -247,6 +248,6 @@ class PlayingLyricsPage(Gtk.Stack):
         if root := self.get_root():
             if app := root.get_application():
                 if player := app.get_property('player'):
-                    if integration := get_current_integration():
+                    if integration := app.get_property('integration'):
                         integration.deleteLyrics(player.get_property('songId'))
 

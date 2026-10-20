@@ -1,7 +1,6 @@
 # downloads_queue_button.py
 
 from gi.repository import Gtk, GLib
-from ...integrations import get_current_integration
 from .download_row import DownloadRow
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/containers/downloads_queue_button.ui')

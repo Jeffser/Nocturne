@@ -1,7 +1,6 @@
 # spectrum.py
 
 from gi.repository import Gtk, GLib, Gio
-from ...integrations import get_current_integration
 import math
 
 class Spectrum(Gtk.DrawingArea):

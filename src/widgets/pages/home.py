@@ -1,7 +1,6 @@
 # home.py
 
 from gi.repository import Gtk, Adw, GLib, Gio, Gdk
-from ...integrations import get_current_integration
 from ...constants import DATA_DIR
 from ..album import AlbumButton
 from ..artist import ArtistButton
@@ -60,19 +59,21 @@ class HomePage(Adw.NavigationPage):
         self.song_wrapbox.list_el.set_line_spacing(5)
 
     def get_default_results(self) -> dict:
-        if integration := get_current_integration():
-            frequent_albums = integration.getAlbumList(list_type="frequent", size=self.max_frequent_albums) if self.max_frequent_albums > 0 else []
-            songs = integration.getRandomSongs(size=self.max_songs) if self.max_songs > 0 else []
-            albums = integration.getAlbumList(list_type="random", size=self.max_albums) if self.max_albums > 0 else []
-            artists = integration.getArtists(size=self.max_artists) if self.max_artists > 0 else []
-            playlists = integration.getPlaylists()[:self.max_playlists]
-            return {
-                'frequent-album': frequent_albums,
-                'song': songs,
-                'album': albums,
-                'artist': artists,
-                'playlist': playlists
-            }
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    frequent_albums = integration.getAlbumList(list_type="frequent", size=self.max_frequent_albums) if self.max_frequent_albums > 0 else []
+                    songs = integration.getRandomSongs(size=self.max_songs) if self.max_songs > 0 else []
+                    albums = integration.getAlbumList(list_type="random", size=self.max_albums) if self.max_albums > 0 else []
+                    artists = integration.getArtists(size=self.max_artists) if self.max_artists > 0 else []
+                    playlists = integration.getPlaylists()[:self.max_playlists]
+                    return {
+                        'frequent-album': frequent_albums,
+                        'song': songs,
+                        'album': albums,
+                        'artist': artists,
+                        'playlist': playlists
+                    }
         return {}
 
     def update_pfp_gradient(self, paintable):
@@ -146,54 +147,55 @@ class HomePage(Adw.NavigationPage):
         self.refresh_button_el.set_sensitive(False)
         self.searching = True
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
-        if integration := get_current_integration():
-            if self.search_entry.get_text():
-                query = None
-                while query != self.search_entry.get_text(): # In case query changes whilst calling integration
-                    query = self.search_entry.get_text()
-                    search_results = integration.search(
-                        query=query,
-                        songCount=self.max_songs,
-                        artistCount=self.max_artists,
-                        albumCount=self.max_albums,
-                        playlistCount=self.max_playlists
-                    )
-                if self.settings.get_value('hide-singles').unpack():
-                    if album_results := search_results.get('album'):
-                        for albumId in album_results.copy():
-                            if model := integration.loaded_models.get(albumId):
-                                if model.get_property('songCount') <= 1:
-                                    search_results['album'].remove(albumId)
-            else:
-                search_results = self.get_default_results()
-            threading.Thread(
-                target=self.frequent_album_carousel.set_widgets,
-                args=([AlbumButton(id) for id in search_results.get('frequent-album') or []],),
-                daemon=True
-            ).start()
-            threading.Thread(
-                target=self.song_wrapbox.set_widgets,
-                args=([SongSmallRow(id) for id in search_results.get('song') or []],),
-                daemon=True
-            ).start()
-            threading.Thread(
-                target=self.album_carousel.set_widgets,
-                args=([AlbumButton(id) for id in search_results.get('album') or []],),
-                daemon=True
-            ).start()
-            threading.Thread(
-                target=self.artist_carousel.set_widgets,
-                args=([ArtistButton(id) for id in search_results.get('artist') or []],),
-                daemon=True
-            ).start()
-            threading.Thread(
-                target=self.playlist_carousel.set_widgets,
-                args=([PlaylistButton(id) for id in search_results.get('playlist') or []],),
-                daemon=True
-            ).start()
-            has_results = any([len(search_results.get(key) or []) > 0 for key in list(search_results)])
-        else:
-            has_results = False
+        has_results = False
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    if self.search_entry.get_text():
+                        query = None
+                        while query != self.search_entry.get_text(): # In case query changes whilst calling integration
+                            query = self.search_entry.get_text()
+                            search_results = integration.search(
+                                query=query,
+                                songCount=self.max_songs,
+                                artistCount=self.max_artists,
+                                albumCount=self.max_albums,
+                                playlistCount=self.max_playlists
+                            )
+                        if self.settings.get_value('hide-singles').unpack():
+                            if album_results := search_results.get('album'):
+                                for albumId in album_results.copy():
+                                    if model := integration.loaded_models.get(albumId):
+                                        if model.get_property('songCount') <= 1:
+                                            search_results['album'].remove(albumId)
+                    else:
+                        search_results = self.get_default_results()
+                    threading.Thread(
+                        target=self.frequent_album_carousel.set_widgets,
+                        args=([AlbumButton(id) for id in search_results.get('frequent-album') or []],),
+                        daemon=True
+                    ).start()
+                    threading.Thread(
+                        target=self.song_wrapbox.set_widgets,
+                        args=([SongSmallRow(id) for id in search_results.get('song') or []],),
+                        daemon=True
+                    ).start()
+                    threading.Thread(
+                        target=self.album_carousel.set_widgets,
+                        args=([AlbumButton(id) for id in search_results.get('album') or []],),
+                        daemon=True
+                    ).start()
+                    threading.Thread(
+                        target=self.artist_carousel.set_widgets,
+                        args=([ArtistButton(id) for id in search_results.get('artist') or []],),
+                        daemon=True
+                    ).start()
+                    threading.Thread(
+                        target=self.playlist_carousel.set_widgets,
+                        args=([PlaylistButton(id) for id in search_results.get('playlist') or []],),
+                        daemon=True
+                    ).start()
+                    has_results = any([len(search_results.get(key) or []) > 0 for key in list(search_results)])
         GLib.idle_add(self.main_stack.set_visible_child_name, 'content' if has_results else 'no-content')
         self.searching = False
         self.refresh_stack_el.set_visible_child_name("icon")

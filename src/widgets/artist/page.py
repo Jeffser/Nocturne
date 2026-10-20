@@ -47,7 +47,8 @@ class ArtistPage(Adw.NavigationPage):
         self.top_songs_wrapbox.list_el.set_justify_last_line(True)
         self.top_songs_wrapbox.list_el.set_child_spacing(5)
         self.top_songs_wrapbox.list_el.set_line_spacing(5)
-        threading.Thread(target=self.update_top_songs, daemon=True).start()
+        thread = threading.Thread(target=self.update_top_songs, daemon=True)
+        GLib.idle_add(thread.start)
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
@@ -96,8 +97,11 @@ class ArtistPage(Adw.NavigationPage):
                 row.set_action_name('app.play_song_from_list')
             self.top_songs_wrapbox.set_widgets(widgets)
 
-        integration = get_current_integration()
-        top_songs = integration.getTopSongs(self.id)
+        top_songs = None
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    top_songs = integration.getTopSongs(self.id)
         if top_songs:
             GLib.idle_add(configure)
         else:
@@ -169,7 +173,6 @@ class ArtistPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def change_rating(self, button):
-        integration = get_current_integration()
         target_value = GLib.Variant('a{sv}', {
             'model_id': GLib.Variant('s', self.id),
             'rating': GLib.Variant('i', int(button.get_name()))

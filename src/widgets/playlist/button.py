@@ -72,8 +72,11 @@ class PlaylistButton(Gtk.Box):
             rect.x, rect.y = args[1], args[2]
 
         context = CONTEXT_PLAYLIST.copy()
-        if 'no-downloads' in get_current_integration().limitations:
-            del context['download']
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    if 'no-downloads' in integration.limitations:
+                        del context['download']
 
         popover = Gtk.Popover(
             child=ContextContainer(context, self.id),

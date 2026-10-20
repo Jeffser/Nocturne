@@ -55,26 +55,27 @@ class AlbumPage(Adw.NavigationPage):
         self.song_list_el.list_el.set_sort_func(self.song_list_sort_func)
 
     def song_list_sort_func(self, r1, r2):
-        integration = get_current_integration()
         trackN1 = 0
         discN1 = 0
         trackN2 = 0
         discN2 = 0
-        if isinstance(r1, DiscIndicator):
-            trackN1 = -1
-            discN1 = r1.discNumber
-        else:
-            if model1 := integration.loaded_models.get(r1.id):
-                trackN1 = model1.get_property('track')
-                discN1 = model1.get_property('discNumber')
-        if isinstance(r2, DiscIndicator):
-            trackN2 = -1
-            discN2 = r2.discNumber
-        else:
-            if model2 := integration.loaded_models.get(r2.id):
-                trackN2 = model2.get_property('track')
-                discN2 = model2.get_property('discNumber')
-
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    if isinstance(r1, DiscIndicator):
+                        trackN1 = -1
+                        discN1 = r1.discNumber
+                    else:
+                        if model1 := integration.loaded_models.get(r1.id):
+                            trackN1 = model1.get_property('track')
+                            discN1 = model1.get_property('discNumber')
+                    if isinstance(r2, DiscIndicator):
+                        trackN2 = -1
+                        discN2 = r2.discNumber
+                    else:
+                        if model2 := integration.loaded_models.get(r2.id):
+                            trackN2 = model2.get_property('track')
+                            discN2 = model2.get_property('discNumber')
         if discN1 == discN2:
             return trackN1 - trackN2
         else:
@@ -112,25 +113,27 @@ class AlbumPage(Adw.NavigationPage):
             song_row.set_property('cover-visible', False)
             self.song_list_el.list_el.append(song_row)
         def run():
-            integration = get_current_integration()
-            GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.remove_all())
-            GLib.idle_add(lambda: is_current() and self.song_list_el.main_stack.set_visible_child_name('content' if len(song_list) > 0 else 'no-content'))
-            song_ids = [s.get('id') for s in song_list]
-            discs = []
-            for song_id in song_ids:
-                if not song_id in integration.loaded_models:
-                    integration.verifySong(song_id, use_threading=False)
+            if root := self.get_root():
+                if app := root.get_application():
+                    if integration := app.get_property('integration'):
+                        GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.remove_all())
+                        GLib.idle_add(lambda: is_current() and self.song_list_el.main_stack.set_visible_child_name('content' if len(song_list) > 0 else 'no-content'))
+                        song_ids = [s.get('id') for s in song_list]
+                        discs = []
+                        for song_id in song_ids:
+                            if not song_id in integration.loaded_models:
+                                integration.verifySong(song_id, use_threading=False)
 
-                model = integration.loaded_models.get(song_id)
-                discNumber = model.get_property('discNumber')
-                if discNumber > 0 and discNumber not in discs:
-                    discs.append(discNumber)
-                GLib.idle_add(lambda sid=song_id: is_current() and add_row(sid))
-            for disc in discs:
-                GLib.idle_add(lambda d=disc: is_current() and self.song_list_el.list_el.append(DiscIndicator(d)))
+                            model = integration.loaded_models.get(song_id)
+                            discNumber = model.get_property('discNumber')
+                            if discNumber > 0 and discNumber not in discs:
+                                discs.append(discNumber)
+                            GLib.idle_add(lambda sid=song_id: is_current() and add_row(sid))
+                        for disc in discs:
+                            GLib.idle_add(lambda d=disc: is_current() and self.song_list_el.list_el.append(DiscIndicator(d)))
 
-            GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.invalidate_sort())
-            GLib.idle_add(lambda: is_current() and self.connect_rows())
+                        GLib.idle_add(lambda: is_current() and self.song_list_el.list_el.invalidate_sort())
+                        GLib.idle_add(lambda: is_current() and self.connect_rows())
         if len(list(self.song_list_el.list_el)) != len(song_list):
             threading.Thread(target=run, daemon=True).start()
 
@@ -187,7 +190,6 @@ class AlbumPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def change_rating(self, button):
-        integration = get_current_integration()
         target_value = GLib.Variant('a{sv}', {
             'model_id': GLib.Variant('s', self.id),
             'rating': GLib.Variant('i', int(button.get_name()))

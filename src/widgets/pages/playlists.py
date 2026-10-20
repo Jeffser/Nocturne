@@ -1,7 +1,6 @@
 # playlists.py
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
 from ..playlist import PlaylistRow, PlaylistButton
 import threading
 
@@ -57,14 +56,17 @@ class PlaylistsPage(Adw.NavigationPage):
         if self.searching:
             return
         self.searching = True
-        integration = get_current_integration()
 
-        query = None
-        while query != self.search_entry.get_text(): # In case query changes whilst calling integration
-            query = self.search_entry.get_text()
-            search_results = integration.search(query=query, playlistCount=30, playlistOffset=self.offset)
+        search_results = {}
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    query = None
+                    while query != self.search_entry.get_text(): # In case query changes whilst calling integration
+                        query = self.search_entry.get_text()
+                        search_results = integration.search(query=query, playlistCount=30, playlistOffset=self.offset)
 
-        for playlist_id in search_results.get('playlist'):
+        for playlist_id in search_results.get('playlist', []):
             results_list = [row for row in list(self.list_el) if row.id == playlist_id]
             if len(results_list) > 0:
                 GLib.idle_add(results_list[0].set_visible, True)
@@ -79,7 +81,7 @@ class PlaylistsPage(Adw.NavigationPage):
                 button = PlaylistButton(playlist_id)
                 GLib.idle_add(self.wrapbox_el.append, button)
 
-        GLib.idle_add(self.end_stack.set_visible_child_name, 'end' if len(search_results.get('playlist')) < 30 else 'loading')
+        GLib.idle_add(self.end_stack.set_visible_child_name, 'end' if len(search_results.get('playlist', [])) < 30 else 'loading')
         self.offset += 30
         self.searching = False
         GLib.idle_add(self.update_visibility)

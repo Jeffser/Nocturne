@@ -36,7 +36,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
         height-request: bind $format_cover_art_size(template.forceHugeMode);
         width-request: bind $format_cover_art_size(template.forceHugeMode);
         pixel-size: bind $format_cover_art_pixel_size(template.forceHugeMode, cover_el.paintable);
-        paintable: bind $format_cover_art_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
+        paintable: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .gdkPaintable;
         overflow: hidden;
         valign: center;
       }
@@ -76,7 +76,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
             upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration;
             value: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds;
           };
-          visible: bind $format_progress_el_visibility(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
+          visible: bind $format_progress_el_visibility(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong);
           change-value => $progress_bar_changed();
         }
       }

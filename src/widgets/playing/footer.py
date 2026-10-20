@@ -1,7 +1,6 @@
 # footer.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gst, Gio, Gdk
-from ...integrations import get_current_integration
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/footer.ui')
 class PlayingFooter(Adw.BreakpointBin):
@@ -10,11 +9,10 @@ class PlayingFooter(Adw.BreakpointBin):
     forceHugeMode = GObject.Property(type=bool, default=False)
 
     @Gtk.Template.Callback()
-    def format_progress_el_visibility(self, obj, song_id:str) -> bool:
-        if integration := get_current_integration():
-            if model := integration.loaded_models.get(song_id):
-                return not bool(model.get_property('radioStreamUrl'))
-        return True
+    def format_progress_el_visibility(self, obj, model) -> bool:
+        if model:
+            return not bool(model.get_property('radioStreamUrl'))
+        return False
 
     @Gtk.Template.Callback()
     def format_cover_art_size(self, obj, huge_mode:bool) -> int:
@@ -25,12 +23,6 @@ class PlayingFooter(Adw.BreakpointBin):
         if paintable:
             return 100 if huge_mode else 70
         return -1
-
-    @Gtk.Template.Callback()
-    def format_cover_art_paintable(self, obj, song_id:str) -> Gdk.Paintable | None:
-        if integration := get_current_integration():
-            if model := integration.loaded_models.get(song_id):
-                return model.get_property('gdkPaintable')
 
     @Gtk.Template.Callback()
     def progress_bar_changed(self, scale_el, scroll_type, value):

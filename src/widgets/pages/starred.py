@@ -2,7 +2,6 @@
 # handles both starred artists and songs
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
 from ..song import SongRow, SongButton
 from ..artist import ArtistRow, ArtistButton
 import re, threading
@@ -48,17 +47,19 @@ class StarredPage(Adw.NavigationPage):
         if self.searching:
             return
         self.searching = True
-        integration = get_current_integration()
         ids_to_show = []
         if query := self.search_entry_el.get_text():
-            for item_id in self.item_ids:
-                if model := integration.loaded_models.get(item_id):
-                    if 'songs' in self.get_tag():
-                        checker = f"{model.get_property('title')} {' '.join([artist['name'] for artist in model.get_property('artists')])}"
-                    elif 'artists' in self.get_tag():
-                        checker = model.get_property('name')
-                    if re.search(query, checker, re.IGNORECASE):
-                        ids_to_show.append(item_id)
+            if root := self.get_root():
+                if app := root.get_application():
+                    if integration := app.get_property('integration'):
+                        for item_id in self.item_ids:
+                            if model := integration.loaded_models.get(item_id):
+                                if 'songs' in self.get_tag():
+                                    checker = f"{model.get_property('title')} {' '.join([artist['name'] for artist in model.get_property('artists')])}"
+                                elif 'artists' in self.get_tag():
+                                    checker = model.get_property('name')
+                                if re.search(query, checker, re.IGNORECASE):
+                                    ids_to_show.append(item_id)
         else:
             ids_to_show = self.item_ids
 
@@ -90,8 +91,10 @@ class StarredPage(Adw.NavigationPage):
         GLib.idle_add(self.list_el.list_el.remove_all)
         for el in list(self.wrapbox_el):
             GLib.idle_add(self.wrapbox_el.remove, el)
-        integration = get_current_integration()
-        self.item_ids = integration.getStarred((self.get_tag().split('-')[0]).removesuffix("s"))
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    self.item_ids = integration.getStarred((self.get_tag().split('-')[0]).removesuffix("s"))
 
     def do_showing(self):
         if self.lazy_reload:

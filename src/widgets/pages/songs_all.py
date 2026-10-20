@@ -1,7 +1,6 @@
 # songs_all.py
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
 from ..song import SongRow, SongButton
 import threading
 
@@ -57,14 +56,17 @@ class SongsAllPage(Adw.NavigationPage):
         if self.searching:
             return
         self.searching = True
-        query = self.search_entry.get_text()
-        integration = get_current_integration()
-        search_results = integration.search(
-            query=query,
-            songCount=count,
-            songOffset=self.offset
-        )
-        for song_id in search_results.get('song'):
+
+        search_results = {}
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    query = None
+                    while query != self.search_entry.get_text(): # In case query changes whilst calling integration
+                        query = self.search_entry.get_text()
+                        search_results = integration.search(query=query, songCount=count, songOffset=self.offset)
+
+        for song_id in search_results.get('song', []):
             results_list = [row for row in list(self.list_el.list_el) if row.id == song_id]
             if len(results_list) > 0:
                 GLib.idle_add(results_list[0].set_visible, True)
@@ -79,7 +81,7 @@ class SongsAllPage(Adw.NavigationPage):
                 button = SongButton(song_id)
                 GLib.idle_add(self.wrapbox_el.append, button)
 
-        GLib.idle_add(self.end_stack.set_visible_child_name, 'end' if len(search_results.get('song')) < count else 'loading')
+        GLib.idle_add(self.end_stack.set_visible_child_name, 'end' if len(search_results.get('song', [])) < count else 'loading')
         GLib.idle_add(self.list_el.main_stack.set_visible_child_name, 'content' if len(list(self.list_el.list_el)) else 'no-content')
         self.offset += count
         self.searching = False

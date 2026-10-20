@@ -1,7 +1,6 @@
 # control_page.py
 
 from gi.repository import Gtk, Adw, GLib, Gst, GObject
-from ...integrations import get_current_integration
 from ...constants import get_display_time
 from urllib.parse import urlparse
 
@@ -74,8 +73,10 @@ class PlayingControlPage(Adw.NavigationPage):
                 nanoseconds
             )
             player.set_property('positionSeconds', val)
-            if integration := get_current_integration():
-                integration.playbackReport("progress")
+            if root := self.get_root():
+                if app := root.get_application():
+                    if integration := app.get_property('integration'):
+                        integration.playbackReport("progress")
 
         if root := self.get_root():
             if app := root.get_application():

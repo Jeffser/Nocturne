@@ -24,14 +24,16 @@ class LyricEditRow(Adw.EntryRow):
 
     @Gtk.Template.Callback()
     def go_to_timestamp(self, button):
-        integration = get_current_integration()
         GLib.idle_add(button.get_ancestor(Gtk.Popover).popdown)
         nanoseconds = int(self.ms/1000 * Gst.SECOND)
-        self.get_root().get_application().player.gst.seek_simple(
-            Gst.Format.TIME,
-            Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-            nanoseconds
-        )
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    player.gst.seek_simple(
+                        Gst.Format.TIME,
+                        Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                        nanoseconds
+                    )
 
     @Gtk.Template.Callback()
     def set_current_timestamp(self, button=None):
@@ -92,8 +94,11 @@ class LyricsDialog(Adw.Dialog):
     def retrieve_lyrics(self):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
         GLib.idle_add(self.lrc_list_el.remove_all)
-        integration = get_current_integration()
-        lyrics_type, raw_content = integration.getLyrics(self.id, True)
+        lyrics_type, raw_content = '', ''
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    lyrics_type, raw_content = integration.getLyrics(self.id, True)
         if lyrics_type == 'lrc':
             content = prepare_lrc(raw_content)
             for line in content:
@@ -194,8 +199,10 @@ class LyricsDialog(Adw.Dialog):
 
         content = '\n'.join(['[{}] {}'.format(ms, content) for ms, content in lines])
 
-        integration = get_current_integration()
-        integration.saveLyrics(self.id, content, 'lrc')
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    integration.saveLyrics(self.id, content, 'lrc')
 
         Gio.Settings(schema_id="com.jeffser.Nocturne").set_string('playback-mode', self.playback_mode_backup)
         self.close()

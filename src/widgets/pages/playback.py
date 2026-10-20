@@ -1,7 +1,6 @@
 # playback.py
 
 from gi.repository import Gtk, Adw, GLib, Pango
-from ...integrations import get_current_integration
 from ..song import SongRow, SongButton
 from datetime import datetime
 
@@ -32,7 +31,6 @@ class PlaybackPage(Adw.NavigationPage):
         self.playlist_stack.get_child_by_name('active').set_action_target_value(target_value)
         self.playlist_stack.get_child_by_name('active').set_action_name("app.add_songs_to_playlist")
 
-        integration = get_current_integration()
         for rank, song in enumerate(self.songs[:5]):
             container = Gtk.Box(
                 orientation=Gtk.Orientation.VERTICAL,

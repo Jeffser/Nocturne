@@ -72,8 +72,11 @@ class AlbumButton(Gtk.Box):
             rect.x, rect.y = args[1], args[2]
 
         context = CONTEXT_ALBUM.copy()
-        if 'no-downloads' in get_current_integration().limitations:
-            del context['download']
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    if 'no-downloads' in integration.limitations:
+                        del context['download']
 
         if model_id := self.get_property('model').get_property('id'):
             popover = Gtk.Popover(
@@ -93,8 +96,11 @@ class AlbumButton(Gtk.Box):
             rect.x, rect.y = args[1], args[2]
 
         context = CONTEXT_ALBUM.copy()
-        if 'no-downloads' in get_current_integration().limitations:
-            del context['download']
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    if 'no-downloads' in integration.limitations:
+                        del context['download']
 
         if model_id := self.get_property('model').get_property('id'):
             popover = Gtk.Popover(
@@ -107,7 +113,6 @@ class AlbumButton(Gtk.Box):
 
     @Gtk.Template.Callback()
     def show_popover_artist(self, *args):
-        integration = get_current_integration()
         if artist_id := self.get_property('model').get_property('artistId'):
             rect = Gdk.Rectangle()
             if len(args) == 4:

@@ -103,8 +103,11 @@ class SongRow(Adw.ActionRow):
                 listbox.remove(self)
 
     def generate_context_menu(self) -> ContextContainer:
-        integration = get_current_integration()
-        model = integration.loaded_models.get(self.id)
+        integration = None
+        if root := self.get_root():
+            if app := root.get_application():
+                integration = app.get_property('integration')
+
         context_dict = CONTEXT_SONG.copy()
         context_dict["select"]["connection"] = self.select_clicked
 
@@ -117,24 +120,25 @@ class SongRow(Adw.ActionRow):
         context_dict["play-next"]["sensitive"] = currentSongId != self.id
         context_dict["play-later"]["sensitive"] = currentSongId != self.id
 
-        context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
+        if integration:
+            context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
 
-        if not model or not (model.get_property('radioStreamUrl') and not self.get_property('draggable')):
+        if not (self.get_property('model').get_property('radioStreamUrl') and not self.get_property('draggable')):
             del context_dict["edit-radio"]
             del context_dict["delete-radio"]
 
-        if "edit" in context_dict and 'no-edit-radio' in integration.limitations:
+        if not integration or ("edit" in context_dict and 'no-edit-radio' in integration.limitations):
             del context_dict["edit-radio"]
 
-        if 'no-downloads' in integration.limitations or not model or model.get_property('radioStreamUrl'):
+        if not integration or ('no-downloads' in integration.limitations or self.get_property('model').get_property('radioStreamUrl')):
             del context_dict["download"]
 
-        if integration.__gtype_name__ == 'NocturneIntegrationOffline':
+        if integration and integration.__gtype_name__ == 'NocturneIntegrationOffline':
             context_dict["delete-download"]["sensitive"] = currentSongId != self.id
         else:
             del context_dict["delete-download"]
 
-        if not model or model.get_property('radioStreamUrl') or model.get_property('isExternalFile'):
+        if self.get_property('model').get_property('radioStreamUrl') or self.get_property('model').get_property('isExternalFile'):
             del context_dict["add-to-playlist"]
             del context_dict["show-album"]
             del context_dict["show-artist"]
@@ -154,8 +158,6 @@ class SongRow(Adw.ActionRow):
         self.duration_el.set_visible(duration != 0)
 
     def update_artists(self, artists:list):
-        integration = get_current_integration()
-        model = integration.loaded_models.get(self.id)
         if len(artists) == 1:
             button = Gtk.Button(
                 action_name = 'app.show_artist',
@@ -169,14 +171,14 @@ class SongRow(Adw.ActionRow):
                 tooltip_text=artists[0].get('name')
             )
             self.artist_container_el.set_child(button)
-            self.artist_container_el.set_sensitive(not model.get_property('isExternalFile'))
+            self.artist_container_el.set_sensitive(not self.get_property('model').get_property('isExternalFile'))
         elif len(artists) >= 5:
             menu = Gio.Menu()
             for artist in artists:
                 item = Gio.MenuItem.new(
                     label=artist.get('name')
                 )
-                if not model.get_property('isExternalFile'):
+                if not self.get_property('model').get_property('isExternalFile'):
                     item.set_action_and_target_value(
                         'app.show_artist',
                         GLib.Variant.new_string(artist.get('id'))
@@ -214,7 +216,7 @@ class SongRow(Adw.ActionRow):
                 )
                 container.append(button)
             self.artist_container_el.set_child(container)
-            self.artist_container_el.set_sensitive(not model.get_property('isExternalFile'))
+            self.artist_container_el.set_sensitive(not self.get_property('model').get_property('isExternalFile'))
         self.artist_container_el.set_visible(self.artist_container_el.get_child())
 
     def update_starred(self, starred:bool):
@@ -331,4 +333,5 @@ class SongRow(Adw.ActionRow):
         )
         popover.set_parent(self)
         popover.popup()
+
 
