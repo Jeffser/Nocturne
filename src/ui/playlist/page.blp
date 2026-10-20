@@ -2,7 +2,9 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturnePlaylistPage: Adw.NavigationPage {
-  title: _("Playlist");
+  name: bind template.model as <$NocturneModelPlaylist> .name;
+  title: bind template.model as <$NocturneModelPlaylist> .name;
+
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
 
@@ -39,13 +41,13 @@ template $NocturnePlaylistPage: Adw.NavigationPage {
                 "card"
               ]
               icon-size: large;
+              icon-name: "music-note-symbolic";
               width-request: 240;
               height-request: 240;
               overflow: hidden;
               halign: center;
-              paintable: Adw.SpinnerPaintable {
-                widget: cover_el;
-              };
+              paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintable;
+              pixel-size: bind $format_paintable_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintable);
               accessibility {
                 label: _("Playlist cover art");
               }
@@ -67,7 +69,8 @@ template $NocturnePlaylistPage: Adw.NavigationPage {
                 halign: start;
                 ellipsize: end;
                 valign: center;
-                visible: false;
+                visible: bind $format_to_bool(template.model as <$NocturneModelPlaylist> .name);
+                label: bind template.model as <$NocturneModelPlaylist> .name;
               }
 
               Gtk.Label song_count_el {
@@ -77,7 +80,8 @@ template $NocturnePlaylistPage: Adw.NavigationPage {
                 halign: start;
                 ellipsize: end;
                 valign: center;
-                visible: false;
+                visible: bind $format_to_bool(template.model as <$NocturneModelPlaylist> .songCount);
+                label: bind $format_song_count(template.model as <$NocturneModelPlaylist> .songCount);
               }
 
               Gtk.Label duration_el {
@@ -88,7 +92,8 @@ template $NocturnePlaylistPage: Adw.NavigationPage {
                 halign: start;
                 ellipsize: end;
                 valign: center;
-                visible: false;
+                visible: bind $format_to_bool(template.model as <$NocturneModelPlaylist> .duration);
+                label: bind $format_duration(template.model as <$NocturneModelPlaylist> .duration);
               }
 
 

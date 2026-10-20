@@ -2,6 +2,10 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturnePlaylistSelectorRow: Adw.ActionRow {
+  title: bind template.model as <$NocturneModelPlaylist> .name;
+  name: bind template.model as <$NocturneModelPlaylist> .name;
+  tooltip-text: bind $format_tooltip_text(template.model as <$NocturneModelPlaylist> .name);
+  subtitle: bind $format_song_count(template.model as <$NocturneModelPlaylist> .songCount);
   action-name: "app.add_songs_to_playlist";
   activatable: true;
   use-markup: false;
@@ -17,9 +21,9 @@ template $NocturnePlaylistSelectorRow: Adw.ActionRow {
     overflow: hidden;
     valign: center;
     halign: center;
-    paintable: Adw.SpinnerPaintable {
-      widget: cover_el;
-    };
+    icon-name: "music-note-symbolic";
+    paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintable;
+    pixel-size: bind $format_paintable_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintable);
     accessibility {
       label: _("Playlist cover art");
     }

@@ -1,7 +1,6 @@
 # dialog.py
 
 from gi.repository import Gtk, Adw, GLib, Gio, Gst
-from ...integrations import get_current_integration
 from ...constants import get_display_time
 from .helpers import prepare_lrc
 import threading
@@ -72,24 +71,13 @@ class LyricsDialog(Adw.Dialog):
     is_seeking = False
     focused_row = None
 
-    def __init__(self, song_id:str):
-        # TODO connect to current song instead of all this
-        self.id = song_id
+    def __init__(self):
         super().__init__()
         self.lrc_list_el.set_sort_func(lambda r1, r2: r1.ms - r2.ms)
-
-        integration = get_current_integration()
-        integration.connect_to_model(self.id, 'title', self.set_title)
-        integration.connect_to_model(self.id, 'duration', self.update_duration)
-
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.playback_mode_backup = settings.get_value('playback-mode').unpack()
         settings.set_string('playback-mode', 'repeat-one')
         threading.Thread(target=self.retrieve_lyrics, daemon=True).start()
-
-    def update_duration(self, duration):
-        self.progress_el.get_adjustment().set_upper(duration)
-        self.position_spin.get_adjustment().set_upper(duration)
 
     def retrieve_lyrics(self):
         GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
@@ -98,7 +86,8 @@ class LyricsDialog(Adw.Dialog):
         if root := self.get_root():
             if app := root.get_application():
                 if integration := app.get_property('integration'):
-                    lyrics_type, raw_content = integration.getLyrics(self.id, True)
+                    if player := app.get_property('player'):
+                        lyrics_type, raw_content = integration.getLyrics(player.get_property('songId'), True)
         if lyrics_type == 'lrc':
             content = prepare_lrc(raw_content)
             for line in content:
@@ -202,7 +191,8 @@ class LyricsDialog(Adw.Dialog):
         if root := self.get_root():
             if app := root.get_application():
                 if integration := app.get_property('integration'):
-                    integration.saveLyrics(self.id, content, 'lrc')
+                    if player := app.get_property('player'):
+                        integration.saveLyrics(player.get_property('songId'), content, 'lrc')
 
         Gio.Settings(schema_id="com.jeffser.Nocturne").set_string('playback-mode', self.playback_mode_backup)
         self.close()

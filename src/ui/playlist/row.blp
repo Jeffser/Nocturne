@@ -2,7 +2,12 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturnePlaylistRow: Adw.ActionRow {
+  action-target: bind $format_action_target(template.model as <$NocturneModelPlaylist> .id, 's');
   action-name: "app.show_playlist";
+  name: bind template.model as <$NocturneModelPlaylist> .name;
+  title: bind template.model as <$NocturneModelPlaylist> .name;
+  subtitle: bind $format_song_count(template.model as <$NocturneModelPlaylist> .songCount);
+
   activatable: true;
   use-markup: false;
   Gtk.GestureClick {
@@ -25,9 +30,9 @@ template $NocturnePlaylistRow: Adw.ActionRow {
     overflow: hidden;
     valign: center;
     halign: center;
-    paintable: Adw.SpinnerPaintable {
-      widget: cover_el;
-    };
+    icon-name: "music-note-symbolic";
+    pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintable);
+    paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintable;
     accessibility {
       label: _("Playlist cover art");
     }

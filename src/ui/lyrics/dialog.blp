@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturneLyricsDialog: Adw.Dialog {
-  title: _("Lyrics Editor");
+  title: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .title;
   content-width: 620;
   content-height: 720;
   child: Adw.ToolbarView {
@@ -71,7 +71,7 @@ template $NocturneLyricsDialog: Adw.Dialog {
         Gtk.SpinButton position_spin {
           adjustment: Gtk.Adjustment {
             lower: 0;
-            upper: 1;
+            upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration;
             value: 0;
             step-increment: 0.10;
           };
@@ -89,7 +89,7 @@ template $NocturneLyricsDialog: Adw.Dialog {
           }
           adjustment: Gtk.Adjustment {
             lower: 0;
-            upper: 1;
+            upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration;
             value: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds;
             value-changed => $progress_bar_changed();
           };

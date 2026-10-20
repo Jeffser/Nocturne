@@ -1,7 +1,7 @@
 # page.py
 
-from gi.repository import Gtk, Adw, GLib
-from ...integrations import get_current_integration
+from gi.repository import GObject, Gtk, Gdk, Adw, GLib
+from ...integrations import get_current_integration, models
 from ...constants import CONTEXT_PLAYLIST, get_display_time
 from ..containers import get_context_buttons_list
 from ..song import SongRow
@@ -11,6 +11,8 @@ from colorthief import ColorThief
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playlist/page.ui')
 class PlaylistPage(Adw.NavigationPage):
     __gtype_name__ = 'NocturnePlaylistPage'
+
+    model = GObject.Property(type=models.Playlist)
 
     clamp_el = Gtk.Template.Child()
     cover_el = Gtk.Template.Child()
@@ -25,7 +27,9 @@ class PlaylistPage(Adw.NavigationPage):
         self.id = id
         integration = get_current_integration()
         integration.verifyPlaylist(self.id, True)
-        super().__init__()
+        super().__init__(
+            model=integration.loaded_models.get(self.id)
+        )
 
         context = CONTEXT_PLAYLIST.copy()
         del context['edit']
@@ -35,53 +39,48 @@ class PlaylistPage(Adw.NavigationPage):
         context_buttons = get_context_buttons_list(context, self.id)
         for btn in context_buttons:
             self.context_wrap_el.append(btn)
-
-        integration.connect_to_model(self.id, 'name', self.update_name)
-        integration.connect_to_model(self.id, 'songCount', self.update_song_count)
-        integration.connect_to_model(self.id, 'duration', self.update_duration)
         integration.connect_to_model(self.id, 'entry', self.update_song_list)
-        integration.connect_to_model(self.id, 'gdkPaintable', self.update_cover)
 
         self.song_list_el.playlist_id = self.id
         self.song_ids = []
         self.current_offset = 0
         self.loading = False
 
-    def update_cover(self, paintable):
-        if paintable:
-            self.cover_el.set_from_paintable(paintable)
-            self.cover_el.set_pixel_size(240)
-            self.update_background(paintable.save_to_png_bytes().get_data())
-        elif isinstance(self.cover_el.get_paintable(), Adw.SpinnerPaintable):
-            self.cover_el.set_from_icon_name("music-note-symbolic")
-            self.cover_el.set_pixel_size(-1)
+    @Gtk.Template.Callback()
+    def format_to_bool(self, obj, value) -> bool:
+        return bool(value)
+
+    @Gtk.Template.Callback()
+    def format_song_count(self, obj, count:int) -> str:
+        return ngettext("{} Song", "{} Songs", songCount).format(songCount)
+
+    @Gtk.Template.Callback()
+    def format_duration(self, obj, duration:int) -> str:
+        return get_display_time(duration)
+
+    @Gtk.Template.Callback()
+    def format_paintable_pixel_size(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+        if data := paintable.save_to_png_bytes().get_data():
+            threading.Thread(target=self.update_background, args=(data,), daemon=True).start()
+        return 240 if paintable else -1
 
     def update_background(self, raw_bytes:bytes):
-        def run():
-            img_io = io.BytesIO(raw_bytes)
-            color = ColorThief(img_io).get_color(quality=10)
-            css = f"""
-            clamp {{
-                transition: background .2s;
-                background: linear-gradient(180deg, color-mix(in srgb, rgb({','.join([str(c) for c in color])}) 50%, transparent), transparent 30%);
-                background-size: 100% 1000px;
-                background-repeat: no-repeat;
-            }}
-            """
-            provider = Gtk.CssProvider()
-            provider.load_from_data(css.encode())
-            GLib.idle_add(self.clamp_el.get_style_context().add_provider,
-                provider,
-                Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-            )
-        if raw_bytes:
-            threading.Thread(target=run, daemon=True).start()
-
-    def update_name(self, name:str):
-        self.name_el.set_label(name)
-        self.name_el.set_visible(name)
-        self.set_title(name or _('Playlist'))
-        self.set_name(name)
+        img_io = io.BytesIO(raw_bytes)
+        color = ColorThief(img_io).get_color(quality=10)
+        css = f"""
+        clamp {{
+            transition: background .2s;
+            background: linear-gradient(180deg, color-mix(in srgb, rgb({','.join([str(c) for c in color])}) 50%, transparent), transparent 30%);
+            background-size: 100% 1000px;
+            background-repeat: no-repeat;
+        }}
+        """
+        provider = Gtk.CssProvider()
+        provider.load_from_data(css.encode())
+        GLib.idle_add(self.clamp_el.get_style_context().add_provider,
+            provider,
+            Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
+        )
 
     def load_song_rows(self):
         # Pagination of Playlist in order to load hundreds
@@ -110,14 +109,6 @@ class PlaylistPage(Adw.NavigationPage):
     def scroll_edge_reached(self, scrolledwindow, pos):
         if pos == Gtk.PositionType.BOTTOM:
             threading.Thread(target=self.load_song_rows, daemon=True).start()
-
-    def update_song_count(self, songCount:int):
-        self.song_count_el.set_label(ngettext("{} Song", "{} Songs", songCount).format(songCount))
-        self.song_count_el.set_visible(songCount)
-
-    def update_duration(self, duration:int):
-        self.duration_el.set_label(get_display_time(duration))
-        self.duration_el.set_visible(duration)
 
     def reload(self):
         pass
