@@ -82,7 +82,9 @@ class SongDetailsDialog(Adw.Dialog):
                             row.set_activatable(True)
                     elif prop.get_name() == 'musicBrainzId':
                         if mbid := song_details.get_property('musicBrainzId'):
-                            row.set_action_name('')
-                            row_set_action_target_value(GLib.Variant('s', 'https://musicbrainz.org/recording/{}'.format(mbid)))
+                            row.set_action_name('app.visit_url')
+                            url = 'https://musicbrainz.org/recording/{}'.format(mbid)
+                            row.set_action_target_value(GLib.Variant('s', url))
+                            row.set_tooltip_text(url)
                             row.set_activatable(True)
                     self.listbox_el.append(row)
