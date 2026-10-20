@@ -60,75 +60,78 @@ def __save_playlist_resume(app):
     # Check if current queue origin is a playlist if so, save the resume state
     # Call in different thread
     integration = app.get_property('integration')
-    queue_origin = integration.get_property('current-state').get_property('queueOrigin') or ""
-    if model := integration.loaded_models.get(queue_origin):
-        if isinstance(model, models.Playlist):
-            timestamp = integration.get_property('current-state').get_property('positionSeconds')
-            current_song = integration.get_property('current-state').get_property('songId')
-            integration.savePlaylistResume(
-                queue_origin_id=queue_origin,
-                song_id=current_song,
-                current_timestamp=timestamp
-            )
+    player = app.get_property('player')
+    if player and integration:
+        queue_origin = player.get_property('queueOrigin') or ""
+        if model := integration.loaded_models.get(queue_origin):
+            if isinstance(model, models.Playlist):
+                timestamp = player.get_property('positionSeconds')
+                current_song = player.get_property('songId')
+                integration.savePlaylistResume(
+                    queue_origin_id=queue_origin,
+                    song_id=current_song,
+                    current_timestamp=timestamp
+                )
 
 def __replace_queue(app, songs:list, current_id:str=None, origin_id:str=""):
-    integration = app.get_property('integration')
     __save_playlist_resume(app)
-    integration.get_property('current-state').set_property('queueOrigin', origin_id)
-    queue_model = integration.get_property('current-state').get_property('queueModel')
-    GLib.idle_add(queue_model.remove_all)
-    if len(songs) > 0:
-        if current_id is None:
-            current_id = songs[0]
-        GLib.idle_add(queue_model.splice,
-            0,
-            0,
-            [Gtk.StringObject.new(SongId) for SongId in songs]
-        )
-    GLib.idle_add(integration.get_property('current-state').set_property, 'songId', current_id)
-    if Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('auto-play').unpack():
-        threading.Thread(target=generate_auto_play_queue, args=(app, False), daemon=True).start()
+
+    if player := app.get_property('player'):
+        player.set_property('queueOrigin', origin_id)
+        queue_model = player.get_property('queueModel')
+        GLib.idle_add(queue_model.remove_all)
+        if len(songs) > 0:
+            if current_id is None:
+                current_id = songs[0]
+            GLib.idle_add(queue_model.splice,
+                0,
+                0,
+                [Gtk.StringObject.new(SongId) for SongId in songs]
+            )
+        GLib.idle_add(player.set_property, 'songId', current_id)
+        if Gio.Settings(schema_id="com.jeffser.Nocturne").get_value('auto-play').unpack():
+            threading.Thread(target=generate_auto_play_queue, args=(app, False), daemon=True).start()
 
 def __play_next(app, songs:list):
-    integration = app.get_property('integration')
     __save_playlist_resume(app)
-    integration.get_property('current-state').set_property('queueOrigin', "")
-    current_song_id = integration.get_property('current-state').get_property('songId')
-    queue_model = integration.get_property('current-state').get_property('queueModel')
-    if queue_model.get_property('n-items') == 0 or not current_song_id:
-        __replace_queue(app, songs)
-    else:
-        current_song_index = 0
-        for i, so in enumerate(list(queue_model)): # so=string object
-            song_id = so.get_string()
-            if song_id in songs and song_id != current_song_id:
-                GLib.idle_add(queue_model.remove, i)
-            elif song_id == current_song_id:
-                current_song_index = i + 1
-        GLib.idle_add(queue_model.splice,
-            current_song_index,
-            0,
-            [Gtk.StringObject.new(SongId) for SongId in songs if SongId != current_song_id]
-        )
+    if player := app.get_property('player'):
+        player.set_property('queueOrigin', "")
+        current_song_id = player.get_property('songId')
+        queue_model = player.get_property('queueModel')
+        if queue_model.get_property('n-items') == 0 or not current_song_id:
+            __replace_queue(app, songs)
+        else:
+            current_song_index = 0
+            for i, so in enumerate(list(queue_model)): # so=string object
+                song_id = so.get_string()
+                if song_id in songs and song_id != current_song_id:
+                    GLib.idle_add(queue_model.remove, i)
+                elif song_id == current_song_id:
+                    current_song_index = i + 1
+            GLib.idle_add(queue_model.splice,
+                current_song_index,
+                0,
+                [Gtk.StringObject.new(SongId) for SongId in songs if SongId != current_song_id]
+            )
 
 def __play_later(app, songs:list):
-    integration = app.get_property('integration')
     __save_playlist_resume(app)
-    integration.get_property('current-state').set_property('queueOrigin', "")
-    current_song_id = integration.get_property('current-state').get_property('songId')
-    queue_model = integration.get_property('current-state').get_property('queueModel')
-    if queue_model.get_property('n-items') == 0 or not current_song_id:
-        __replace_queue(app, songs)
-    else:
-        for i, so in enumerate(list(queue_model)): # so=string object
-            song_id = so.get_string()
-            if song_id in songs and song_id != current_song_id:
-                GLib.idle_add(queue_model.remove, i)
-        GLib.idle_add(queue_model.splice,
-            queue_model.get_property('n-items'),
-            0,
-            [Gtk.StringObject.new(SongId) for SongId in songs if SongId != current_song_id]
-        )
+    if player := app.get_property('player'):
+        player.set_property('queueOrigin', "")
+        current_song_id = player.get_property('songId')
+        queue_model = player.get_property('queueModel')
+        if queue_model.get_property('n-items') == 0 or not current_song_id:
+            __replace_queue(app, songs)
+        else:
+            for i, so in enumerate(list(queue_model)): # so=string object
+                song_id = so.get_string()
+                if song_id in songs and song_id != current_song_id:
+                    GLib.idle_add(queue_model.remove, i)
+            GLib.idle_add(queue_model.splice,
+                queue_model.get_property('n-items'),
+                0,
+                [Gtk.StringObject.new(SongId) for SongId in songs if SongId != current_song_id]
+            )
 
 # -- MISC --
 
@@ -191,37 +194,40 @@ def launch_playback(app):
 
 def generate_auto_play_queue(app, replace_on_finish:bool):
     integration = app.get_property('integration')
-    integration.get_property('current-state').set_property('generatingQueue', True)
-    queue_model = integration.get_property('current-state').get_property('queueModel')
-    generated_queue_model = integration.get_property('current-state').get_property('generatedQueue')
-    generated_queue_model.remove_all()
+    player = app.get_property('player')
 
-    song_list = []
-    if queue_model.get_property('n-items') > 0:
-        artists = []
-        for so in list(queue_model):
-            if so:
-                if model := integration.loaded_models.get(so.get_string()):
-                    artists.append(model.artistId)
-        if len(artists) > 0:
-            main_artist = max(set(artists), key=artists.count)
-            song_list = integration.getSimilarSongs(main_artist)
+    if integration and player:
+        player.set_property('generatingQueue', True)
+        queue_model = player.get_property('queueModel')
+        generated_queue_model = player.get_property('generatedQueue')
+        generated_queue_model.remove_all()
 
-    # Remove repeated songs, if it ends up being less than 5 then just generate a random queue
-    song_list = [s for s in song_list if s not in [so.get_string() for so in list(queue_model)]]
-    if len(song_list) < 5:
-        song_list = integration.getRandomSongs()
+        song_list = []
+        if queue_model.get_property('n-items') > 0:
+            artists = []
+            for so in list(queue_model):
+                if so:
+                    if model := integration.loaded_models.get(so.get_string()):
+                        artists.append(model.artistId)
+            if len(artists) > 0:
+                main_artist = max(set(artists), key=artists.count)
+                song_list = integration.getSimilarSongs(main_artist)
 
-    generated_queue_model.splice(
-        0,
-        0,
-        [Gtk.StringObject.new(s) for s in song_list]
-    )
+        # Remove repeated songs, if it ends up being less than 5 then just generate a random queue
+        song_list = [s for s in song_list if s not in [so.get_string() for so in list(queue_model)]]
+        if len(song_list) < 5:
+            song_list = integration.getRandomSongs()
 
-    integration.get_property('current-state').set_property('generatingQueue', False)
+        generated_queue_model.splice(
+            0,
+            0,
+            [Gtk.StringObject.new(s) for s in song_list]
+        )
 
-    if replace_on_finish:
-        __replace_queue(app, [so.get_string() for so in list(generated_queue_model)])
+        player.set_property('generatingQueue', False)
+
+        if replace_on_finish:
+            __replace_queue(app, [so.get_string() for so in list(generated_queue_model)])
 
 def set_equalizer_preset(app, preset_name:str):
     preset = {
@@ -348,15 +354,16 @@ def open_popout_window(app, fullscreened:bool=False):
     GLib.idle_add(app.popout_window.present)
 
 def toggle_fullscreen(app):
-    if app.get_property('integration').get_property('current-state').get_property('queueModel').get_property('n-items') > 0:
-        if popout_window := app.popout_window:
-            GLib.idle_add(popout_window.present)
-            if popout_window.is_fullscreen():
-                GLib.idle_add(popout_window.unfullscreen)
+    if player := app.get_property('player'):
+        if player.get_property('queueModel').get_property('n-items') > 0:
+            if popout_window := app.popout_window:
+                GLib.idle_add(popout_window.present)
+                if popout_window.is_fullscreen():
+                    GLib.idle_add(popout_window.unfullscreen)
+                else:
+                    GLib.idle_add(popout_window.fullscreen)
             else:
-                GLib.idle_add(popout_window.fullscreen)
-        else:
-            open_popout_window(app, True)
+                open_popout_window(app, True)
 
 def set_rating(app, data):
     integration = app.get_property('integration')
@@ -406,9 +413,9 @@ def player_lower_volume(app):
 # -- RADIO --
 
 def play_radio(app, model_id:str):
-    integration = app.get_property('integration')
-    if model_id in [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]:
-        integration.get_property('current-state').set_property('songId', model_id)
+    player = app.get_property('player')
+    if player and model_id in [so.get_string() for so in player.get_property('queueModel')]:
+        player.set_property('songId', model_id)
     else:
         __replace_queue(app, [model_id])
 
@@ -511,9 +518,9 @@ def delete_radio(app, model_id:str):
 # -- SONG --
 
 def play_song(app, model_id:str):
-    integration = app.get_property('integration')
-    if model_id in [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]:
-        integration.get_property('current-state').set_property('songId', model_id)
+    player = app.get_property('player')
+    if player and model_id in [so.get_string() for so in player.get_property('queueModel')]:
+        player.set_property('songId', model_id)
     else:
         __replace_queue(app, [model_id])
 
@@ -810,29 +817,30 @@ def play_radio_artist(app, model_id:str):
 def __request_song_download(model_id:str) -> bool:
     # returns true if download is started (not finished)
     # should be called in different thread (cause of verifySong)
-    integration = app.get_property('integration')
-    integration.verifySong(model_id, use_threading=False)
-    if song_model := integration.loaded_models.get(model_id):
-        download_queue = integration.get_property('current-state').get_property('downloadQueueModel')
-        download_model = models.SongDownload(songId=model_id)
+    if integration := app.get_property('integration'):
+        integration.verifySong(model_id, use_threading=False)
+        if song_model := integration.loaded_models.get(model_id):
+            if player := app.get_property('player'):
+                download_queue = player.get_property('downloadQueueModel')
+                download_model = models.SongDownload(songId=model_id)
 
-        artist_name = song_model.get_property('artist').split(';')[0]
-        if artists := song_model.get_property('artists'):
-            artist_name = artists[0].get('name')
-        file_title = '{} - {} - {}'.format(song_model.get_property('title'), song_model.get_property('album'), artist_name).replace('/', ' ')
-        if any(pathlib.Path(DOWNLOADS_DIR).glob('{}.*'.format(file_title))):
-            return False
-        found, position = download_queue.find_with_equal_func(
-            download_model,
-            lambda item_a, item_b, ud: item_a.get_property('songId') == item_b.get_property('songId'),
-            0
-        )
-        if found:
-            return False
-        GLib.idle_add(download_queue.insert, 0, download_model)
-        callback = lambda frac, md=download_model: md.set_property('progress', frac)
-        threading.Thread(target=integration.downloadSong, args=(model_id, file_title, callback), daemon=True).start()
-        return True
+                artist_name = song_model.get_property('artist').split(';')[0]
+                if artists := song_model.get_property('artists'):
+                    artist_name = artists[0].get('name')
+                file_title = '{} - {} - {}'.format(song_model.get_property('title'), song_model.get_property('album'), artist_name).replace('/', ' ')
+                if any(pathlib.Path(DOWNLOADS_DIR).glob('{}.*'.format(file_title))):
+                    return False
+                found, position = download_queue.find_with_equal_func(
+                    download_model,
+                    lambda item_a, item_b, ud: item_a.get_property('songId') == item_b.get_property('songId'),
+                    0
+                )
+                if found:
+                    return False
+                GLib.idle_add(download_queue.insert, 0, download_model)
+                callback = lambda frac, md=download_model: md.set_property('progress', frac)
+                threading.Thread(target=integration.downloadSong, args=(model_id, file_title, callback), daemon=True).start()
+                return True
     return False
 
 def download_song(app, model_id:str):

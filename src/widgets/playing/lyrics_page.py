@@ -109,20 +109,27 @@ class PlayingLyricsPage(Gtk.Stack):
 
     def setup(self):
         # Called after login
-        integration = get_current_integration()
-        integration.connect_to_state('songId', self.song_changed)
-        integration.connect_to_state('positionSeconds', self.position_changed)
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    player.connect_to_state('songId', self.song_changed)
+                    player.connect_to_state('positionSeconds', self.position_changed)
 
     def update_lyrics(self, song_id:str, attempt_download:bool):
         # We verify if the song requested and the current song are the same
         # We have to do this both before and after downloading the lyrics
         settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+
         integration = get_current_integration()
-        if integration.get_property('current-state').get_property('songId') != song_id:
-            return
-        lyrics_type, raw_content = integration.getLyrics(song_id, attempt_download)
-        if integration.get_property('current-state').get_property('songId') != song_id:
-            return
+        lyrics_type, raw_content = '', ''
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    if player.get_property('songId') != song_id:
+                        return
+                    lyrics_type, raw_content = integration.getLyrics(song_id, attempt_download)
+                    if player.get_property('songId') != song_id: # Check before AND after getLyrics just in case
+                        return
 
         if settings.get_value('auto-download-lyrics').unpack() and lyrics_type == 'not-found-locally':
             thread = threading.Thread(target=self.update_lyrics, args=(song_id, True), daemon=True)
@@ -144,7 +151,6 @@ class PlayingLyricsPage(Gtk.Stack):
                     if i + 1 < len(content):
                         duration_ms = content[i+1].get('ms') - line.get('ms')
                     else:
-                        integration = get_current_integration()
                         if model := integration.loaded_models.get(song_id):
                             duration_ms = model.get_property('duration') * 1000 - line.get('ms')
                 else:
@@ -203,17 +209,21 @@ class PlayingLyricsPage(Gtk.Stack):
 
     @Gtk.Template.Callback()
     def lyric_download_requested(self, button):
-        integration = get_current_integration()
-        self.song_changed(integration.get_property('current-state').get_property('songId'), True)
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    self.song_changed(player.get_property('songId'), True)
 
     def copy_lyrics_lrc(self, dialog, task):
         if source_file := dialog.open_finish(task):
             with open(source_file.get_path(), 'r') as f:
-                integration = get_current_integration()
-                if songId := integration.get_property('current-state').get_property('songId'):
-                    if content := f.read():
-                        integration.saveLyrics(songId, content, 'lrc')
-                        self.song_changed(songId)
+                if root := self.get_root():
+                    if app := root.get_application():
+                        if player := app.get_property('player'):
+                            if songId := player.get_property('songId'):
+                                if content := f.read():
+                                    integration.saveLyrics(songId, content, 'lrc')
+                                    self.song_changed(songId)
 
     @Gtk.Template.Callback()
     def lyric_load_requested(self, button):
@@ -234,6 +244,9 @@ class PlayingLyricsPage(Gtk.Stack):
     @Gtk.Template.Callback()
     def go_to_main(self, button=None):
         self.set_visible_child_name('not-found-locally')
-        integration = get_current_integration()
-        integration.deleteLyrics(integration.get_property('current-state').get_property('songId'))
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    if integration := get_current_integration():
+                        integration.deleteLyrics(player.get_property('songId'))
 

@@ -52,8 +52,8 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               lines: 2;
               ellipsize: end;
               justify: center;
-              label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongTitle;
-              tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongTitle;
+              label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongTitle;
+              tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongTitle;
               styles [
                 "title-1"
               ]
@@ -64,7 +64,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               line-spacing: 5;
               justify: fill;
               sensitive: bind $format_to_bool(
-                template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .isExternalFile,
+                template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile,
                 true
               );
 
@@ -72,18 +72,18 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 halign: center;
                 hexpand: true;
                 action-target: bind $format_action_target(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .artistId,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .artistId,
                   's'
                 );
                 action-name: "app.show_artist";
-                tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongArtist;
+                tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
                 sensitive: bind $format_to_bool(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   true
                 );
                 child: Gtk.Label {
                   ellipsize: end;
-                  label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongArtist;
+                  label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
                 };
                 styles [
                   "flat",
@@ -96,22 +96,22 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 halign: center;
                 hexpand: true;
                 action-target: bind $format_radio_homepage(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   true
                 );
                 action-name: "app.visit_url";
                 visible: bind $format_to_bool(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   false
                 );
                 tooltip-text: bind $format_radio_homepage(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   false
                 );
                 child: Adw.ButtonContent {
                   icon-name: "external-link-symbolic";
                   label: bind $format_radio_homepage(
-                    template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                    template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                     false
                   );
                 };
@@ -129,18 +129,18 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 halign: center;
                 hexpand: true;
                 action-target: bind $format_action_target(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .albumId,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .albumId,
                   's'
                 );
                 action-name: "app.show_album";
-                tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .album;
+                tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .album;
                 visible: bind $format_to_bool(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .album,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .album,
                   false
                 );
                 child: Gtk.Label {
                   ellipsize: end;
-                  label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .album;
+                  label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .album;
                 };
                 styles [
                   "flat",
@@ -154,13 +154,13 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               orientation: horizontal;
               change-value => $progress_bar_changed();
               visible: bind $format_to_bool(
-                template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                 true
               );
               adjustment: Gtk.Adjustment {
                 lower: 0;
-                upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .duration;
-                value: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds;
+                upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration;
+                value: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds;
               };
               styles [
                 "p0"
@@ -172,7 +172,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
 
             Gtk.Box {
               visible: bind $format_to_bool(
-                template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                 true
               );
 
@@ -185,8 +185,8 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 justify: left;
                 hexpand: true;
                 label: bind $format_progress_label(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds,
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .duration,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration,
                   false
                 );
               }
@@ -199,8 +199,8 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                 justify: right;
                 hexpand: true;
                 label: bind $format_progress_label(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds,
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .duration,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration,
                   true
                 );
               }
@@ -224,7 +224,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
 
               Gtk.Stack state_stack_el {
                 transition-type: crossfade;
-                visible-child-name: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .buttonState;
+                visible-child-name: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .buttonState;
 
                 Gtk.StackPage {
                   name: "play";
@@ -281,12 +281,12 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
 
               Gtk.MenuButton rating_button {
                 icon-name: bind $format_rating_icon_name(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                   1
                 );
                 tooltip-text: _("Rate");
                 visible: bind $format_to_bool(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   true
                 );
                 popover: Gtk.Popover {
@@ -294,14 +294,14 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                     hexpand: true;
                     halign: center;
                     visible: bind $format_all_false(
-                      template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
-                      template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .isExternalFile
+                      template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                      template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                     );
                     Gtk.Button {
                       name: "1";
                       tooltip-text: _("1 Star");
                       icon-name: bind $format_rating_icon_name(
-                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                         1
                       );
                       clicked => $change_rating();
@@ -313,7 +313,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                       name: "2";
                       tooltip-text: _("2 Stars");
                       icon-name: bind $format_rating_icon_name(
-                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                         2
                       );
                       clicked => $change_rating();
@@ -325,7 +325,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                       name: "3";
                       tooltip-text: _("3 Stars");
                       icon-name: bind $format_rating_icon_name(
-                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                         3
                       );
                       clicked => $change_rating();
@@ -337,7 +337,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                       name: "4";
                       tooltip-text: _("4 Stars");
                       icon-name: bind $format_rating_icon_name(
-                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                         4
                       );
                       clicked => $change_rating();
@@ -349,7 +349,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                       name: "5";
                       tooltip-text: _("5 Stars");
                       icon-name: bind $format_rating_icon_name(
-                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .userRating,
+                        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .userRating,
                         5
                       );
                       clicked => $change_rating();
@@ -362,13 +362,13 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               }
 
               Gtk.Button star_el {
-                icon-name: bind $format_starred_icon_name(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .starred);
+                icon-name: bind $format_starred_icon_name(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .starred);
                 tooltip-text: _("Star");
-                action-target: bind $format_action_target(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId, 's');
+                action-target: bind $format_action_target(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId, 's');
                 action-name: "app.toggle_star";
                 visible: bind $format_all_false(
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .radioStreamUrl,
-                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .isExternalFile
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                 );
               }
 

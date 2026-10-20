@@ -199,27 +199,3 @@ class SongDownload(GObject.Object):
     songId = GObject.Property(type=str)
     progress = GObject.Property(type=float, default=0.0) # 0-1
 
-class CurrentState(GObject.Object):
-    __gtype_name__ = 'NocturneModelCurrentState'
-
-    # IDs
-    currentSong = GObject.Property(type=Song)
-    songId = GObject.Property(type=str)
-    videoId = GObject.Property(type=str) # Should check if videoId == songId to see if the current song has video
-
-    # Player State
-    positionSeconds = GObject.Property(type=float, default=0.0)
-    buttonState = GObject.Property(type=str, default="play") # play, pause (for use in state stacks)
-    magnitudes = GObject.Property(type=GObject.TYPE_PYOBJECT) # dict
-    seeking = GObject.Property(type=bool, default=False)
-    displaySongTitle = GObject.Property(type=str)
-    displaySongArtist = GObject.Property(type=str)
-    accentColor = GObject.Property(type=GObject.TYPE_PYOBJECT) # list [r,g,b] for use in spectrum, set in player
-
-    # Queues
-    queueOrigin = GObject.Property(type=str, default="") # set to the id of playlist / album where the queue originated from
-    queueModel = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
-    generatedQueue = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
-    generatingQueue = GObject.Property(type=bool, default=False)
-    downloadQueueModel = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=SongDownload))
-

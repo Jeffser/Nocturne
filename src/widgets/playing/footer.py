@@ -34,16 +34,19 @@ class PlayingFooter(Adw.BreakpointBin):
 
     @Gtk.Template.Callback()
     def progress_bar_changed(self, scale_el, scroll_type, value):
-        value = scale_el.get_adjustment().get_value()
-        if integration := get_current_integration():
-            integration.get_property('current-state').set_property('seeking', True)
-            def change_time(val):
-                integration.get_property('current-state').set_property('seeking', False)
-                nanoseconds = int(val * Gst.SECOND)
-                self.get_root().get_application().player.gst.seek_simple(
-                    Gst.Format.TIME,
-                    Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
-                    nanoseconds
-                )
-            GLib.timeout_add(500, lambda v=value: change_time(v) if v == scale_el.get_adjustment().get_value() else None)
+        def change_time(player, val):
+            player.set_property('seeking', False)
+            nanoseconds = int(val * Gst.SECOND)
+            self.get_root().get_application().player.gst.seek_simple(
+                Gst.Format.TIME,
+                Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
+                nanoseconds
+            )
+
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    value = scale_el.get_adjustment().get_value()
+                    player.set_property('seeking', True)
+                    GLib.timeout_add(500, lambda v=value, p=player: change_time(p, v) if v == scale_el.get_adjustment().get_value() else None)
 

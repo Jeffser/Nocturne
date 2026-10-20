@@ -1,6 +1,6 @@
 # player.py
 
-from gi.repository import Adw, GLib, GObject, Gst, Gio
+from gi.repository import Gtk, Adw, GLib, GObject, Gst, Gio
 
 from mpris_server.adapters import MprisAdapter
 from mpris_server.events import EventAdapter
@@ -44,9 +44,7 @@ class PlayerMprisAdapter(MprisAdapter):
         return False
 
     def quit(self):
-        integration = get_current_integration()
-        if integration:
-            integration.get_property('current-state').set_property('songId', None)
+        self.set_property('songId', None)
 
     def set_fullscreen(self, value:bool):
         # def can_fullscreen returns false
@@ -59,21 +57,19 @@ class PlayerMprisAdapter(MprisAdapter):
     # -- PlayerAdapter --
 
     def metadata(self) -> ValidMetadata:
-        integration = get_current_integration()
-        if not integration:
-            return MetadataObj()
-        song = integration.loaded_models.get(integration.get_property('current-state').get_property('songId'))
+        song = self.player.gst_player.get_property('currentSong')
         if not song:
             return MetadataObj()
 
         if self.last_cover_art.get('id') != song.get_property('id'):
             self.last_cover_art['id'] = song.get_property('id')
-            self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
+            if integration := get_current_integration():
+                self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
 
         if song.get_property('radioStreamUrl'):
-            if not (title := integration.get_property('current-state').get_property("displaySongTitle")):
+            if not (title := self.get_property("displaySongTitle")):
                 title = song.get_property('title')
-            if not (artist := integration.get_property('current-state').get_property("displaySongArtist")):
+            if not (artist := self.get_property("displaySongArtist")):
                 artist = song.get_property('title') #sets station name to artist if the song has a title
             if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
                 artist = urlparse(song.get_property('radioStreamUrl')).netloc
@@ -181,7 +177,7 @@ class PlayerMprisAdapter(MprisAdapter):
             time*1000
         )
         self.player.emit_changes(self.player.mpris.player, changes=['Position'])
-        integration.get_property('current-state').set_property('positionSeconds', time/Gst.MSECOND)
+        self.set_property('positionSeconds', time/Gst.MSECOND)
         integration.playbackReport("progress")
 
     def set_maximum_rate(self, value:Rate):
@@ -260,6 +256,28 @@ class Player(GObject.Object):
 
     application = GObject.Property(type=Adw.Application)
     gst = GObject.Property(type=Gst.Element, default=Gst.ElementFactory.make("playbin3", "player"))
+
+    # State
+    # User plays song -> songId changes -> player updates currentSong and videoId -> UI gets info from those two updates
+    currentSong = GObject.Property(type=models.Song)
+    songId = GObject.Property(type=str)
+    videoId = GObject.Property(type=str)
+    preloadedSongId = GObject.Property(type=str)
+
+    positionSeconds = GObject.Property(type=float, default=0.0)
+    buttonState = GObject.Property(type=str, default="play")
+    magnitudes = GObject.Property(type=GObject.TYPE_PYOBJECT) # dict
+    seeking = GObject.Property(type=bool, default=False)
+    displaySongTitle = GObject.Property(type=str)
+    displaySongArtist = GObject.Property(type=str)
+    accentColor = GObject.Property(type=GObject.TYPE_PYOBJECT) # [r,g,b]
+    queueOrigin = GObject.Property(type=str, default="") # set to the id of playlist / album where the queue originated from
+    generatingQueue = GObject.Property(type=bool, default=False)
+
+    # Queues
+    queueModel = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
+    generatedQueue = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=Gtk.StringObject))
+    downloadQueueModel = GObject.Property(type=Gio.ListStore, default=Gio.ListStore.new(item_type=models.SongDownload))
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -344,12 +362,14 @@ class Player(GObject.Object):
         self.discord_rpc = DiscordRPC(self)
         self.settings.connect('changed::discord-rpc-enabled', lambda *_: self.discord_rpc.update())
         self.settings.connect('changed::discord-rpc-client-id', lambda *_: self.discord_rpc.update())
-        integration = get_current_integration()
+        self.connect_to_state('songId', self.song_changed)
 
-        integration.connect_to_state('songId', self.song_changed)
-
-        # Track ID of song when it's preloaded
-        self.preloaded_id = ""
+    def connect_to_state(self, parameter:str, callback:callable):
+        self.connect(
+            "notify::{}".format(parameter),
+            lambda *_, p=parameter, cb=callback: GLib.idle_add(cb, self.get_property(p))
+        )
+        GLib.idle_add(callback, self.get_property(parameter))
 
     def settings_volume_changed(self, settings, key):
         if not self.updating_volume:
@@ -380,35 +400,32 @@ class Player(GObject.Object):
 
     def on_stream_collection(self, bus, message):
         collection = message.parse_stream_collection()
-        integration = get_current_integration()
         if any(
             collection.get_stream(i).get_stream_type() == Gst.StreamType.VIDEO
             for i in range(collection.get_size())
         ):
-            songId = integration.get_property('current-state').get_property('songId')
-            integration.get_property('current-state').set_property('videoId', songId)
+            self.set_property('videoId', self.get_property('songId'))
         else:
-            integration.get_property('current-state').set_property('videoId', "")
+            self.set_property('videoId', "")
 
     # ---
 
     def handle_song_change_request(self, action:str):
         # action can be next, previous or end (song ended)
-        integration = get_current_integration()
-        if current_song_id := integration.get_property('current-state').get_property('songId'):
-            position = integration.get_property('current-state').get_property('positionSeconds')
-            song = integration.loaded_models.get(current_song_id)
-            duration = song.get_property('duration') if song else 0
-
-            if action == "end" or (duration > 0 and position >= (duration / 2)):
-                threading.Thread(target=integration.scrobble, args=(current_song_id,), daemon=True).start()
+        if current_song_id := self.get_property('songId'):
+            position = self.get_property('positionSeconds')
+            if song := self.get_property('currentSong'):
+                duration = song.get_property('duration') if song else 0
+                if action == "end" or (duration > 0 and position >= (duration / 2)):
+                    integration = get_current_integration()
+                    threading.Thread(target=integration.scrobble, args=(current_song_id,), daemon=True).start()
 
         mode = self.settings.get_value('playback-mode').unpack()
 
         if action != "end" and mode == "repeat-one":
             mode = "consecutive"
 
-        if action == "previous" and integration.get_property('current-state').get_property('positionSeconds') > 5:
+        if action == "previous" and self.get_property('positionSeconds') > 5:
             self.gst.seek_simple(
                 Gst.Format.TIME,
                 Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
@@ -416,12 +433,12 @@ class Player(GObject.Object):
             )
             return
 
-        id_list = [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]
+        id_list = [so.get_string() for so in self.get_property('queueModel')]
 
-        integration.get_property('current-state').set_property('magnitudes', {})
+        self.set_property('magnitudes', {})
         if len(id_list) > 0:
             if not current_song_id: # fallback in case nothing was playing
-                integration.get_property('current-state').set_property('songId', id_list[0])
+                self.set_property('songId', id_list[0])
 
             elif mode in ('consecutive', 'repeat-all'):
                 try:
@@ -431,16 +448,16 @@ class Player(GObject.Object):
 
                 if mode == 'consecutive':
                     if next_index < 0:
-                        integration.get_property('current-state').set_property('songId', id_list[0])
+                        self.set_property('songId', id_list[0])
                     elif next_index < len(id_list):
-                        integration.get_property('current-state').set_property('songId', id_list[next_index])
+                        self.set_property('songId', id_list[next_index])
                     elif self.settings.get_value('auto-play').unpack():
                         self.auto_play()
                 elif mode == 'repeat-all':
                     if next_index < len(id_list) and next_index >= 0:
-                        integration.get_property('current-state').set_property('songId', id_list[next_index])
+                        self.set_property('songId', id_list[next_index])
                     else:
-                        integration.get_property('current-state').set_property('songId', id_list[0])
+                        self.set_property('songId', id_list[0])
                         self.gst.seek_simple(
                             Gst.Format.TIME,
                             Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
@@ -454,21 +471,20 @@ class Player(GObject.Object):
                     0
                 )
         else:
-            integration.get_property('current-state').set_property('songId', None)
+            self.set_property('songId', None)
 
     def auto_play(self):
-        if integration := get_current_integration():
-            generated_queue = integration.get_property('current-state').get_property('generatedQueue')
-            if generated_queue.get_property('n-items') == 0:
-                self.application.get_active_window().activate_action(
-                    "app.generate_auto_play_queue",
-                    GLib.Variant('b', True)
-                )
-            else:
-                self.application.get_active_window().activate_action(
-                    "app.play_songs",
-                    GLib.Variant("as", [so.get_string() for so in list(generated_queue)])
-                )
+        generated_queue = self.get_property('generatedQueue')
+        if generated_queue.get_property('n-items') == 0:
+            self.application.get_active_window().activate_action(
+                "app.generate_auto_play_queue",
+                GLib.Variant('b', True)
+            )
+        else:
+            self.application.get_active_window().activate_action(
+                "app.play_songs",
+                GLib.Variant("as", [so.get_string() for so in list(generated_queue)])
+            )
 
     def handle_spectrum(self, struct):
         serialized = struct.serialize_full(Gst.SerializeFlags.NONE)
@@ -476,16 +492,15 @@ class Player(GObject.Object):
         channels = []
         for c in channels_str:
             channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands')/2)]])
-        integration = get_current_integration()
         timestamp = struct.get_uint64('stream-time')[1] / 1000000000
         if len(channels) > 1: #stereo spectrum
             magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
         else: #mono spectrum
             magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[0]))]
         if timestamp and magnitudes:
-            if not integration.get_property('current-state').get_property('magnitudes'):
-                integration.get_property('current-state').set_property('magnitudes', {})
-            integration.get_property('current-state').magnitudes[timestamp] = magnitudes
+            if not self.get_property('magnitudes'):
+                self.set_property('magnitudes', {})
+            self.magnitudes[timestamp] = magnitudes
 
     def handle_message_element(self, bus, message):
         if message.src == self.spectrum:
@@ -497,17 +512,17 @@ class Player(GObject.Object):
         if message.src == self.gst:
             old_state, new_state, pending_state = message.parse_state_changed()
             if pending_state == Gst.State.VOID_PENDING and new_state != Gst.State.READY:
-                integration = get_current_integration()
-                if not integration.get_property('current-state').get_property('seeking'):
+                if not self.get_property('seeking'):
                     is_playing = new_state == Gst.State.PLAYING
-                    integration.get_property('current-state').set_property("buttonState", 'pause' if is_playing else 'play')
+                    self.set_property("buttonState", 'pause' if is_playing else 'play')
                     self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
                     self.discord_rpc.update()
-                    integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
+                    if integration := get_current_integration():
+                        integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
 
     def handle_message_tag(self, bus, message):
         integration = get_current_integration()
-        if song_model := integration.loaded_models.get(integration.get_property('current-state').get_property('songId')):
+        if song_model := integration.loaded_models.get(self.get_property('songId')):
             if song_model.get_property('radioStreamUrl'): # is radio
                 if tag_list := message.parse_tag():
                     success_title, title = tag_list.get_string(Gst.TAG_TITLE)
@@ -524,36 +539,35 @@ class Player(GObject.Object):
                     title = title.strip()
                     artist = artist.strip()
                     emit_changes = False
-                    current_title = integration.get_property('current-state').get_property('displaySongTitle')
+                    current_title = self.get_property('displaySongTitle')
                     if title and current_title != title:
-                        integration.get_property('current-state').set_property('displaySongTitle', title)
+                        self.set_property('displaySongTitle', title)
                         emit_changes = True
-                    current_artist = integration.get_property('current-state').get_property('displaySongArtist')
+                    current_artist = self.get_property('displaySongArtist')
                     if artist and current_artist != artist:
-                        integration.get_property('current-state').set_property('displaySongArtist', artist)
+                        self.set_property('displaySongArtist', artist)
                         emit_changes = True
 
                     if emit_changes:
                         self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def get_next_queue_id(self):
-        integration = get_current_integration()
-        id_list = [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]
+        id_list = [so.get_string() for so in self.get_property('queueModel')]
 
         next_id = ""
         if len(id_list) > 0:
             mode = self.settings.get_value('playback-mode').unpack()
             if mode == 'repeat-all':
                 try:
-                    next_index = id_list.index(integration.get_property('current-state').get_property('songId')) + 1
+                    next_index = id_list.index(self.get_property('songId')) + 1
                     next_id = id_list[next_index]
                 except IndexError:
                     next_id = id_list[0]
             elif mode == 'repeat-one':
-                next_id = integration.get_property('current-state').get_property('songId')
+                next_id = self.get_property('songId')
             elif mode == 'consecutive':
                 try:
-                    next_index = id_list.index(integration.get_property('current-state').get_property('songId')) + 1
+                    next_index = id_list.index(self.get_property('songId')) + 1
                     next_id = id_list[next_index]
                 except IndexError:
                     pass
@@ -564,22 +578,20 @@ class Player(GObject.Object):
         if next_id := self.get_next_queue_id():
             stream_url = integration.get_stream_url(next_id)
             self.gst.set_property('uri', stream_url)
-            self.preloaded_id = next_id
+            self.set_property('preloadedSongId', next_id)
 
     def update_stream_progress(self):
-        if integration := get_current_integration():
-            if integration.get_property('current-state').get_property('seeking'):
-                return True
-            success, position = self.gst.query_position(Gst.Format.TIME)
-            if success:
-                seconds = position / Gst.SECOND
-                integration.get_property('current-state').set_property('positionSeconds', seconds)
+        if self.get_property('seeking'):
+            return True
+        success, position = self.gst.query_position(Gst.Format.TIME)
+        if success:
+            seconds = position / Gst.SECOND
+            self.set_property('positionSeconds', seconds)
         return True
 
     def handle_stream_start(self, bus, message):
-        if self.preloaded_id:
-            integration = get_current_integration()
-            integration.get_property('current-state').set_property('songId', self.preloaded_id)
+        if preloaded_id := self.get_property('preloadedSongId'):
+            self.set_property('songId', preloaded_id)
             self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def restore_play_queue(self):
@@ -607,8 +619,7 @@ class Player(GObject.Object):
         # Load Image
         if not paintable:
             self.application.css_provider.load_from_string('')
-            if integration := get_current_integration():
-                integration.get_property('current-state').set_property('accentColor', [0,0,0])
+            self.set_property('accentColor', [0,0,0])
             return
         raw_bytes = paintable.save_to_png_bytes().get_data()
         if not raw_bytes:
@@ -655,12 +666,10 @@ class Player(GObject.Object):
         """
 
         self.application.css_provider.load_from_string(css)
-        integration = get_current_integration()
-        integration.get_property('current-state').set_property('accentColor', palette[0])
+        self.set_property('accentColor', palette[0])
 
     def update_artists(self, artists:list):
-        integration = get_current_integration()
-        integration.get_property('current-state').set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else '')
+        self.set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else '')
 
     def song_changed(self, song_id:str):
         integration = get_current_integration()
@@ -669,7 +678,7 @@ class Player(GObject.Object):
             if song_id != self.last_song:
                 self.last_song = song_id
                 threading.Thread(target=integration.scrobble, args=(song_id,), kwargs={'submission': False}, daemon=True).start()
-                integration.get_property('current-state').set_property('positionSeconds', 0.0)
+                self.set_property('positionSeconds', 0.0)
 
                 # Volume warning
                 if self.gst.get_property('volume') == 0:
@@ -679,7 +688,7 @@ class Player(GObject.Object):
                         ))
 
                 if stream_url := integration.get_stream_url(song_id):
-                    if song_id != self.preloaded_id: #check for preloaded track
+                    if song_id != self.get_property('preloadedSongId'): #check for preloaded track
                         self.gst.set_state(Gst.State.READY)
                         self.gst.set_property('uri', stream_url)
                     if self.pause_next_change:
@@ -697,9 +706,9 @@ class Player(GObject.Object):
                             if success:
                                 model.set_property('duration', duration / Gst.SECOND)
                         # Title and Artists (it could also be changed by radio dynamic tags)
-                        integration.get_property('current-state').set_property('displaySongTitle', model.get_property('title'))
+                        self.set_property('displaySongTitle', model.get_property('title'))
                         artists = model.get_property('artists')
-                        integration.get_property('current-state').set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else model.get_property('artist'))
+                        self.set_property('displaySongArtist', artists[0].get('name') if len(artists) > 0 else model.get_property('artist'))
 
                         # Gains
                         gain_set = False
@@ -720,12 +729,12 @@ class Player(GObject.Object):
                         threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintable'),), daemon=True).start()
 
                         # Misc
-                        integration.get_property('current-state').set_property('currentSong', model)
+                        self.set_property('currentSong', model)
                         self.discord_rpc.update()
                 else:
                     self.gst.set_state(Gst.State.NULL)
         else:
             self.gst.set_state(Gst.State.NULL)
-        self.preloaded_id = ""
+        self.set_property('preloadedSongId', "")
         gc.collect()
 

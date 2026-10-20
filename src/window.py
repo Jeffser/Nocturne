@@ -66,21 +66,22 @@ class NocturneWindow(Adw.ApplicationWindow):
 
 
     def shutdown_integration(self, callback):
-        if integration := self.get_application().get_property('integration'):
-            id_list = [so.get_string() for so in integration.get_property('current-state').get_property('queueModel')]
-            queue_origin = integration.get_property('current-state').get_property('queueOrigin')
-            song_id = integration.get_property('current-state').get_property('songId')
-            timestamp = integration.get_property('current-state').get_property('positionSeconds')
-            if model := integration.loaded_models.get(queue_origin):
-                if isinstance(model, models.Playlist):
-                    integration.savePlaylistResume(
-                        queue_origin_id=queue_origin,
-                        song_id=song_id,
-                        current_timestamp=timestamp
-                    )
-
-            integration.savePlayQueue(id_list, song_id, timestamp * 1000)
-            integration.terminate_instance()
+        if app := self.get_application():
+            if player := app.get_property('player'):
+                id_list = [so.get_string() for so in player.get_property('queueModel')]
+                queue_origin = player.get_property('queueOrigin')
+                song_id = player.get_property('songId')
+                timestamp = player.get_property('positionSeconds')
+                if integration := app.get_property('integration'):
+                    if model := integration.loaded_models.get(queue_origin):
+                        if isinstance(model, models.Playlist):
+                            integration.savePlaylistResume(
+                                queue_origin_id=queue_origin,
+                                song_id=song_id,
+                                current_timestamp=timestamp
+                            )
+                    integration.savePlayQueue(id_list, song_id, timestamp * 1000)
+                    integration.terminate_instance()
         callback()
 
     def quit_app(self):
@@ -209,9 +210,10 @@ class NocturneWindow(Adw.ApplicationWindow):
         self.setup_sidebar()
         self.sidebar_playing_page.show_sidebar_el.set_visible(False)
         threading.Thread(target=self.notify_playback).start()
-        integration = self.get_application().get_property('integration')
-        integration.connect_to_state('buttonState', self.playback_changed)
-        integration.connect_to_state('songId', self.song_changed)
+        if app := self.get_application():
+            if player := app.get_property('player'):
+                player.connect_to_state('buttonState', self.playback_changed)
+                player.connect_to_state('songId', self.song_changed)
 
     def playback_changed(self, buttonState:str):
         if application := self.get_application():
@@ -387,10 +389,10 @@ class NocturneWindow(Adw.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def big_breakpoint_toggled(self, bp=None):
-        if integration := self.get_application().get_property('integration'):
-            song_playing = bool(integration.get_property('current-state').get_property('songId'))
-        else:
-            song_playing = False
+        song_playing = False
+        if app := self.get_application():
+            if player := app.get_property('player'):
+                song_playing = bool(player.get_property('songId'))
 
         is_small = self.get_width() <= 840
         if is_small:

@@ -4,7 +4,6 @@ import json, os, socket, struct, threading, time, uuid, requests, ipaddress
 from urllib.parse import urlparse
 from gi.repository import GLib, Gst, Gio
 
-from . import get_current_integration
 from ..constants import DISCORD_APP_ID
 
 
@@ -66,11 +65,10 @@ class DiscordRPC:
                     self.worker_running = False
                     return
                 generation, activity = self.pending
-                if integration := get_current_integration():
-                    success, state, pending = self.player.gst.get_state(0)
-                    if state == Gst.State.PLAYING:
-                        if song_id := integration.get_property('current-state').get_property("songId"):
-                            activity["assets"]["large_image"] = self._get_cover_art(song_id) or "logo"
+                success, state, pending = self.player.gst.get_state(0)
+                if state == Gst.State.PLAYING:
+                    if song_id := self.player.get_property("songId"):
+                        activity["assets"]["large_image"] = self._get_cover_art(song_id) or "logo"
                 self.pending = None
 
             with self.socket_lock:
@@ -97,8 +95,6 @@ class DiscordRPC:
 
     def _get_cover_art(self, song_id) -> str:
         # Returns public URL for cover art or empty string
-
-        integration = get_current_integration()
         if not song_id or not integration:
             return ""
 
@@ -155,18 +151,12 @@ class DiscordRPC:
         return ""
 
     def _get_activity(self):
-        integration = get_current_integration()
-        if not integration:
+        song = self.player.get_property("currentSong")
+        if not song:
             return None
 
-        current_song = integration.get_property('current-state')
-        song_id = current_song.get_property("songId")
-        if not song_id:
-            return None
-
-        song = integration.loaded_models.get(song_id)
         success, state, pending = self.player.gst.get_state(0)
-        if current_song.get_property("buttonState") == "play" and pending != Gst.State.PLAYING:
+        if self.player.get_property("buttonState") == "play" and pending != Gst.State.PLAYING:
             return {
                 "details": _("Browsing"),
                 "type": 0,
@@ -177,14 +167,14 @@ class DiscordRPC:
             }
 
         if song and song.get_property("radioStreamUrl"):
-            title = current_song.get_property("displaySongTitle") or song.get_property("title")
-            artist = current_song.get_property("displaySongArtist") or song.get_property("artist")
+            title = self.player.get_property("displaySongTitle") or song.get_property("title")
+            artist = self.player.get_property("displaySongArtist") or song.get_property("artist")
         else:
-            title = song.get_property("title") if song else current_song.get_property("displaySongTitle")
+            title = song.get_property("title") if song else self.player.get_property("displaySongTitle")
             if song and song.get_property("artists"):
                 artist = ", ".join([a.get("name") for a in song.get_property("artists")])
             else:
-                artist = song.get_property("artist") if song else current_song.get_property("displaySongArtist")
+                artist = song.get_property("artist") if song else self.player.get_property("displaySongArtist")
         activity = {
             "details": self._truncate(title or _("Listening to music")),
             "state": self._truncate(artist) if artist else None,
@@ -196,7 +186,7 @@ class DiscordRPC:
         activity["assets"]["large_image"] = "logo"
 
         if song and song.get_property("duration") > 0:
-            position = max(current_song.get_property("positionSeconds"), 0)
+            position = max(self.player.get_property("positionSeconds"), 0)
             started_at = int(time.time() - position)
             activity["timestamps"] = {
                 "start": started_at,

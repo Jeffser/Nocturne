@@ -108,8 +108,14 @@ class SongRow(Adw.ActionRow):
         context_dict = CONTEXT_SONG.copy()
         context_dict["select"]["connection"] = self.select_clicked
 
-        context_dict["play-next"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
-        context_dict["play-later"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
+        currentSongId = ''
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    currentSongId = player.get_property('songId')
+
+        context_dict["play-next"]["sensitive"] = currentSongId != self.id
+        context_dict["play-later"]["sensitive"] = currentSongId != self.id
 
         context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
 
@@ -124,7 +130,7 @@ class SongRow(Adw.ActionRow):
             del context_dict["download"]
 
         if integration.__gtype_name__ == 'NocturneIntegrationOffline':
-            context_dict["delete-download"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
+            context_dict["delete-download"]["sensitive"] = currentSongId != self.id
         else:
             del context_dict["delete-download"]
 
@@ -250,10 +256,13 @@ class SongRow(Adw.ActionRow):
             index_target = list(self.get_ancestor(Gtk.ListBox)).index(self)
             if y > self.get_height() / 2: # bottom
                 index_target += 1
-            integration = get_current_integration()
-            queue_model = integration.get_property('current-state').get_property('queueModel')
-            queue_model.splice(index_source, 1, [])
-            queue_model.splice(index_target, 0, [Gtk.StringObject.new(row.id)])
+
+            if root := self.get_root():
+                if app := root.get_application():
+                    if player := app.get_property('player'):
+                        queue_model = player.get_property('queueModel')
+                        queue_model.splice(index_source, 1, [])
+                        queue_model.splice(index_target, 0, [Gtk.StringObject.new(row.id)])
 
     @Gtk.Template.Callback()
     def on_drag_begin(self, drag_source, drag):
@@ -282,17 +291,18 @@ class SongRow(Adw.ActionRow):
             })
             self.get_root().activate_action("app.remove_songs_from_playlist", target_value)
             queue.list_el.remove(self)
-        else:
-            integration = get_current_integration()
-            if self.id == integration.get_property('current-state').get_property('songId'):
-                all_ids = queue.get_all_ids()
-                if len(all_ids) > 1:
-                    next_index = all_ids.index(self.id) + 1
-                    if len(all_ids) <= next_index:
-                        next_index = 0
-                    integration.get_property('current-state').set_property('songId', all_ids[next_index])
-                else:
-                    integration.get_property('current-state').set_property('songId', None)
+        elif root := self.get_root:
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    if self.id == player.get_property('songId'):
+                        all_ids = queue.get_all_ids()
+                        if len(all_ids) > 1:
+                            next_index = all_ids.index(self.id) + 1
+                            if len(all_ids) <= next_index:
+                                next_index = 0
+                            player.set_property('songId', all_ids[next_index])
+                        else:
+                            player.set_property('songId', None)
             queue.list_el.remove(self)
 
     @Gtk.Template.Callback()

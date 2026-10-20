@@ -36,7 +36,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
         height-request: bind $format_cover_art_size(template.forceHugeMode);
         width-request: bind $format_cover_art_size(template.forceHugeMode);
         pixel-size: bind $format_cover_art_pixel_size(template.forceHugeMode, cover_el.paintable);
-        paintable: bind $format_cover_art_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId);
+        paintable: bind $format_cover_art_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
         overflow: hidden;
         valign: center;
       }
@@ -54,7 +54,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
           xalign: 0;
           halign: start;
           ellipsize: end;
-          label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongTitle;
+          label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongTitle;
         }
 
         Gtk.Label artist_el {
@@ -64,7 +64,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
           xalign: 0;
           halign: start;
           ellipsize: end;
-          label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .displaySongArtist;
+          label: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
         }
 
         Gtk.Scale progress_el {
@@ -73,10 +73,10 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
           ]
           adjustment: Gtk.Adjustment {
             lower: 0;
-            upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .duration;
-            value: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds;
+            upper: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .duration;
+            value: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds;
           };
-          visible: bind $format_progress_el_visibility(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId);
+          visible: bind $format_progress_el_visibility(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
           change-value => $progress_bar_changed();
         }
       }
@@ -94,7 +94,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
 
     Gtk.Stack state_stack_el {
       transition-type: crossfade;
-      visible-child-name: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .buttonState;
+      visible-child-name: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .buttonState;
 
       Gtk.StackPage {
         name: "play";

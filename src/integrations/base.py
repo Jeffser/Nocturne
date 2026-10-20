@@ -89,7 +89,6 @@ class Base(GObject.Object):
     limitations = ()
 
     loaded_models = {}
-    current_state = GObject.Property(type=models.CurrentState, default=models.CurrentState())
 
     url = GObject.Property(type=str)
     trustServer = GObject.Property(type=bool, default=False)
@@ -180,14 +179,6 @@ class Base(GObject.Object):
     def check_if_ready(self, row) -> bool:
         # gets called to see if it is ready to show login page
         return True
-
-    def connect_to_state(self, parameter:str, callback:callable) -> str:
-        connection_id = self.get_property('current-state').connect(
-            'notify::{}'.format(parameter),
-            lambda *_, p=parameter, cb=callback: GLib.idle_add(self._dispatch_model_callback, cb, self.get_property('current-state').get_property(p))
-        )
-        GLib.idle_add(self._dispatch_model_callback, callback, self.get_property('current-state').get_property(parameter))
-        return connection_id
 
     def connect_to_model(self, model_id:str, parameter:str, callback:callable) -> str:
         connection_id = ""
@@ -559,7 +550,6 @@ class Base(GObject.Object):
 
     def playbackReport(self, report_type:str):
         # reports current song, play/pause status, and song position to server
-        # pulls information from current-state object
         # currently only used in jellyfin.py
         pass
 
@@ -567,6 +557,10 @@ class Base(GObject.Object):
         # the id is for a Song, this is how views are stored
         # called when a song is played
         # if you need to inherit this, also call super().scrobble(id) so that listenbrainz can also get the scrobble
+
+        # TODO IMPORTANT: current-state is no longer available at an integration-level
+        # the values requested should be parsed to scrobble (also affects other integrations functions)
+        return
 
         # Playback (monthly scrobble)
         date_formated = datetime.now().strftime("%m-%Y")

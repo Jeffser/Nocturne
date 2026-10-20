@@ -36,7 +36,7 @@ template $NocturneLyricsDialog: Adw.Dialog {
         spacing: 5;
         Gtk.Stack state_stack_el {
           transition-type: crossfade;
-          visible-child-name: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .buttonState;
+          visible-child-name: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .buttonState;
           notify::visible-child-name => $state_stack_changed();
 
           Gtk.StackPage {
@@ -75,7 +75,7 @@ template $NocturneLyricsDialog: Adw.Dialog {
             value: 0;
             step-increment: 0.10;
           };
-          value: bind $format_position(template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds);
+          value: bind $format_position(template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds);
           digits: 2;
           output => $position_spin_changed();
         }
@@ -90,7 +90,7 @@ template $NocturneLyricsDialog: Adw.Dialog {
           adjustment: Gtk.Adjustment {
             lower: 0;
             upper: 1;
-            value: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .positionSeconds;
+            value: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .positionSeconds;
             value-changed => $progress_bar_changed();
           };
           styles [

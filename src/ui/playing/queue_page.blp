@@ -17,7 +17,7 @@ template $NocturnePlayingQueuePage: Gtk.ScrolledWindow {
         [prefix]
         Adw.Spinner autoplay_spinner_el {
           tooltip-text: _("Generating Next Queue");
-          visible: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .generatingQueue;
+          visible: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .generatingQueue;
         }
 
         activatable: false;

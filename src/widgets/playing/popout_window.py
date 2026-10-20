@@ -1,7 +1,6 @@
 # popout_window.py
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/popout_window.ui')
 class PopoutWindow(Adw.ApplicationWindow):
@@ -26,9 +25,10 @@ class PopoutWindow(Adw.ApplicationWindow):
             fullscreened=fullscreened
         )
 
-        integration = get_current_integration()
-        current_song_id = integration.get_property('current-state').get_property('songId')
-        self.playing_page.last_song_id = current_song_id
+        if app := self.get_application():
+            if player := app.get_property('player'):
+                current_song_id = player.get_property('songId')
+                self.playing_page.last_song_id = current_song_id
 
         GLib.idle_add(self.playing_page.setup)
         GLib.idle_add(self.lyrics_page.setup)

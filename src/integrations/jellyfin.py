@@ -21,10 +21,14 @@ class JellyfinPlaySession():
 
     @property
     def position_ticks(self) -> int:
+        # TODO Current state is not available at an integration level, rewrite this
+        return 0
         return int(self.integration.get_property('current-state').get_property("positionSeconds") * 10_000_000) #convert to Jellyfin ticks
 
     def __init__(self, integration):
         self.integration = integration
+        #TODO connect_to_state was deleted from base integration, self.song_changed should be called by player in this case
+        return
         self.integration.connect_to_state('songId', self.song_changed)
 
     def create_session(self, item_id:str, start_paused:bool=False):

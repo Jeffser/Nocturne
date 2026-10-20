@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturneSongRow: Adw.ActionRow {
-  activatable: bind $format_activatable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId);
+  activatable: bind $format_activatable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
   use-markup: false;
   action-name: "app.play_song";
   action-target: bind $format_action_target(template.model as <$NocturneModelSong> .id, 's');
@@ -42,7 +42,7 @@ template $NocturneSongRow: Adw.ActionRow {
       hhomogeneous: false;
       transition-type: crossfade;
       visible-child-name: bind $format_cover_stack_visible_child_name(
-        template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId,
+        template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId,
         template.model as <$NocturneModelSong> .gdkPaintable,
         template.draggable,
         template.cover-visible
@@ -98,7 +98,7 @@ template $NocturneSongRow: Adw.ActionRow {
             styles [
               "osd"
             ]
-            visible: bind $format_is_playing(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId);
+            visible: bind $format_is_playing(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId);
             icon-name: "sound-symbolic";
             accessibility {
               label: _("Playing indicator");

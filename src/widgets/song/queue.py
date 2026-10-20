@@ -1,7 +1,6 @@
 # queue.py
 
 from gi.repository import GObject, Gtk, GLib
-from ...integrations import get_current_integration
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/queue.ui')
 class SongQueue(Gtk.Box):
@@ -23,12 +22,14 @@ class SongQueue(Gtk.Box):
     header_page_tag = GObject.Property(type=str, default="")
 
     def set_selected_mode(self, select:bool=False, selected_row:Gtk.Widget=None):
-        integration = get_current_integration()
         for row in list(self.list_el):
             if row.__gtype_name__ != 'NocturneDiscIndicator':
                 row.suffixes_stack_el.set_visible_child_name('select' if select else 'normal')
                 row.check_el.set_active(row == selected_row)
-                row.set_activatable(not select and row.id != integration.get_property('current-state').get_property('songId'))
+                if root := self.get_root():
+                    if app := root.get_application():
+                        if player := app.get_property('player'):
+                            row.set_activatable(not select and row.id != player.get_property('songId'))
 
         if select:
             self.remove_el.set_visible(selected_row.removable)
@@ -80,27 +81,28 @@ class SongQueue(Gtk.Box):
             for index in indexes:
                 self.list_el.remove(list(self.list_el)[index])
             self.main_stack.set_visible_child_name('content' if len(list(self.list_el)) > 0 else 'no-content')
-        else:
-            integration = get_current_integration()
-            queue_model = integration.get_property('current-state').get_property('queueModel')
-            all_ids = [so.get_string() for so in list(queue_model)]
-            selected_rows = self.get_selected_rows()
-            selected_ids = [r.id for r in selected_rows]
-            current_song_id = integration.get_property('current-state').get_property('songId')
+        elif root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    queue_model = player.get_property('queueModel')
+                    all_ids = [so.get_string() for so in list(queue_model)]
+                    selected_rows = self.get_selected_rows()
+                    selected_ids = [r.id for r in selected_rows]
+                    current_song_id = player.get_property('songId')
 
-            if current_song_id in selected_ids: # handle changing song
-                if len(selected_rows) == len(all_ids):
-                    new_id = None
-                else:
-                    new_id = [s for s in all_ids if s not in selected_ids][0]
-                integration.get_property('current-state').set_property('songId', new_id)
+                    if current_song_id in selected_ids: # handle changing song
+                        if len(selected_rows) == len(all_ids):
+                            new_id = None
+                        else:
+                            new_id = [s for s in all_ids if s not in selected_ids][0]
+                        player.set_property('songId', new_id)
 
-            indexes_to_be_removed = []
-            for i, song_id in enumerate(all_ids):
-                if song_id in selected_ids:
-                    indexes_to_be_removed.append(i)
-            for index in reversed(indexes_to_be_removed):
-                queue_model.remove(index)
+                    indexes_to_be_removed = []
+                    for i, song_id in enumerate(all_ids):
+                        if song_id in selected_ids:
+                            indexes_to_be_removed.append(i)
+                    for index in reversed(indexes_to_be_removed):
+                        queue_model.remove(index)
 
         self.close_selector()
 

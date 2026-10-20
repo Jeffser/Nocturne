@@ -65,20 +65,24 @@ class PlayingControlPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def progress_bar_changed(self, scale_el, scroll_type, value):
-        value = scale_el.get_adjustment().get_value()
-        integration = get_current_integration()
-        integration.get_property('current-state').set_property('seeking', True)
-        def change_time(val):
-            integration.get_property('current-state').set_property('seeking', False)
+        def change_time(player, val):
+            player.set_property('seeking', False)
             nanoseconds = int(val * Gst.SECOND)
             self.get_root().get_application().player.gst.seek_simple(
                 Gst.Format.TIME,
                 Gst.SeekFlags.FLUSH | Gst.SeekFlags.KEY_UNIT,
                 nanoseconds
             )
-            integration.get_property('current-state').set_property('positionSeconds', val)
-            integration.playbackReport("progress")
-        GLib.timeout_add(500, lambda v=value: change_time(v) if v == scale_el.get_adjustment().get_value() else None)
+            player.set_property('positionSeconds', val)
+            if integration := get_current_integration():
+                integration.playbackReport("progress")
+
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    value = scale_el.get_adjustment().get_value()
+                    player.set_property('seeking', True)
+                    GLib.timeout_add(500, lambda v=value, p=player: change_time(p, v) if v == scale_el.get_adjustment().get_value() else None)
 
     @Gtk.Template.Callback()
     def show_content_clicked(self, button):
@@ -90,12 +94,14 @@ class PlayingControlPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def change_rating(self, button):
-        integration = get_current_integration()
-        target_value = GLib.Variant('a{sv}', {
-            'model_id': GLib.Variant('s', integration.get_property('current-state').get_property('songId')),
-            'rating': GLib.Variant('i', int(button.get_name()))
-        })
-        self.get_root().activate_action("app.set_rating", target_value)
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    target_value = GLib.Variant('a{sv}', {
+                        'model_id': GLib.Variant('s', player.get_property('songId')),
+                        'rating': GLib.Variant('i', int(button.get_name()))
+                    })
+                    root.activate_action("app.set_rating", target_value)
 
     @Gtk.Template.Callback()
     def format_radio_homepage(self, obj, radioStreamUrl:str, return_variant:bool) -> GLib.Variant | str:

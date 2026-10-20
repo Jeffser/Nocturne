@@ -66,13 +66,19 @@ class SongButton(Gtk.Box):
         del context_dict["remove"]
         del context_dict["select"]
 
-        context_dict["play-next"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
-        context_dict["play-later"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
+        currentSongId = ''
+        if root := self.get_root():
+            if app := root.get_application():
+                if player := app.get_property('player'):
+                    currentSongId = player.get_property('songId')
+
+        context_dict["play-next"]["sensitive"] = currentSongId != self.id
+        context_dict["play-later"]["sensitive"] = currentSongId != self.id
 
         context_dict['rating']['value'] = integration.loaded_models.get(self.id).get_property('userRating')
 
         if integration.__gtype_name__ == 'NocturneIntegrationOffline':
-            context_dict["delete-download"]["sensitive"] = integration.get_property('current-state').get_property('songId') != self.id
+            context_dict["delete-download"]["sensitive"] = currentSongId != self.id
         else:
             del context_dict["delete-download"]
         if 'no-downloads' in integration.limitations:

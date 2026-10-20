@@ -32,8 +32,8 @@ template $NocturnePlayingCoverArt: Gtk.Box{
         enable-transitions: true;
         visible-child-name: bind $format_view_stack_visible_child_name(
           video_el.paintable,
-          template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .videoId,
-          template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId
+          template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .videoId,
+          template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId
         );
 
         Adw.ViewStackPage {
@@ -44,7 +44,7 @@ template $NocturnePlayingCoverArt: Gtk.Box{
             accessibility {
               label: _("Song Cover");
             }
-            paintable: bind $format_cover_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .currentSong as <$NocturneModelSong> .gdkPaintableBig);
+            paintable: bind $format_cover_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .gdkPaintableBig);
           };
         }
 
@@ -76,8 +76,8 @@ template $NocturnePlayingCoverArt: Gtk.Box{
     policy: wide;
     visible: bind $format_video_available(
       video_el.paintable,
-      template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .videoId,
-      template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .integration as <$NocturneIntegrationBase> .current-state as <$NocturneModelCurrentState> .songId
+      template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .videoId,
+      template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId
     );
   }
 }
