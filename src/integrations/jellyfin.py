@@ -593,6 +593,7 @@ class Jellyfin(Base):
         return [item.get("Id") for item in items]
 
 
+
     def verifyArtist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def fetch_artist():
             nonlocal verified_check
@@ -697,7 +698,7 @@ class Jellyfin(Base):
             model = self.loaded_models[model_id]
             if not model.get_property("name"):
                 fetch_artist()
-            if model_id in self.loaded_models and not model.get_property("verified"):
+            if model_id in self.loaded_models:
                 futures = []
                 album_count = model.get_property("albumCount")
                 guest_count = model.get_property("guestAlbumCount")
@@ -713,21 +714,29 @@ class Jellyfin(Base):
                 wait(futures)
                 if verified_check:
                     self.__write_to_model(model_id, {"verified":True}, wait=use_threading)
-            if model_id in self.ongoing_requests and self.ongoing_requests[model_id] == minimal:
+            if model_id in self.ongoing_requests and self.ongoing_requests[model_id]["minimal"] == minimal:
+                self.ongoing_requests[model_id]["lock"].set()
                 del self.ongoing_requests[model_id]
 
 
-        #Pre-check for argument validation and current active requests
-        if not model_id or not model_id.strip():
-            logger.debug("Empty Artist model_id, aborting.")
-            return
-        if model_id in self.ongoing_requests:
-            if minimal or (not minimal and self.ongoing_requests[model_id] == False):
-                return #return if ongoing request is present or not minimal
-        self.ongoing_requests[model_id] = minimal
-
         if model_id not in self.loaded_models:
             self.loaded_models[model_id] = models.Artist(id=model_id)
+        elif self.loaded_models.get(model_id).get_property("verified"):
+            return
+
+        if model_id in self.ongoing_requests:
+            if minimal or (not minimal and self.ongoing_requests[model_id]["minimal"] == False):
+                if not use_threading:
+                    lock = self.ongoing_requests[model_id]["lock"]
+                    lock.wait(timeout=60.0) #pause thread until verification is complete
+                return #return if ongoing request is present or not minimal
+            else:
+                self.ongoing_requests[model_id]["minimal"] = True
+        else:
+            self.ongoing_requests[model_id] = {
+                "minimal": minimal,
+                "lock": threading.Event()
+            }
 
         verified_check = not minimal
         if use_threading:
@@ -781,7 +790,7 @@ class Jellyfin(Base):
             model = self.loaded_models[model_id]
             if not model.get_property("name"):
                 fetch_album()
-            if model_id in self.loaded_models and not model.get_property("verified"):
+            if model_id in self.loaded_models:
                 futures = []
                 if not model.get_property("song") and not minimal:
                     futures.append(self.threads.submit(fetch_songs))
@@ -791,20 +800,28 @@ class Jellyfin(Base):
                 if verified_check:
                     self.__write_to_model(model_id, {"verified":True}, wait=use_threading)
             if model_id in self.ongoing_requests and self.ongoing_requests[model_id] == minimal:
+                self.ongoing_requests[model_id]["lock"].set()
                 del self.ongoing_requests[model_id]
 
 
-        #Pre-check for argument validation and current active requests
-        if not model_id or not model_id.strip():
-            logger.debug("Empty Album model_id, aborting.")
-            return
-        if model_id in self.ongoing_requests:
-            if minimal or (not minimal and self.ongoing_requests[model_id] == False):
-                return #return if ongoing request is present or not minimal
-        self.ongoing_requests[model_id] = minimal
-
         if model_id not in self.loaded_models:
             self.loaded_models[model_id] = models.Album(id=model_id)
+        elif self.loaded_models.get(model_id).get_property("verified"):
+            return
+
+        if model_id in self.ongoing_requests:
+            if minimal or (not minimal and self.ongoing_requests[model_id]["minimal"] == False):
+                if not use_threading:
+                    lock = self.ongoing_requests[model_id]["lock"]
+                    lock.wait(timeout=60.0) #pause thread until verification is complete
+                return #return if ongoing request is present or not minimal
+            else:
+                self.ongoing_requests[model_id]["minimal"] = True
+        else:
+            self.ongoing_requests[model_id] = {
+                "minimal": minimal,
+                "lock": threading.Event()
+            }
 
         verified_check = not minimal
         if use_threading:
@@ -864,7 +881,7 @@ class Jellyfin(Base):
             model = self.loaded_models[model_id]
             if not model.get_property("name"):
                 fetch_playlist()
-            if model_id in self.loaded_models and not model.get_property("verified"):
+            if model_id in self.loaded_models:
                 futures = []
                 if not model.get_property("entry"):
                     futures.append(self.threads.submit(fetch_songs))
@@ -874,19 +891,27 @@ class Jellyfin(Base):
                 if verified_check:
                     self.__write_to_model(model_id, {"verified":True}, wait=use_threading)
             if model_id in self.ongoing_requests and self.ongoing_requests[model_id] == minimal:
+                self.ongoing_requests[model_id]["lock"].set()
                 del self.ongoing_requests[model_id]
-
-        #Pre-check for argument validation and current active requests
-        if not model_id or not model_id.strip():
-            logger.debug("Empty Playlist model_id, aborting.")
-            return
-        if model_id in self.ongoing_requests:
-            if minimal or (not minimal and self.ongoing_requests[model_id] == False):
-                return #return if ongoing request is present or not minimal
-        self.ongoing_requests[model_id] = minimal
 
         if model_id not in self.loaded_models:
             self.loaded_models[model_id] = models.Playlist(id=model_id)
+        elif self.loaded_models.get(model_id).get_property("verified"):
+            return
+
+        if model_id in self.ongoing_requests:
+            if minimal or (not minimal and self.ongoing_requests[model_id]["minimal"] == False):
+                if not use_threading:
+                    lock = self.ongoing_requests[model_id]["lock"]
+                    lock.wait(timeout=60.0) #pause thread until verification is complete
+                return #return if ongoing request is present or not minimal
+            else:
+                self.ongoing_requests[model_id]["minimal"] = True
+        else:
+            self.ongoing_requests[model_id] = {
+                "minimal": minimal,
+                "lock": threading.Event()
+            }
 
         verified_check = not minimal
         if use_threading:
@@ -939,22 +964,29 @@ class Jellyfin(Base):
             if not model.get_property("title"):
                 fetch_song()
             if model_id in self.loaded_models:
-                if (not model.get_property("gdkPaintable") or not model.get_property("gdkPaintableBig")) and (model.get_property("coverArt") or not model.get_property("verified")):
-                    fetch_cover()
+                fetch_cover()
             if model_id in self.ongoing_requests and self.ongoing_requests[model_id] == minimal:
+                self.ongoing_requests[model_id]["lock"].set()
                 del self.ongoing_requests[model_id]
-
-        #Pre-check for argument validation and current active requests
-        if not model_id or not model_id.strip():
-            logger.debug("Empty Song model_id, aborting.")
-            return
-        if model_id in self.ongoing_requests:
-            if minimal or (not minimal and self.ongoing_requests[model_id] == False):
-                return #return if ongoing request is present or not minimal
-        self.ongoing_requests[model_id] = minimal
 
         if model_id not in self.loaded_models:
             self.loaded_models[model_id] = models.Song(id=model_id)
+        elif self.loaded_models.get(model_id).get_property("verified"):
+            return
+
+        if model_id in self.ongoing_requests:
+            if minimal or (not minimal and self.ongoing_requests[model_id]["minimal"] == False):
+                if not use_threading:
+                    lock = self.ongoing_requests[model_id]["lock"]
+                    lock.wait(timeout=60.0) #pause thread until verification is complete
+                return #return if ongoing request is present or not minimal
+            else:
+                self.ongoing_requests[model_id]["minimal"] = True
+        else:
+            self.ongoing_requests[model_id] = {
+                "minimal": minimal,
+                "lock": threading.Event()
+            }
 
         if use_threading:
             self.threads.submit(fetch_all)
