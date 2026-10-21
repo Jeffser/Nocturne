@@ -430,8 +430,8 @@ class Base(GObject.Object):
                     }
                     if album_name: #optional
                         params['album_name'] = album_name
-                    if duration: #optional
-                        params['duration'] = duration
+                    #if duration: #optional
+                        #params['duration'] = duration
                     response = requests.get(
                         'https://lrclib.net/api/get',
                         params=params,
