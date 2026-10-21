@@ -133,3 +133,7 @@ class PlayingControlPage(Adw.NavigationPage):
             self.star_el.remove_css_class('accent')
             self.star_el.add_css_class('dim-label')
         return "heart-filled-symbolic" if starred else "heart-outline-thick-symbolic"
+
+    @Gtk.Template.Callback()
+    def format_show_artist(self, obj, value) -> str:
+        return "" if bool(value) else "app.show_artist"
