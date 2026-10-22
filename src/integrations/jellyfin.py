@@ -21,15 +21,12 @@ class JellyfinPlaySession():
 
     @property
     def position_ticks(self) -> int:
-        # TODO Current state is not available at an integration level, rewrite this
-        return 0
-        return int(self.integration.get_property('current-state').get_property("positionSeconds") * 10_000_000) #convert to Jellyfin ticks
+        return int(self.player.get_property("positionSeconds") * 10_000_000) #convert to Jellyfin ticks
 
-    def __init__(self, integration):
+    def __init__(self, integration:Base, player:GObject.Object):
+        self.player = player
         self.integration = integration
-        #TODO connect_to_state was deleted from base integration, self.song_changed should be called by player in this case
-        return
-        self.integration.connect_to_state('songId', self.song_changed)
+        self.player.connect('notify::songId', self.song_changed)
 
     def create_session(self, item_id:str, start_paused:bool=False):
         self.item_id = item_id
@@ -116,8 +113,10 @@ class JellyfinPlaySession():
         self.make_request(action=url, json=params)
         return True
 
-    def song_changed(self, item_id:str):
-        if not item_id: return
+    def song_changed(self, player, _):
+        item_id = player.get_property("songId")
+        if not item_id:
+            threading.Thread(target=self.stop, daemon=True).start()
 
         def run():
             self.stop()
@@ -138,7 +137,7 @@ class JellyfinPlaySession():
         }
         self.make_request(action=url, json=params, timeout=(3, 0.5), retries=False) #aggressive timeout for app shutdown
 
-    def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> dict:
+    def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> bool:
         #Make requests using headers from the Jellyfin integration
         #Bypasses session pool and integration cache
         session_adapter = HTTPAdapter(
@@ -214,6 +213,9 @@ class Jellyfin(Base):
             stored_id = self.library_ids[0]
         return stored_id
 
+    #Playback reporting object, must be instantiated with player
+    play_session = None
+
     #requests tracker
     #holds model_id as the key and whether the request was minimal as the value
     ongoing_requests = {}
@@ -224,10 +226,6 @@ class Jellyfin(Base):
         if token := self.get_property('accessToken'):
             auth_header += ', Token="{}"'.format(token)
         return auth_header
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.play_session = JellyfinPlaySession(self)
 
     def get_base_header(self) -> dict:
         headers = {
@@ -1555,7 +1553,15 @@ class Jellyfin(Base):
         except Exception as e:
             logger.error(f"can't download song {model_id}: {e}")
 
+    def createPlaybackSession(self, player:GObject.Object):
+        # call this before making any playback reports
+        self.play_session = JellyfinPlaySession(self, player)
+
     def playbackReport(self, report_type:str):
+        if not self.play_session:
+            logger.error("No active playback session found for report, aborting")
+            return
+
         report_type = report_type.lower()
 
         if report_type == 'play':

@@ -178,7 +178,8 @@ class PlayerMprisAdapter(MprisAdapter):
         )
         self.player.emit_changes(self.player.mpris.player, changes=['Position'])
         self.set_property('positionSeconds', time/Gst.MSECOND)
-        integration.playbackReport("progress")
+        if integration := self.player.gst_player.get_property('application').get_property('integration'):
+            integration.playbackReport("progress")
 
     def set_maximum_rate(self, value:Rate):
         # Idk
@@ -363,6 +364,10 @@ class Player(GObject.Object):
         self.settings.connect('changed::discord-rpc-enabled', lambda *_: self.discord_rpc.update())
         self.settings.connect('changed::discord-rpc-client-id', lambda *_: self.discord_rpc.update())
         self.connect_to_state('songId', self.song_changed)
+
+        #Register player with playback reporter
+        if integration := self.get_property('application').get_property('integration'):
+            integration.createPlaybackSession(self)
 
     def connect_to_state(self, parameter:str, callback:callable):
         self.connect(

@@ -548,6 +548,13 @@ class Base(GObject.Object):
         # see navidrome.py for example
         logger.warning('method not implemented')
 
+    def createPlaybackSession(self, player:GObject.Object):
+        # creates the playback session used in playbackReport
+        # MUST be called before making any reports
+        # takes the player model to get live playback updates
+        # currently only used in jellyfin.py
+        pass
+
     def playbackReport(self, report_type:str):
         # reports current song, play/pause status, and song position to server
         # currently only used in jellyfin.py
