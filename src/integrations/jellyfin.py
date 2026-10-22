@@ -1,6 +1,6 @@
 # jellyfin.py
 
-from gi.repository import GLib, GObject, Gdk, Gio
+from gi.repository import GLib, GObject, Gdk, Gio, Gst
 from . import secret, models, local, sql_instance
 from .base import Base
 from ..constants import DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, COVER_SIZE, get_nocturne_version, get_device_id
@@ -26,7 +26,6 @@ class JellyfinPlaySession():
     def __init__(self, integration:Base, player:GObject.Object):
         self.player = player
         self.integration = integration
-        self.player.connect('notify::songId', self.song_changed)
 
     def create_session(self, item_id:str, start_paused:bool=False):
         self.item_id = item_id
@@ -45,6 +44,14 @@ class JellyfinPlaySession():
             self.last_ping = 0.0
             logger.error("No play session provided by server, aborting report.")
 
+    def update(self, song_repeated=False):
+        if self.player.get_property("songId") != self.item_id or song_repeated:
+            self.song_changed()
+        else:
+            success, state, pending = self.player.gst.get_state(0)
+            paused = self.player.get_property("buttonState") == "play" and pending != Gst.State.PLAYING
+            self.pause() if paused else self.play()
+
     def play(self):
         if not self.play_session_id: return
 
@@ -52,7 +59,7 @@ class JellyfinPlaySession():
             self.create_session(self.item_id)
 
         if not self.timer_id:
-            self.timer_id = GLib.timeout_add_seconds(10, self.progress)
+            self.timer_id = GLib.timeout_add_seconds(10, self.ping)
 
         url = "/Sessions/Playing/Progress"
         params = {
@@ -98,9 +105,9 @@ class JellyfinPlaySession():
         else:
             logger.error("Failed to report stop, preserving play session.")
 
-    def progress(self, is_paused:bool=False):
+    def ping(self):
         #Report progress without reporting play/pause state
-        #Useful for Jellyfin's required periodic playback updates
+        #Used for Jellyfin's required periodic playback updates
         if not self.play_session_id: return
 
         url = "/Sessions/Playing/Progress"
@@ -113,15 +120,13 @@ class JellyfinPlaySession():
         self.make_request(action=url, json=params)
         return True
 
-    def song_changed(self, player, _):
-        item_id = player.get_property("songId")
-        if not item_id:
-            threading.Thread(target=self.stop, daemon=True).start()
-
-        def run():
+    def song_changed(self):
+        item_id = self.player.get_property("songId")
+        if item_id:
             self.stop()
             self.create_session(item_id)
-        threading.Thread(target=run, daemon=True).start()
+        else:
+            self.stop()
 
     def quit(self):
         if not self.play_session_id: return
@@ -1553,25 +1558,15 @@ class Jellyfin(Base):
         except Exception as e:
             logger.error(f"can't download song {model_id}: {e}")
 
-    def createPlaybackSession(self, player:GObject.Object):
+    def registerReporter(self, player:GObject.Object):
         # call this before making any playback reports
         self.play_session = JellyfinPlaySession(self, player)
 
-    def playbackReport(self, report_type:str):
+    def report(self, song_repeated=False):
         if not self.play_session:
-            logger.error("No active playback session found for report, aborting")
+            logger.error("No active playback session registered for report, aborting")
             return
-
-        report_type = report_type.lower()
-
-        if report_type == 'play':
-            threading.Thread(target=self.play_session.play, daemon=True).start()
-        elif report_type == 'pause':
-            threading.Thread(target=self.play_session.pause, daemon=True).start()
-        elif report_type == 'stop':
-            threading.Thread(target=self.play_session.stop, daemon=True).start()
-        elif report_type == 'progress':
-            threading.Thread(target=self.play_session.progress, daemon=True).start()
+        threading.Thread(target=self.play_session.update, daemon=True, kwargs={"song_repeated": song_repeated}).start()
 
     def getSongDetails(self, model_id:str) -> models.SongDetails:
         if model := self.loaded_models.get(model_id):

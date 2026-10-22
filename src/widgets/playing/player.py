@@ -177,9 +177,6 @@ class PlayerMprisAdapter(MprisAdapter):
             time*1000
         )
         self.player.emit_changes(self.player.mpris.player, changes=['Position'])
-        self.set_property('positionSeconds', time/Gst.MSECOND)
-        if integration := self.player.gst_player.get_property('application').get_property('integration'):
-            integration.playbackReport("progress")
 
     def set_maximum_rate(self, value:Rate):
         # Idk
@@ -367,7 +364,7 @@ class Player(GObject.Object):
 
         #Register player with playback reporter
         if integration := self.get_property('application').get_property('integration'):
-            integration.createPlaybackSession(self)
+            integration.registerReporter(self)
 
     def connect_to_state(self, parameter:str, callback:callable):
         self.connect(
@@ -520,10 +517,14 @@ class Player(GObject.Object):
                 if not self.get_property('seeking'):
                     is_playing = new_state == Gst.State.PLAYING
                     self.set_property("buttonState", 'pause' if is_playing else 'play')
+                    success, position = self.gst.query_position(Gst.Format.TIME)
+                    if success:
+                        seconds = position / Gst.SECOND
+                        self.set_property('positionSeconds', seconds)
                     self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
                     self.discord_rpc.update()
                     if integration := self.get_property('application').get_property('integration'):
-                        integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
+                        integration.report()
 
     def handle_message_tag(self, bus, message):
         if integration := self.get_property('application').get_property('integration'):
@@ -735,8 +736,11 @@ class Player(GObject.Object):
                             # Misc
                             self.set_property('currentSong', model)
                             self.discord_rpc.update()
+                            integration.report()
                     else:
                         self.gst.set_state(Gst.State.NULL)
+                else:
+                    integration.report(song_repeated=True)
         else:
             self.gst.set_state(Gst.State.NULL)
         self.set_property('preloadedSongId', "")

@@ -73,10 +73,6 @@ class PlayingControlPage(Adw.NavigationPage):
                 nanoseconds
             )
             player.set_property('positionSeconds', val)
-            if root := self.get_root():
-                if app := root.get_application():
-                    if integration := app.get_property('integration'):
-                        integration.playbackReport("progress")
 
         if root := self.get_root():
             if app := root.get_application():
