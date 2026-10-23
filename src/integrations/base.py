@@ -259,6 +259,12 @@ class Base(GObject.Object):
         conn.close()
         return result
 
+    def wrap_id(self, model_id:str, prefix:str) -> str:
+        return prefix + model_id
+
+    def unwrap_id(self, model_id:str, prefix:str) -> str:
+        return model_id.replace(prefix,"")
+
     def start_instance(self) -> bool:
         # always called in different thread, because it might take a couple of seconds to get started
         logger.warning('method not implemented')

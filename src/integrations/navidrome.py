@@ -238,7 +238,7 @@ class Navidrome(Base):
 
         playlist_ids = []
         for playlist_dict in response.get('playlists', {}).get('playlist', []):
-            if new_id := str(playlist_dict.get('id', '')):
+            if new_id := self.wrap_id(str(playlist_dict.get('id', '')),"nocplaylist-"):
                 playlist_dict['id'] = new_id
                 playlist_ids.append(new_id)
                 if new_id in self.loaded_models:
@@ -300,7 +300,7 @@ class Navidrome(Base):
 
     def verifyPlaylist(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
         def update():
-            response = self.make_request('getPlaylist', {'id': model_id})
+            response = self.make_request('getPlaylist', {'id': self.unwrap_id(model_id, "nocplaylist-")})
             playlist_dict = response.get('playlist', {})
             if playlist_dict.get('id'):
                 self.loaded_models.get(model_id).update_data(**playlist_dict)
@@ -565,7 +565,7 @@ class Navidrome(Base):
         response = self.make_request('getInternetRadioStations')
         radios = response.get('internetRadioStations', {}).get('internetRadioStation', [])
         for radio in radios:
-            radio['id'] = str(radio.get('id', ''))
+            radio['id'] = self.wrap_id(str(radio.get('id', '')),'nocradio-')
             if radio.get('id') not in self.loaded_models:
                 self.loaded_models[radio.get('id')] = models.Song(
                     id=radio.get('id'),
@@ -589,7 +589,7 @@ class Navidrome(Base):
         # returns true if ok
         parsedStreamUrl = urlparse(radioStreamUrl)
         response = self.make_request('updateInternetRadioStation', {
-            'id': model_id,
+            'id': self.unwrap_id(model_id,'nocradio-'),
             'name': name,
             'streamUrl': radioStreamUrl,
             'homepageUrl': '{}://{}'.format(parsedStreamUrl.scheme, parsedStreamUrl.netloc)
@@ -599,7 +599,7 @@ class Navidrome(Base):
     def deleteInternetRadioStation(self, model_id:str) -> bool:
         # returns true if ok
         response = self.make_request('deleteInternetRadioStation', {
-            'id': model_id
+            'id': self.unwrap_id(model_id,'nocradio-')
         })
         return response.get('status') == 'ok'
 
@@ -624,7 +624,7 @@ class Navidrome(Base):
     def updatePlaylist(self, playlistId:str, songIdToAdd:list=[], songIndexToRemove:list=[]) -> bool:
         # returns true if ok
         response = self.make_request('updatePlaylist', {
-            'playlistId': playlistId,
+            'playlistId': self.unwrap_id(playlistId,'nocplaylist-'),
             'songIdToAdd': songIdToAdd,
             'songIndexToRemove': songIndexToRemove
         })
@@ -633,7 +633,7 @@ class Navidrome(Base):
     def deletePlaylist(self, model_id:str) -> bool:
         # returns true if ok
         response = self.make_request('deletePlaylist', {
-            'id': model_id
+            'id': self.unwrap_id(model_id,'nocplaylist-'),
         })
         return response.get('status') == 'ok'
 
