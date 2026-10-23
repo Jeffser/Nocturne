@@ -53,6 +53,7 @@ class Artist(GObject.Object):
     biography = GObject.Property(type=str)
     similarArtist = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     userRating = GObject.Property(type=int)
+    musicBrainzId = GObject.Property(type=str)
 
     verified = GObject.Property(type=bool, default=False)
 

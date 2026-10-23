@@ -529,7 +529,7 @@ class Jellyfin(Base):
             params={
                 "Limit": size,
                 "Recursive": "true",
-                "Fields": "Overview",
+                "Fields": "Overview, ProviderIds",
                 "SortBy": "Random",
                 "SortOrder": "Ascending",
                 "ParentId": self.libraryId
@@ -567,7 +567,7 @@ class Jellyfin(Base):
                     "userId": self.get_property("userId"),
                     "parentId": self.libraryId,
                     "Recursive": "true",
-                    "Fields": "Overview",
+                    "Fields": "Overview, ProviderIds",
                     "Filters": "isFavorite"
                 }
             ).get('Items', [])
@@ -601,7 +601,7 @@ class Jellyfin(Base):
                 action='Users/{userId}/Items/{id}',
                 action_keys={"id": model_id},
                 mode="GET",
-                params={"Fields": "Overview"}
+                params={"Fields": "Overview, ProviderIds"}
             )
             if artist.get("Id"):
                 artist_dict = self.__compile_response_json(artist, MediaType.ARTIST)
@@ -1205,7 +1205,8 @@ class Jellyfin(Base):
                 "coverArt": cover_art,
                 "starred": item.get("UserData", {}).get("IsFavorite", False),
                 "biography": item.get("Overview", ""),
-                "userRating": self.get_rating(item.get("Id"))
+                "userRating": self.get_rating(item.get("Id")),
+                "musicBrainzId": item.get("ProviderIds", {}).get("MusicBrainzArtist", "")
             }
         elif model_type == MediaType.ALBUM:
             artists = item.get("AlbumArtists", [])
@@ -1264,7 +1265,7 @@ class Jellyfin(Base):
 
     def search(self, query:str, artistCount:int=0, artistOffset:int=0, albumCount:int=0, albumOffset:int=0, songCount:int=0, songOffset:int=0, playlistCount:int=0, playlistOffset:int=0) -> dict:
         return {
-            'artist': [item.get("Id") for item in self.__fetch_type(MediaType.ARTIST, query, artistCount, artistOffset, fields="Overview", verify=True)],
+            'artist': [item.get("Id") for item in self.__fetch_type(MediaType.ARTIST, query, artistCount, artistOffset, fields="Overview, ProviderIds", verify=True)],
             'album': [item.get("Id") for item in self.__fetch_type(MediaType.ALBUM, query, albumCount, albumOffset, verify=True)],
             'song': [item.get("Id") for item in self.__fetch_type(MediaType.SONG, query, songCount, songOffset, verify=True)],
             'playlist': [item.get("Id") for item in self.__fetch_type(MediaType.PLAYLIST, query, playlistCount, playlistOffset, verify=True)]
@@ -1503,7 +1504,7 @@ class Jellyfin(Base):
             }
         ).get('Items', [])
         self.__bulk_compile(MediaType.SONG, songs)
-        return [song.get('Id') for song in songs if song.get('Id')]
+        return [{'id': song.get('Id'), 'name': song.get('Name'), 'album': song.get('Album')} for song in songs if song.get('Id')]
 
     def getArtistSongs(self, artist_id:str) -> list:
         def fetch_album(album_id) -> list:
