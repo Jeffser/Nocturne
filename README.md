@@ -187,6 +187,7 @@ Croatian                | [Milo Ivir](https://github.com/milotype)
 Telugu                  | [Aryan Karamtoth](https://github.com/spaciouskarter78)
 Brazilian Portuguese    | [Rikelry Souza](https://github.com/Rikelry)
 Italian                 | [Federico Veronesi](https://github.com/vh45f)
+Français                | [Vianney Pacaud](https://github.com/Vianney-conception)
 
 ## Legal Disclaimer
 

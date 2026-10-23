@@ -1,0 +1,1446 @@
+# French translations for PACKAGE package.
+# Copyright (C) 2026 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Vianney Pacaud <contact@vianneypacaud.fr>, 2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Nocturne\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-29 07:28-0600\n"
+"PO-Revision-Date: 2026-10-23 12:00+0200\n"
+"Last-Translator: Vianney\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+msgid "Nocturne"
+msgstr "Nocturne"
+
+msgid "GTK;Navidrome;Jellyfin;Music;"
+msgstr "GTK;Navidrome;Jellyfin;Musique;"
+
+msgid "Bring your music library together"
+msgstr "Réunissez votre musique"
+
+msgid "A modern music client"
+msgstr "Un client musical moderne"
+
+msgid "Features"
+msgstr "Fonctionnalités"
+
+msgid "Compatibility with Jellyfin, OpenSubsonic, Bandcamp and local files"
+msgstr "Compatible Jellyfin, OpenSubsonic, Bandcamp et fichiers locaux"
+
+msgid "Exploration by songs, artists, albums, radios and playlists"
+msgstr "Navigation par titres, artistes, albums, radios et playlists"
+
+msgid "Playlist management"
+msgstr "Gestion des playlists"
+
+msgid "Audio equalizer and audio visualizer"
+msgstr "Égaliseur et visualiseur audio"
+
+msgid "Mpris integration"
+msgstr "Intégration MPRIS"
+
+msgid "Integrated Navidrome instance management"
+msgstr "Gestion d'une instance Navidrome intégrée"
+
+msgid "Automatic lyrics fetching"
+msgstr "Paroles automatiques"
+
+msgid "Downloads and offline mode"
+msgstr "Téléchargements et mode hors ligne"
+
+msgid "Cool interface"
+msgstr "Interface soignée"
+
+msgid "Jeffry Samuel Eduarte Rojas"
+msgstr "Jeffry Samuel Eduarte Rojas"
+
+msgid "Main homepage"
+msgstr "Accueil"
+
+msgid "Song queue"
+msgstr "File d'attente"
+
+msgid "Lyrics"
+msgstr "Paroles"
+
+msgid "Song list"
+msgstr "Liste des titres"
+
+msgid "Album page"
+msgstr "Page d'album"
+
+msgid "Mini Player"
+msgstr "Mini-lecteur"
+
+msgid "opensubsonic"
+msgstr "opensubsonic"
+
+msgid "bandcamp"
+msgstr "bandcamp"
+
+msgid "navidrome"
+msgstr "navidrome"
+
+msgid "jellyfin"
+msgstr "jellyfin"
+
+msgid "music"
+msgstr "musique"
+
+msgid "gtk"
+msgstr "gtk"
+
+msgid "Nocturne Search Provider"
+msgstr "Recherche Nocturne"
+
+msgid "Error"
+msgstr "Erreur"
+
+msgid "No details provided"
+msgstr "Aucun détail"
+
+msgid "Close"
+msgstr "Fermer"
+
+#, python-brace-format
+msgid "Not enough data found for Nocturne Playback ({})"
+msgstr "Données insuffisantes pour Nocturne Playback ({})"
+
+msgid "External File"
+msgstr "Fichier externe"
+
+msgid ""
+"This track was loaded from an external file, this means it will have less "
+"features compared to a track inside the library"
+msgstr ""
+"Piste chargée depuis un fichier externe : fonctions limitées par rapport à "
+"une piste de la bibliothèque"
+
+msgid "Navidrome server deleted successfully"
+msgstr "Serveur Navidrome supprimé"
+
+msgid "Delete Navidrome Server"
+msgstr "Supprimer le serveur Navidrome"
+
+msgid "Are you sure you want to delete the integrated Navidrome server?"
+msgstr "Supprimer le serveur Navidrome intégré ?"
+
+msgid "Cancel"
+msgstr "Annuler"
+
+msgid "Keep Data"
+msgstr "Garder les données"
+
+msgid "Delete Everything"
+msgstr "Tout supprimer"
+
+msgid "No Name"
+msgstr "Sans nom"
+
+msgid "Radio updated successfully"
+msgstr "Radio mise à jour"
+
+msgid "Radio added successfully"
+msgstr "Radio ajoutée"
+
+msgid "Error updating radio"
+msgstr "Erreur de mise à jour"
+
+msgid "Error adding radio"
+msgstr "Erreur d'ajout"
+
+msgid "Name"
+msgstr "Nom"
+
+msgid "Stream Url"
+msgstr "URL du flux"
+
+msgid "Update Radio Station"
+msgstr "Modifier la radio"
+
+msgid "Add Radio Station"
+msgstr "Ajouter une radio"
+
+msgid "Save"
+msgstr "Enregistrer"
+
+msgid "Radio deleted successfully"
+msgstr "Radio supprimée"
+
+msgid "Error deleting radio"
+msgstr "Erreur de suppression"
+
+msgid "Delete Radio Station"
+msgstr "Supprimer la radio"
+
+#, python-brace-format
+msgid "Are you sure you want to delete '{}'?"
+msgstr "Supprimer « {} » ?"
+
+msgid "Delete"
+msgstr "Supprimer"
+
+msgid "Playing Next"
+msgstr "Lecture ensuite"
+
+msgid "Playing Later"
+msgstr "Lecture plus tard"
+
+#, python-brace-format
+msgid "{} Songs"
+msgstr "{} titres"
+
+msgid "Playlist updated successfully"
+msgstr "Playlist mise à jour"
+
+msgid "Playlist created successfully"
+msgstr "Playlist créée"
+
+msgid "Error updating playlist"
+msgstr "Erreur de mise à jour"
+
+msgid "Error creating playlist"
+msgstr "Erreur de création"
+
+msgid "Update Playlist"
+msgstr "Modifier la playlist"
+
+msgid "Create Playlist"
+msgstr "Créer une playlist"
+
+msgid "Update"
+msgstr "Modifier"
+
+msgid "Create"
+msgstr "Créer"
+
+#, python-brace-format
+msgid "{} Song Removed"
+msgid_plural "{} Songs Removed"
+msgstr[0] "{} titre retiré"
+msgstr[1] "{} titres retirés"
+
+#, python-brace-format
+msgid "{} Song Added"
+msgid_plural "{} Songs Added"
+msgstr[0] "{} titre ajouté"
+msgstr[1] "{} titres ajoutés"
+
+#, python-brace-format
+msgid "{} Song Skipped"
+msgid_plural "{} Songs Skipped"
+msgstr[0] "{} titre ignoré"
+msgstr[1] "{} titres ignorés"
+
+msgid "Playlist Deleted"
+msgstr "Playlist supprimée"
+
+msgid "Delete Playlist"
+msgstr "Supprimer la playlist"
+
+msgid "No songs found"
+msgstr "Aucun titre"
+
+msgid "Download Started"
+msgstr "Téléchargement lancé"
+
+msgid "Already Downloaded"
+msgstr "Déjà téléchargé"
+
+#, python-brace-format
+msgid "{} Song ({})"
+msgid_plural "{} Songs ({})"
+msgstr[0] "{} titre ({})"
+msgstr[1] "{} titres ({})"
+
+msgid "Download Skipped"
+msgstr "Téléchargement ignoré"
+
+#, python-brace-format
+msgid "Download Started ({} Song Skipped)"
+msgid_plural "Download Started ({} Songs Skipped)"
+msgstr[0] "Téléchargement lancé ({} titre ignoré)"
+msgstr[1] "Téléchargement lancé ({} titres ignorés)"
+
+msgid "Deleted"
+msgstr "Supprimé"
+
+msgid "Consecutive"
+msgstr "Séquentiel"
+
+msgid "Repeat All"
+msgstr "Tout répéter"
+
+msgid "Repeat One"
+msgstr "Répéter un"
+
+#, python-brace-format
+msgid "Low ({})"
+msgstr "Faible ({})"
+
+#, python-brace-format
+msgid "Medium ({})"
+msgstr "Moyen ({})"
+
+#, python-brace-format
+msgid "High ({})"
+msgstr "Élevé ({})"
+
+#, python-brace-format
+msgid "Ultra ({})"
+msgstr "Ultra ({})"
+
+msgid "Original File"
+msgstr "Fichier d'origine"
+
+#. Item
+msgid "Home"
+msgstr "Accueil"
+
+#. Section
+msgid "Albums"
+msgstr "Albums"
+
+#. Item
+msgid "All"
+msgstr "Tous"
+
+#. Item
+msgid "Random"
+msgstr "Aléatoire"
+
+#. Item
+msgid "Favorites"
+msgstr "Favoris"
+
+#. Item
+msgid "Recently Added"
+msgstr "Ajouts récents"
+
+#. Item
+msgid "Recently Played"
+msgstr "Lus récemment"
+
+#. Item
+msgid "Most Played"
+msgstr "Plus écoutés"
+
+#. Section
+#. list
+msgid "Artists"
+msgstr "Artistes"
+
+#. Section
+msgid "Songs"
+msgstr "Titres"
+
+#. Item
+msgid "Radios"
+msgstr "Radios"
+
+#. Section
+#. Item (special)
+msgid "Playlists"
+msgstr "Playlists"
+
+msgid "Play"
+msgstr "Lire"
+
+msgid "Shuffle"
+msgstr "Aléatoire"
+
+msgid "Play Next"
+msgstr "Lire ensuite"
+
+msgid "Play Later"
+msgstr "Lire plus tard"
+
+msgid "Add To Playlist"
+msgstr "Ajouter à une playlist"
+
+msgid "Download"
+msgstr "Télécharger"
+
+msgid "Show Artist"
+msgstr "Voir l'artiste"
+
+msgid "Radio"
+msgstr "Radio"
+
+msgid "Resume"
+msgstr "Reprendre"
+
+msgid "Edit"
+msgstr "Modifier"
+
+msgid "Select"
+msgstr "Sélectionner"
+
+msgid "Show Album"
+msgstr "Voir l'album"
+
+msgid "Remove"
+msgstr "Retirer"
+
+msgid "Delete Download"
+msgstr "Supprimer le fichier"
+
+msgid "Show Details"
+msgstr "Détails"
+
+msgid "Visit Webpage"
+msgstr "Site web"
+
+msgid "Update Server"
+msgstr "Modifier le serveur"
+
+msgid "Delete Server"
+msgstr "Supprimer le serveur"
+
+msgid "Edit Lyrics"
+msgstr "Modifier les paroles"
+
+msgid "Remove Lyrics"
+msgstr "Retirer les paroles"
+
+msgid "Could not generate SQL database"
+msgstr "Base SQL non générée"
+
+msgid "Browsing"
+msgstr "Navigation"
+
+msgid "Listening to music"
+msgstr "Écoute de musique"
+
+msgid "Connect to a Jellyfin server."
+msgstr "Connexion à un serveur Jellyfin."
+
+msgid "Jellyfin"
+msgstr "Jellyfin"
+
+msgid "Use an existing Jellyfin instance"
+msgstr "Utiliser une instance Jellyfin existante"
+
+msgid "Could not log in"
+msgstr "Connexion impossible"
+
+msgid "Unknown"
+msgstr "Inconnu"
+
+msgid "Local Files"
+msgstr "Fichiers locaux"
+
+msgid ""
+"Let Nocturne load your local files directly, for big libraries it is "
+"recommended to use a dedicated server."
+msgstr ""
+"Nocturne charge directement vos fichiers locaux. Pour une grosse "
+"bibliothèque, un serveur dédié est conseillé."
+
+msgid "Continue"
+msgstr "Continuer"
+
+msgid "Limited functionality"
+msgstr "Fonctions limitées"
+
+#. load songs, albums, artists
+msgid "Loading Songs"
+msgstr "Chargement des titres"
+
+msgid "Could not locate path, try again"
+msgstr "Chemin introuvable, réessayez"
+
+msgid "No Album"
+msgstr "Sans album"
+
+msgid "Offline Mode"
+msgstr "Mode hors ligne"
+
+msgid "Access your downloads"
+msgstr "Accéder aux téléchargements"
+
+msgid "Album"
+msgstr "Album"
+
+msgid "Display Artist"
+msgstr "Artiste affiché"
+
+msgid "MusicBrainz ID"
+msgstr "ID MusicBrainz"
+
+msgid "Track Number"
+msgstr "N° de piste"
+
+msgid "Year"
+msgstr "Année"
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Suffix"
+msgstr "Extension"
+
+msgid "Favorite"
+msgstr "Favori"
+
+msgid "Duration"
+msgstr "Durée"
+
+msgid "Bit Rate"
+msgstr "Débit"
+
+msgid "Bit Depth"
+msgstr "Profondeur"
+
+msgid "Sampling Rate"
+msgstr "Échantillonnage"
+
+msgid "Channel Count"
+msgstr "Canaux"
+
+msgid "Path"
+msgstr "Chemin"
+
+msgid "Disc Number"
+msgstr "N° de disque"
+
+msgid "BPM"
+msgstr "BPM"
+
+msgid "Genres"
+msgstr "Genres"
+
+#. list
+msgid "Track Gain"
+msgstr "Gain piste"
+
+msgid "Album Gain"
+msgstr "Gain album"
+
+msgid "Connect to an OpenSubsonic server like Navidrome."
+msgstr "Connexion à un serveur OpenSubsonic comme Navidrome."
+
+msgid "External Server"
+msgstr "Serveur externe"
+
+msgid "Use an existing OpenSubsonic instance"
+msgstr "Utiliser une instance OpenSubsonic existante"
+
+msgid "Server returned an error"
+msgstr "Erreur du serveur"
+
+msgid "Unknown Error"
+msgstr "Erreur inconnue"
+
+msgid "Managed Server"
+msgstr "Serveur géré"
+
+msgid "Connect to a Navidrome instance directly managed by Nocturne."
+msgstr "Connexion à une instance Navidrome gérée par Nocturne."
+
+msgid "Manage Server"
+msgstr "Gérer le serveur"
+
+msgid "Create and use a Navidrome instance"
+msgstr "Créer et utiliser une instance Navidrome"
+
+msgid "Important: Use your Subsonic login information."
+msgstr "Important : utilisez vos identifiants Subsonic."
+
+msgid "Bandcamp User Settings"
+msgstr "Paramètres Bandcamp"
+
+msgid "Explore your online library"
+msgstr "Explorer votre bibliothèque en ligne"
+
+msgid "Music is Playing"
+msgstr "Lecture en cours"
+
+msgid "Fullscreen Player Active"
+msgstr "Lecteur plein écran actif"
+
+msgid "Login Failed"
+msgstr "Échec de connexion"
+
+msgid "Play Album"
+msgstr "Lire l'album"
+
+msgid "Play Song"
+msgstr "Lire le titre"
+
+msgid "Play Playlist"
+msgstr "Lire la playlist"
+
+msgid "Open"
+msgstr "Ouvrir"
+
+msgid "Item"
+msgstr "Élément"
+
+msgid "Section"
+msgstr "Section"
+
+msgid "Settings Page"
+msgstr "Page des paramètres"
+
+msgid "User Token"
+msgstr "Jeton utilisateur"
+
+msgid "Link ListenBrainz"
+msgstr "Lier ListenBrainz"
+
+msgid "Connect your ListenBrainz account with a user token"
+msgstr "Lier votre compte avec un jeton"
+
+msgid "Flatpak Sandbox Warning"
+msgstr "Alerte bac à sable Flatpak"
+
+msgid ""
+"To connect to Discord, an additional permission is required, once you run "
+"the following command, please restart Nocturne"
+msgstr ""
+"Une autorisation supplémentaire est requise pour Discord. Lancez la "
+"commande suivante, puis redémarrez Nocturne"
+
+msgid "Toggle star"
+msgstr "Basculer favori"
+
+msgid "Album cover art"
+msgstr "Pochette d'album"
+
+msgid "Enter album page"
+msgstr "Ouvrir l'album"
+
+msgid "Enter artist page"
+msgstr "Ouvrir l'artiste"
+
+msgid "1 Star"
+msgstr "1 étoile"
+
+msgid "2 Stars"
+msgstr "2 étoiles"
+
+msgid "3 Stars"
+msgstr "3 étoiles"
+
+msgid "4 Stars"
+msgstr "4 étoiles"
+
+msgid "5 Stars"
+msgstr "5 étoiles"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Artist"
+msgstr "Artiste"
+
+msgid "Expand Biography"
+msgstr "Voir la biographie"
+
+msgid "Top Songs"
+msgstr "Top titres"
+
+msgid "Related Artists"
+msgstr "Artistes similaires"
+
+msgid "Pan to the Left"
+msgstr "Défiler à gauche"
+
+msgid "Pan to the Right"
+msgstr "Défiler à droite"
+
+msgid "Downloaded"
+msgstr "Téléchargé"
+
+msgid "Remove From Queue"
+msgstr "Retirer de la file"
+
+msgid "Downloads Queue"
+msgstr "File de téléchargement"
+
+msgid "Downloaded songs are available in offline mode"
+msgstr "Titres disponibles hors ligne"
+
+msgid "Clear Done Downloads"
+msgstr "Effacer les terminés"
+
+msgid "Lyrics Editor"
+msgstr "Éditeur de paroles"
+
+msgid "Pause"
+msgstr "Pause"
+
+msgid "Current song progress bar"
+msgstr "Progression du titre"
+
+msgid "Set Next Line Timestamp to Now"
+msgstr "Horodater la ligne suivante"
+
+msgid "Add Line at Timestamp"
+msgstr "Ajouter une ligne ici"
+
+msgid "No Lyrics"
+msgstr "Aucune parole"
+
+msgid "No lyrics found for this track, to get started add a new line"
+msgstr "Aucune parole : ajoutez une ligne"
+
+msgid "Timestamp"
+msgstr "Horodatage"
+
+msgid "Go to Timestamp"
+msgstr "Aller à l'horodatage"
+
+msgid "Set Current Timestamp"
+msgstr "Horodater maintenant"
+
+msgid "Remove Line"
+msgstr "Retirer la ligne"
+
+msgid "List"
+msgstr "Liste"
+
+msgid "Grid"
+msgstr "Grille"
+
+msgid "Search albums"
+msgstr "Rechercher un album"
+
+msgid "Reached End of List"
+msgstr "Fin de liste"
+
+msgid "No Albums Found"
+msgstr "Aucun album"
+
+msgid "Search artists"
+msgstr "Rechercher un artiste"
+
+msgid "No Artists Found"
+msgstr "Aucun artiste"
+
+msgid "Toggle Search"
+msgstr "Basculer la recherche"
+
+msgid "Search"
+msgstr "Rechercher"
+
+msgid "Welcome back"
+msgstr "Bon retour"
+
+msgid "On Replay"
+msgstr "En boucle"
+
+msgid "No Elements Found"
+msgstr "Aucun élément"
+
+#. Login Button
+msgid "Login"
+msgstr "Connexion"
+
+msgid "Server Status"
+msgstr "État du serveur"
+
+msgid "Not Running"
+msgstr "Arrêté"
+
+msgid "Restart Instance"
+msgstr "Redémarrer"
+
+msgid "Manage Navidrome Server"
+msgstr "Gérer Navidrome"
+
+msgid "Url"
+msgstr "URL"
+
+msgid "More Options"
+msgstr "Plus d'options"
+
+msgid "Trust Server Certificates"
+msgstr "Approuver les certificats"
+
+msgid "Library Directory"
+msgstr "Dossier de la bibliothèque"
+
+msgid "Username"
+msgstr "Nom d'utilisateur"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "Use Quick Connect"
+msgstr "Utiliser Quick Connect"
+
+msgid "Playback"
+msgstr "Lecture"
+
+msgid "Go Home"
+msgstr "Accueil"
+
+msgid "Toggle Visualizer"
+msgstr "Basculer le visualiseur"
+
+msgid "Nocturne Playback"
+msgstr "Nocturne Playback"
+
+msgid "These are your most played songs from last month"
+msgstr "Vos titres les plus écoutés le mois dernier"
+
+msgid "Save Playlist"
+msgstr "Enregistrer la playlist"
+
+msgid "Playlist Added"
+msgstr "Playlist ajoutée"
+
+msgid "Thank you for using Nocturne!"
+msgstr "Merci d'utiliser Nocturne !"
+
+msgid "Search playlists"
+msgstr "Rechercher une playlist"
+
+msgid "No Playlists Found"
+msgstr "Aucune playlist"
+
+msgid "Search radios"
+msgstr "Rechercher une radio"
+
+msgid "Add Radio"
+msgstr "Ajouter une radio"
+
+msgid "No Radios Found"
+msgstr "Aucune radio"
+
+msgid "Setup"
+msgstr "Configuration"
+
+msgid "Navidrome Download"
+msgstr "Téléchargement de Navidrome"
+
+msgid "Nocturne will download Navidrome automatically"
+msgstr "Navidrome sera téléchargé automatiquement"
+
+msgid "Download (~20 mb)"
+msgstr "Télécharger (~20 Mo)"
+
+msgid "Downloading"
+msgstr "Téléchargement"
+
+msgid "An Error Occurred"
+msgstr "Une erreur est survenue"
+
+msgid "Please try again later"
+msgstr "Réessayez plus tard"
+
+msgid "Download Successful"
+msgstr "Téléchargement réussi"
+
+msgid ""
+"Before continuing make sure you create an admin account and also make sure "
+"all your tracks are inside your music directory"
+msgstr ""
+"Avant de continuer, créez un compte admin et placez vos pistes dans le "
+"dossier musique"
+
+msgid "Instance Webpage"
+msgstr "Page de l'instance"
+
+msgid "Search songs"
+msgstr "Rechercher un titre"
+
+msgid "No Songs Found"
+msgstr "Aucun titre"
+
+msgid "Search favorite songs"
+msgstr "Rechercher un favori"
+
+msgid "Welcome"
+msgstr "Bienvenue"
+
+msgid "Welcome to Nocturne"
+msgstr "Bienvenue dans Nocturne"
+
+msgid "Select an instance type to get started"
+msgstr "Choisissez un type d'instance"
+
+msgid "Playing"
+msgstr "En lecture"
+
+msgid "Visit current radio homepage"
+msgstr "Site de la radio"
+
+msgid "Previous"
+msgstr "Précédent"
+
+msgid "Next"
+msgstr "Suivant"
+
+msgid "Rate"
+msgstr "Noter"
+
+msgid "Star"
+msgstr "Favori"
+
+msgid "Toggle Sidebar"
+msgstr "Basculer le panneau"
+
+msgid "Audio"
+msgstr "Audio"
+
+msgid "Song Cover"
+msgstr "Pochette"
+
+msgid "Video"
+msgstr "Vidéo"
+
+msgid "Presets"
+msgstr "Préréglages"
+
+msgid "Flat"
+msgstr "Neutre"
+
+msgid "Vocal Clarity"
+msgstr "Voix claires"
+
+msgid "Smooth Jazz"
+msgstr "Smooth jazz"
+
+msgid "Rock"
+msgstr "Rock"
+
+msgid "Classic"
+msgstr "Classique"
+
+msgid "Acoustic"
+msgstr "Acoustique"
+
+msgid "Current song progress indicator"
+msgstr "Progression du titre"
+
+msgid "Current song cover art"
+msgstr "Pochette du titre"
+
+msgid "Go Back"
+msgstr "Retour"
+
+msgid "Lyrics Options"
+msgstr "Options des paroles"
+
+msgid "No Lyrics Found"
+msgstr "Aucune parole"
+
+msgid "Instrumental"
+msgstr "Instrumental"
+
+msgid "Not Downloaded"
+msgstr "Non téléchargées"
+
+msgid ""
+"The lyrics for this song have not been downloaded yet, they might be "
+"available for download"
+msgstr "Paroles non téléchargées, peut-être disponibles"
+
+msgid "Load Lyrics File"
+msgstr "Charger un fichier"
+
+msgid "Pop-out Window"
+msgstr "Fenêtre détachée"
+
+msgid "Song Details"
+msgstr "Détails du titre"
+
+msgid "Queue"
+msgstr "File"
+
+msgid "Equalizer"
+msgstr "Égaliseur"
+
+msgid "Generating Next Queue"
+msgstr "Création de la file suivante"
+
+msgid "Autoplay"
+msgstr "Lecture auto"
+
+msgid "Generate a new queue when the current one ends"
+msgstr "Nouvelle file à la fin de l'actuelle"
+
+msgid "Volume"
+msgstr "Volume"
+
+msgid "Speaker Mute"
+msgstr "Muet"
+
+msgid "Speaker Full Volume"
+msgstr "Volume max"
+
+msgid "Show Playlist"
+msgstr "Voir la playlist"
+
+msgid "Playlist cover art"
+msgstr "Pochette de playlist"
+
+msgid "Enter playlist page"
+msgstr "Ouvrir la playlist"
+
+msgid "Playlist"
+msgstr "Playlist"
+
+msgid "Search (or create new playlist)"
+msgstr "Chercher ou créer une playlist"
+
+msgid "Adding Music to Playlist"
+msgstr "Ajout à la playlist"
+
+msgid "Create New Playlist and Add Songs"
+msgstr "Créer et ajouter les titres"
+
+msgid "General"
+msgstr "Général"
+
+msgid "Behavior"
+msgstr "Comportement"
+
+msgid "Restore Queue on Launch"
+msgstr "Restaurer la file au lancement"
+
+msgid "Hide on Close"
+msgstr "Masquer à la fermeture"
+
+msgid "Simulate Word by Word Lyrics"
+msgstr "Simuler paroles mot à mot"
+
+msgid "Used when only line by line lyrics are available"
+msgstr "Si seules les lignes sont disponibles"
+
+msgid "Auto Download Lyrics"
+msgstr "Paroles auto"
+
+msgid "Used when the current instance does not provide lyrics"
+msgstr "Si l'instance n'en fournit pas"
+
+msgid "Use Track and Album Gain"
+msgstr "Utiliser le gain"
+
+msgid "Adjust the volume based on gain metadata"
+msgstr "Ajuste le volume selon les métadonnées"
+
+msgid "Default Page on Login"
+msgstr "Page par défaut"
+
+msgid "Maximum Bitrate"
+msgstr "Débit maximal"
+
+msgid "Gnome Search"
+msgstr "Recherche GNOME"
+
+msgid ""
+"Search for your music directly from the system search bar while Nocturne is "
+"running. You can enable or disable this feature completely in System Settings"
+msgstr ""
+"Cherchez votre musique depuis la recherche système tant que Nocturne "
+"tourne. Activable dans les paramètres système"
+
+msgid "Include Artists"
+msgstr "Inclure les artistes"
+
+msgid "Include Albums"
+msgstr "Inclure les albums"
+
+msgid "Include Songs"
+msgstr "Inclure les titres"
+
+msgid "Include Playlists"
+msgstr "Inclure les playlists"
+
+msgid "Session"
+msgstr "Session"
+
+msgid "Discord Rich Presence"
+msgstr "Présence Discord"
+
+msgid "Share the currently playing song on Discord"
+msgstr "Partager le titre en cours"
+
+msgid "Share Cover Art With Discord"
+msgstr "Partager la pochette"
+
+msgid ""
+"If the instance is not reachable by Discord servers, CoverArtArchive will be "
+"used instead"
+msgstr "Si Discord n'accède pas à l'instance, CoverArtArchive est utilisé"
+
+msgid "ListenBrainz Link"
+msgstr "Lien ListenBrainz"
+
+msgid "Keep track of your playback history"
+msgstr "Suivre l'historique d'écoute"
+
+msgid "Link"
+msgstr "Lier"
+
+msgid "Unlink"
+msgstr "Délier"
+
+msgid "User"
+msgstr "Utilisateur"
+
+msgid "Delete Image Cache"
+msgstr "Vider le cache d'images"
+
+msgid "Logout"
+msgstr "Déconnexion"
+
+msgid "Customization"
+msgstr "Personnalisation"
+
+msgid "Interface"
+msgstr "Interface"
+
+msgid "Show Context Button in Rows"
+msgstr "Bouton de menu dans les lignes"
+
+msgid "The menu can also be shown by right clicking / long pressing"
+msgstr "Aussi via clic droit / appui long"
+
+msgid "Show Labels in Buttons of Pages"
+msgstr "Libellés sur les boutons"
+
+msgid "Show Progressbar in Player Footer"
+msgstr "Barre de progression en pied"
+
+msgid "Make Background Translucent in Player"
+msgstr "Fond translucide du lecteur"
+
+msgid "Does not affect sidebar player"
+msgstr "Sans effet sur le lecteur latéral"
+
+msgid "Use Sidebar Player When Possible"
+msgstr "Lecteur latéral si possible"
+
+msgid "Sidebar player is only available when the window is wide enough"
+msgstr "Fenêtre assez large requise"
+
+msgid "Filter Singles"
+msgstr "Masquer les singles"
+
+msgid "Hides albums with only one song (does not affect homepage)"
+msgstr "Masque les albums d'un titre (hors accueil)"
+
+msgid "Button Size"
+msgstr "Taille des boutons"
+
+msgid "Affects albums, artists, playlists and songs"
+msgstr "Albums, artistes, playlists et titres"
+
+msgid "Small"
+msgstr "Petit"
+
+msgid "Big"
+msgstr "Grand"
+
+msgid "Dynamic Background"
+msgstr "Fond dynamique"
+
+msgid "Background generated based on the album art of the current song"
+msgstr "Fond basé sur la pochette du titre"
+
+msgid "Use in Main Window"
+msgstr "Fenêtre principale"
+
+msgid "Off"
+msgstr "Désactivé"
+
+msgid "Gradient"
+msgstr "Dégradé"
+
+msgid "Blur"
+msgstr "Flou"
+
+msgid "Use in Player"
+msgstr "Dans le lecteur"
+
+msgid "Use in Pop-out Window"
+msgstr "Fenêtre détachée"
+
+msgid "Use as Accent Color"
+msgstr "Comme couleur d'accent"
+
+msgid "Homepage"
+msgstr "Accueil"
+
+msgid "Reload homepage to see changes"
+msgstr "Rechargez l'accueil pour voir les changements"
+
+msgid "Welcome Message"
+msgstr "Message d'accueil"
+
+msgid "Where to get user information"
+msgstr "Source des infos utilisateur"
+
+msgid "Instance"
+msgstr "Instance"
+
+msgid "System"
+msgstr "Système"
+
+msgid "Frequent Albums"
+msgstr "Albums fréquents"
+
+msgid "Sidebar"
+msgstr "Panneau latéral"
+
+msgid "Visualizer"
+msgstr "Visualiseur"
+
+msgid "Preferences"
+msgstr "Préférences"
+
+msgid "Show Visualizer in Player"
+msgstr "Visualiseur dans le lecteur"
+
+msgid "Show an audio spectrum visualizer on top of the album art in the player"
+msgstr "Spectre audio sur la pochette"
+
+msgid "Appearance"
+msgstr "Apparence"
+
+msgid "Number of Bars"
+msgstr "Nombre de barres"
+
+msgid "Visualizer Type"
+msgstr "Type de visualiseur"
+
+msgid "Wave"
+msgstr "Onde"
+
+msgid "Bars"
+msgstr "Barres"
+
+msgid "Particles"
+msgstr "Particules"
+
+msgid "Fill Mode"
+msgstr "Remplissage"
+
+msgid "Solid"
+msgstr "Plein"
+
+msgid "Translucent"
+msgstr "Translucide"
+
+msgid "Border"
+msgstr "Contour"
+
+msgid "Color"
+msgstr "Couleur"
+
+msgid "Use Dynamic Color"
+msgstr "Couleur dynamique"
+
+msgid "Invert Color"
+msgstr "Inverser la couleur"
+
+msgid "Manual Color"
+msgstr "Couleur manuelle"
+
+msgid "Visualizer Color"
+msgstr "Couleur du visualiseur"
+
+msgid "Reload Page"
+msgstr "Recharger la page"
+
+msgid "Show Shortcuts"
+msgstr "Voir les raccourcis"
+
+msgid "Show Preferences"
+msgstr "Voir les préférences"
+
+msgid "Quit"
+msgstr "Quitter"
+
+msgid "Toggle Playback"
+msgstr "Lecture/pause"
+
+msgid "Next Song"
+msgstr "Titre suivant"
+
+msgid "Previous Song"
+msgstr "Titre précédent"
+
+msgid "Raise Volume"
+msgstr "Monter le volume"
+
+msgid "Lower Volume"
+msgstr "Baisser le volume"
+
+msgid "Window"
+msgstr "Fenêtre"
+
+msgid "Toggle Fullscreen"
+msgstr "Plein écran"
+
+msgid "Open Pop-Out Window"
+msgstr "Détacher la fenêtre"
+
+msgid "Song cover art"
+msgstr "Pochette du titre"
+
+msgid "Play Indicator"
+msgstr "Indicateur de lecture"
+
+msgid "Select All"
+msgstr "Tout sélectionner"
+
+msgid "Drag icon"
+msgstr "Icône de glissement"
+
+msgid "Selection box"
+msgstr "Case de sélection"
+
+msgid "Play Random Queue"
+msgstr "Lire une file aléatoire"
+
+msgid "Menu"
+msgstr "Menu"
+
+msgid "Favorite Artists"
+msgstr "Artistes favoris"
+
+msgid "Favorite Songs"
+msgstr "Titres favoris"
+
+msgid "Random Albums"
+msgstr "Albums aléatoires"
+
+msgid "Favorite Albums"
+msgstr "Albums favoris"
+
+msgid "Newest Albums"
+msgstr "Nouveaux albums"
+
+msgid "Recent Albums"
+msgstr "Albums récents"
+
+msgid "Player"
+msgstr "Lecteur"
+
+msgid "See Last Nocturne Playback"
+msgstr "Dernier Nocturne Playback"
+
+msgid "Keyboard Shortcuts"
+msgstr "Raccourcis clavier"
+
+msgid "About Nocturne"
+msgstr "À propos de Nocturne"
+
+msgid "Not Favorite"
+msgstr "Non favori"
+
+#, python-brace-format
+msgid "Disc {}"
+msgstr "Disque {}"
+
+#, python-brace-format
+msgid "{} Album"
+msgid_plural "{} Albums"
+msgstr[0] "{} album"
+msgstr[1] "{} albums"
+
+msgid "Author"
+msgstr "Auteur"
+
+#, python-brace-format
+msgid "{} Stars"
+msgstr "{} étoiles"
+
+msgid "No Timestamp"
+msgstr "Sans horodatage"
+
+msgid "Lyrics Saved"
+msgstr "Paroles enregistrées"
+
+msgid "Running"
+msgstr "En cours"
+
+msgid "Extra Menu"
+msgstr "Menu supplémentaire"
+
+msgid "Music Library"
+msgstr "Bibliothèque musicale"
+
+msgid "Restarted"
+msgstr "Redémarré"
+
+msgid "Quick Connect"
+msgstr "Quick Connect"
+
+msgid "Error getting code"
+msgstr "Code non obtenu"
+
+msgid "Quick Connect Page"
+msgstr "Page Quick Connect"
+
+#, python-brace-format
+msgid "Nocturne Playback ~ {}"
+msgstr "Nocturne Playback ~ {}"
+
+#, python-brace-format
+msgid "{} Plays"
+msgstr "{} lectures"
+
+msgid "Installing"
+msgstr "Installation"
+
+msgid "Search favorite artists"
+msgstr "Rechercher un artiste favori"
+
+msgid "Integration"
+msgstr "Intégration"
+
+msgid "LRC File"
+msgstr "Fichier LRC"
+
+msgid "Warning: Song changed but volume is set to 0"
+msgstr "Titre changé mais volume à 0"
+
+#, python-brace-format
+msgid "{} Song"
+msgid_plural "{} Songs"
+msgstr[0] "{} titre"
+msgstr[1] "{} titres"
+
+msgid "New Playlist"
+msgstr "Nouvelle playlist"
+
+#, python-brace-format
+msgid "Add Songs to '{}'"
+msgstr "Ajouter à « {} »"
+
+msgid "Yes"
+msgstr "Oui"
+
+msgid "No"
+msgstr "Non"
+
+msgid "Not Found"
+msgstr "Introuvable"
+
+msgid "Multiple Artists"
+msgstr "Artistes multiples"
+
+#, python-brace-format
+msgid "Your Playback queue for {} is available!"
+msgstr "Votre Playback {} est disponible !"
+
+msgid "Show"
+msgstr "Voir"
+
+msgid "Later"
+msgstr "Plus tard"
