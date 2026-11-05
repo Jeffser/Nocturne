@@ -2,3 +2,7 @@
 __pycache__
 gschemas.compiled
 nocturne.gresource
+.flatpak-builder/
+build-dir/
+build/
+venv/
