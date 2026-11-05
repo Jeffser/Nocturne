@@ -284,6 +284,15 @@ def lazy_reload_window(app):
 
 def logout(app):
     threading.Thread(target=app.get_property('integration').terminate_instance, daemon=True).start()
+    if app.player.get_property('currentSong'):
+        threading.Thread(target = app.get_property('integration').report.quit,
+            args = (app.player.get_property('songId'),),
+            kwargs = {
+                'position': app.player.get_property('positionSeconds'),
+                'playtime': app.player.get_property('playtimeSeconds'),
+                'duration': app.player.get_property('currentSong').get_property('duration')
+            }
+        ).start()
     settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
     settings.set_string('integration-user', '')
     settings.set_string('selected-instance-type', '')

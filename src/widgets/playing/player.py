@@ -177,8 +177,6 @@ class PlayerMprisAdapter(MprisAdapter):
             time*1000
         )
         self.player.emit_changes(self.player.mpris.player, changes=['Position'])
-        self.set_property('positionSeconds', time/Gst.MSECOND)
-        integration.playbackReport("progress")
 
     def set_maximum_rate(self, value:Rate):
         # Idk
@@ -265,6 +263,7 @@ class Player(GObject.Object):
     preloadedSongId = GObject.Property(type=str)
 
     positionSeconds = GObject.Property(type=float, default=0.0)
+    playtimeSeconds = GObject.Property(type=int, default=0) #seconds the user has actively listened to the track
     buttonState = GObject.Property(type=str, default="play")
     magnitudes = GObject.Property(type=GObject.TYPE_PYOBJECT) # dict
     seeking = GObject.Property(type=bool, default=False)
@@ -354,7 +353,11 @@ class Player(GObject.Object):
         self.bus.connect("message::stream-collection", self.on_stream_collection)
 
         self.event_adapter = PlayerEventAdapter(self)
+
+        # Timers
         GLib.timeout_add(64, self.update_stream_progress)
+        self.report_timer = None;
+        self.playtime_timer = None;
 
         self.last_song = ''
         self.pause_next_change = False
@@ -412,13 +415,21 @@ class Player(GObject.Object):
 
     def handle_song_change_request(self, action:str):
         # action can be next, previous or end (song ended)
+
         if current_song_id := self.get_property('songId'):
             position = self.get_property('positionSeconds')
             if song := self.get_property('currentSong'):
                 duration = song.get_property('duration') if song else 0
                 if action == "end" or (duration > 0 and position >= (duration / 2)):
                     if integration := self.get_property('application').get_property('integration'):
-                        threading.Thread(target=integration.scrobble, args=(current_song_id,), daemon=True).start()
+                        threading.Thread(target = integration.report.stop,
+                            args = (current_song_id,),
+                            kwargs = {
+                                'position': position,
+                                'playtime': self.get_property('playtimeSeconds'),
+                                'duration': duration
+                            }
+                        ).start()
 
         mode = self.settings.get_value('playback-mode').unpack()
 
@@ -515,10 +526,25 @@ class Player(GObject.Object):
                 if not self.get_property('seeking'):
                     is_playing = new_state == Gst.State.PLAYING
                     self.set_property("buttonState", 'pause' if is_playing else 'play')
+                    success, position = self.gst.query_position(Gst.Format.TIME)
+                    if success:
+                        seconds = position / Gst.SECOND
+                        self.set_property('positionSeconds', seconds)
                     self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
                     self.discord_rpc.update()
-                    if integration := self.get_property('application').get_property('integration'):
-                        integration.playbackReport("play") if is_playing else integration.playbackReport("pause")
+                    if is_playing:
+                        if not self.report_timer:
+                            self.report_timer = GLib.timeout_add_seconds(10, self.update_report)
+                        if not self.playtime_timer:
+                            self.playtime_timer = GLib.timeout_add_seconds(1, self.update_playtime)
+                    else:
+                        if self.report_timer:
+                            GLib.source_remove(self.report_timer)
+                            self.report_timer = None
+                        if self.playtime_timer:
+                            GLib.source_remove(self.playtime_timer)
+                            self.playtime_timer = None
+                    self.update_report(not is_playing)
 
     def handle_message_tag(self, bus, message):
         if integration := self.get_property('application').get_property('integration'):
@@ -550,6 +576,21 @@ class Player(GObject.Object):
 
                         if emit_changes:
                             self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
+
+    def update_playtime(self):
+        self.props.playtimeSeconds += 1
+        return True
+
+    def update_report(self, is_paused=False):
+        if integration := self.get_property('application').get_property('integration'):
+            threading.Thread(target = integration.report.playing,
+                args = (self.get_property('songId'),),
+                kwargs = {
+                    'paused': is_paused,
+                    'position': self.get_property('positionSeconds')
+                }
+            ).start()
+        return True
 
     def get_next_queue_id(self):
         id_list = [so.get_string() for so in self.get_property('queueModel')]
@@ -674,17 +715,30 @@ class Player(GObject.Object):
     def song_changed(self, song_id:str):
         if song_id:
             if integration := self.get_property('application').get_property('integration'):
+                if not self.last_song:
+                    threading.Thread(target=integration.report.start, args=(song_id,)).start()
+                else:
+                    threading.Thread(target = integration.report.change_song,
+                        kwargs = {
+                            'starting_id': song_id,
+                            'finished_id': self.last_song,
+                            'playtime': self.get_property('playtimeSeconds'),
+                            'duration': self.get_property('currentSong').get_property('duration')
+                        }
+                    ).start()
+
+                self.set_property('positionSeconds', 0.0)
+                self.set_property('playtimeSeconds', 0)
+
+                # Volume warning
+                if self.gst.get_property('volume') == 0:
+                    if active_window := self.application.props.active_window:
+                        active_window.toast_overlay.add_toast(Adw.Toast(
+                            title=_("Warning: Song changed but volume is set to 0")
+                        ))
+
                 if song_id != self.last_song:
                     self.last_song = song_id
-                    threading.Thread(target=integration.scrobble, args=(song_id,), kwargs={'submission': False}, daemon=True).start()
-                    self.set_property('positionSeconds', 0.0)
-
-                    # Volume warning
-                    if self.gst.get_property('volume') == 0:
-                        if active_window := self.application.props.active_window:
-                            active_window.toast_overlay.add_toast(Adw.Toast(
-                                title=_("Warning: Song changed but volume is set to 0")
-                            ))
 
                     if stream_url := integration.get_stream_url(song_id):
                         if song_id != self.get_property('preloadedSongId'): #check for preloaded track

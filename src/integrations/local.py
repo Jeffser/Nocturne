@@ -616,7 +616,7 @@ class Local(Base):
             shutil.copy2(source_path, os.path.join(DOWNLOADS_DIR, '{}{}'.format(file_title, extension)))
             progress_callback(1)
 
-    def scrobble(self, model_id:str, submission:bool=True):
+    def scrobble(self, model_id:str, playtime:int, submission:bool=True):
         if not model_id:
             return
         if model := self.loaded_models.get(model_id):

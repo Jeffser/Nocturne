@@ -2,143 +2,113 @@
 
 from gi.repository import GLib, GObject, Gdk, Gio
 from . import secret, models, local, sql_instance
-from .base import Base
+from .base import Base, BaseReportManager
 from ..constants import DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, COVER_SIZE, get_nocturne_version, get_device_id
 import os, platform, logging, io, threading, time, uuid, requests
 from urllib.parse import urlencode
 from requests.adapters import HTTPAdapter, Retry
-from concurrent.futures import wait
+from concurrent.futures import ThreadPoolExecutor, wait
 from enum import StrEnum
 from PIL import Image
 
 logger = logging.getLogger(__name__)
 
-class JellyfinPlaySession():
-    item_id:str = ""
+class JellyfinReportManager(BaseReportManager):
+    song_id:str = ""
     play_session_id:str = ""
     last_ping = 0.0
-    timer_id = 0
 
-    @property
-    def position_ticks(self) -> int:
-        # TODO Current state is not available at an integration level, rewrite this
-        return 0
-        return int(self.integration.get_property('current-state').get_property("positionSeconds") * 10_000_000) #convert to Jellyfin ticks
+    def start(self, song_id:str, paused:bool=False, position:float=0.0):
+        super().start(song_id, paused, position)
+        self._create_session(song_id, paused, position)
 
-    def __init__(self, integration):
-        self.integration = integration
-        #TODO connect_to_state was deleted from base integration, self.song_changed should be called by player in this case
-        return
-        self.integration.connect_to_state('songId', self.song_changed)
+    def stop(self, song_id:str, position:float=0.0, playtime:int=0, duration:int=0):
+        super().stop(song_id, position, playtime, duration)
 
-    def create_session(self, item_id:str, start_paused:bool=False):
-        self.item_id = item_id
-        self.play_session_id = str(uuid.uuid4())
-
-        url = "/Sessions/Playing"
-        params = {
-            'ItemId': self.item_id,
-            'PositionTicks': self.position_ticks,
-            'PlaySessionId': self.play_session_id,
-            'IsPaused': start_paused
-        }
-        if not self.make_request(action=url, json=params):
-            self.item_id = ""
-            self.play_session_id = ""
-            self.last_ping = 0.0
-            logger.error("No play session provided by server, aborting report.")
-
-    def play(self):
         if not self.play_session_id: return
-
-        if time.time() - self.last_ping > 600: #make a new session after 10 minutes of inactivity
-            self.create_session(self.item_id)
-
-        if not self.timer_id:
-            self.timer_id = GLib.timeout_add_seconds(10, self.progress)
-
-        url = "/Sessions/Playing/Progress"
-        params = {
-            'ItemId': self.item_id,
-            'PositionTicks': self.position_ticks,
-            'PlaySessionId': self.play_session_id,
-            'IsPaused': False
-        }
-        self.make_request(action=url, json=params)
-
-    def pause(self):
-        if not self.play_session_id: return
-
-        if self.timer_id:
-            GLib.source_remove(self.timer_id)
-            self.timer_id = 0
-
-        url = "/Sessions/Playing/Progress"
-        params = {
-            'ItemId': self.item_id,
-            'PositionTicks': self.position_ticks,
-            'PlaySessionId': self.play_session_id,
-            'IsPaused': True
-        }
-        self.make_request(action=url, json=params)
-
-    def stop(self):
-        if not self.play_session_id: return
-
-        if self.timer_id:
-            GLib.source_remove(self.timer_id)
-            self.timer_id = 0
 
         url = "/Sessions/Playing/Stopped"
         params = {
-            'ItemId': self.item_id,
+            'ItemId': self.song_id,
             'PlaySessionId':self.play_session_id
         }
-        if self.make_request(action=url, json=params):
-            self.item_id = ""
+        if position:
+            params['PositionTicks'] = int(position * 10_000_000)
+        if self._make_request(action=url, json=params):
+            self.song_id = ""
             self.play_session_id = ""
             self.last_ping = 0.0
         else:
             logger.error("Failed to report stop, preserving play session.")
 
-    def progress(self, is_paused:bool=False):
-        #Report progress without reporting play/pause state
-        #Useful for Jellyfin's required periodic playback updates
-        if not self.play_session_id: return
+    def change_song(self, starting_id:str, finished_id:str, start_position:float=0.0, finish_position:float=0.0, playtime:int=0, duration:int=0):
+        super().change_song(starting_id, finished_id, start_position, finish_position, playtime, duration)
+        self._destroy_session(finished_id, position=finish_position)
+        self._create_session(starting_id, position=start_position)
+
+    def playing(self, song_id:str, paused:bool, position:float):
+        super().playing(song_id, paused, position)
+
+        if not self.play_session_id or song_id != self.song_id:
+            logger.debug("Invalid play session, aborting progress report.")
+            return
+
+        if time.time() - self.last_ping > 600: #make a new session after 10 minutes of inactivity
+            self.start(self.song_id, paused, position)
 
         url = "/Sessions/Playing/Progress"
         params = {
-            'ItemId': self.item_id,
-            'PositionTicks': self.position_ticks,
-            'PlaySessionId': self.play_session_id
+            'ItemId': self.song_id,
+            'PositionTicks': int(position * 10_000_000),
+            'PlaySessionId': self.play_session_id,
+            'IsPaused': paused
         }
+        self._make_request(action=url, json=params, retries=False)
 
-        self.make_request(action=url, json=params)
-        return True
+    def quit(self, song_id:str, position:float=0.0, playtime:int=0, duration:int=0):
+        futures = []
+        with ThreadPoolExecutor() as executor:
+            futures.append(executor.submit(super().quit, song_id, position, playtime, duration))
+            futures.append(executor.submit(self._destroy_session, song_id, position=position, timeout=(3, 0.5), retries=False))
+            wait(futures)
 
-    def song_changed(self, item_id:str):
-        if not item_id: return
 
-        def run():
-            self.stop()
-            self.create_session(item_id)
-        threading.Thread(target=run, daemon=True).start()
+    def _create_session(self, song_id:str, paused:bool=False, position:float=0.0):
+        self.song_id = song_id
+        self.play_session_id = str(uuid.uuid4())
 
-    def quit(self):
+        url = "/Sessions/Playing"
+        params = {
+            'ItemId': self.song_id,
+            'PositionTicks': int(position * 10_000_000),
+            'PlaySessionId': self.play_session_id,
+            'IsPaused': paused
+        }
+        if not self._make_request(action=url, json=params):
+            self.song_id = ""
+            self.play_session_id = ""
+            self.last_ping = 0.0
+            logger.error("No play session provided by server, aborting report.")
+
+    def _destroy_session(self, song_id:str, position:float=0.0, timeout:tuple=(3.0, 10.0), retries:bool=True):
         if not self.play_session_id: return
-
-        if self.timer_id:
-            GLib.source_remove(self.timer_id)
-            self.timer_id = 0
 
         url = "/Sessions/Playing/Stopped"
         params = {
-            'ItemId': self.item_id,
+            'ItemId': self.song_id,
             'PlaySessionId':self.play_session_id
         }
-        self.make_request(action=url, json=params, timeout=(3, 0.5), retries=False) #aggressive timeout for app shutdown
+        if position:
+            params['PositionTicks'] = int(position * 10_000_000)
+        if self._make_request(action=url, json=params, timeout=timeout, retries=retries):
+            self.song_id = ""
+            self.play_session_id = ""
+            self.last_ping = 0.0
+        else:
+            logger.error("Failed to report stop, preserving play session.")
 
-    def make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> dict:
+
+    def _make_request(self, action:str, json:dict={}, params:dict={}, action_keys:dict={}, timeout:tuple=(3.0, 10.0), retries:bool=True) -> dict:
         #Make requests using headers from the Jellyfin integration
         #Bypasses session pool and integration cache
         session_adapter = HTTPAdapter(
@@ -207,6 +177,9 @@ class Jellyfin(Base):
     accessToken = GObject.Property(type=str)
     userId = GObject.Property(type=str)
 
+    # Playback reporting class
+    report_manager_class = JellyfinReportManager
+
     @property
     def libraryId(self) -> str:
         stored_id = ""
@@ -224,10 +197,6 @@ class Jellyfin(Base):
         if token := self.get_property('accessToken'):
             auth_header += ', Token="{}"'.format(token)
         return auth_header
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.play_session = JellyfinPlaySession(self)
 
     def get_base_header(self) -> dict:
         headers = {
@@ -304,7 +273,7 @@ class Jellyfin(Base):
         return True
 
     def terminate_instance(self):
-        self.play_session.quit()
+        pass
 
     def get_stream_url(self, song_id:str) -> str:
         if model := self.loaded_models.get(song_id):
@@ -1554,18 +1523,6 @@ class Jellyfin(Base):
                 os.replace(file_path, os.path.join(DOWNLOADS_DIR, file_name))
         except Exception as e:
             logger.error(f"can't download song {model_id}: {e}")
-
-    def playbackReport(self, report_type:str):
-        report_type = report_type.lower()
-
-        if report_type == 'play':
-            threading.Thread(target=self.play_session.play, daemon=True).start()
-        elif report_type == 'pause':
-            threading.Thread(target=self.play_session.pause, daemon=True).start()
-        elif report_type == 'stop':
-            threading.Thread(target=self.play_session.stop, daemon=True).start()
-        elif report_type == 'progress':
-            threading.Thread(target=self.play_session.progress, daemon=True).start()
 
     def getSongDetails(self, model_id:str) -> models.SongDetails:
         if model := self.loaded_models.get(model_id):

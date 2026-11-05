@@ -81,6 +81,13 @@ class NocturneWindow(Adw.ApplicationWindow):
                                 current_timestamp=timestamp
                             )
                     integration.savePlayQueue(id_list, song_id, timestamp * 1000)
+                    if player.get_property('currentSong'):
+                        integration.report.quit(
+                            player.get_property('songId'),
+                            position=player.get_property('positionSeconds'),
+                            playtime=player.get_property('playtimeSeconds'),
+                            duration=player.get_property('currentSong').get_property('duration')
+                        )
                     integration.terminate_instance()
         callback()
 

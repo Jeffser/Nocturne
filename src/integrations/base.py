@@ -13,6 +13,59 @@ logger = logging.getLogger(__name__)
 # Just so that the logs don't get cluttered with warnings if trust-server = True
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
+class BaseReportManager():
+    def __init__(self, integration):
+        self.integration = integration
+
+    def start(self, song_id:str, paused:bool=False, position:float=0.0):
+        # Start song playback when no song was playing
+        # If changing songs use change_song() function
+        #   position - the positionSeconds the song will start at for resuming playback
+        #   paused - whether the song was started paused, used by Jellyfin
+        # Call super().start() to preserve local scrobbling and ListenBrainz reporting
+        self.integration.scrobble(song_id, submission=False)
+
+    def stop(self, song_id:str, position:float=0.0, playtime:int=0, duration:int=0):
+        # Stop song playback when no song is remaining in queue
+        # If changing songs use change_song() function
+        #   position - the positionSeconds the playback ended at, used by Jellyfin
+        #   playtime - the seconds the user actively listened, used by ListenBrainz
+        #   duration - the duration of the track, used by ListenBrainz
+        # Call super().stop() to preserve local scrobbling and ListenBrainz reporting
+        if (playtime >= 240) or (playtime >= duration / 2):
+            self.integration.scrobble(song_id, playtime=playtime, submission=True)
+
+    def change_song(self, starting_id:str, finished_id:str, start_position:float=0.0, finish_position:float=0.0, playtime:int=0, duration:int=0):
+        # Reports when one song has ended and another one is starting
+        #   starting_id - the model_id for the incoming track
+        #   finished_id - the model_id for the finished track
+        #   start_position - the positionSeconds the song will start at for resuming playback
+        #   finish_position - the positionSeconds the playback ended at, used by Jellyfin
+        #   playtime - the seconds the user actively listened, used by ListenBrainz
+        #   duration - the duration of the track, used by ListenBrainz
+        # Call super().stop() to preserve local scrobbling and ListenBrainz reporting
+        if (playtime >= 240) or (playtime >= duration / 2):
+            self.integration.scrobble(finished_id, playtime=playtime, submission=True)
+            time.sleep(1.2) #prevent API flood protection
+        self.integration.scrobble(starting_id, submission=False)
+
+    def playing(self, song_id:str, paused:bool, position:float):
+        # Reports playback state - play/pause status and the position
+        # Meant to be used for keep-alive pulses
+        #   position - the positionSeconds the playback ended at, used by Jellyfin
+        #   paused - whether the song is currently paused, used by Jellyfin
+        # Currently only used by jellyfin.py
+        pass
+
+    def quit(self, song_id:str, position:float=0.0, playtime:int=0, duration:int=0):
+        # Report that the application is closing
+        #   position - the positionSeconds the playback ended at, used by Jellyfin
+        #   playtime - the seconds the user actively listened, used by ListenBrainz
+        #   duration - the duration of the track, used by ListenBrainz
+        # Call super().quit() to preserve local scrobbling and ListenBrainz reporting
+        if (playtime >= 240) or (playtime >= duration / 2):
+            self.integration.scrobble(song_id, playtime=playtime, submission=True)
+
 class CacheManager(GObject.Object):
     __gtype_name__ = 'NocturneCacheManager'
 
@@ -116,6 +169,9 @@ class Base(GObject.Object):
         )
     )
 
+    # Playback reporting class
+    report_manager_class = BaseReportManager
+
     @property
     def session(self):
         session = requests.Session()
@@ -133,6 +189,7 @@ class Base(GObject.Object):
         # do not change
         super().__init__(*args, **kwargs)
         self.loaded_models = {}
+        self.report = self.report_manager_class(self)
 
         self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
         self.library_ids = self.settings.get_strv("library-ids")
@@ -548,19 +605,17 @@ class Base(GObject.Object):
         # see navidrome.py for example
         logger.warning('method not implemented')
 
-    def playbackReport(self, report_type:str):
-        # reports current song, play/pause status, and song position to server
-        # currently only used in jellyfin.py
-        pass
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool=True):
+        if submission and not playtime:
+            logger.warning("Invalid scrobble, submissions must include the playtime for ListenBrainz")
+            return
 
-    def scrobble(self, model_id:str, submission:bool=True):
         # the id is for a Song, this is how views are stored
         # called when a song is played
         # if you need to inherit this, also call super().scrobble(id) so that listenbrainz can also get the scrobble
 
         # TODO IMPORTANT: current-state is no longer available at an integration-level
         # the values requested should be parsed to scrobble (also affects other integrations functions)
-        return
 
         # Playback (monthly scrobble)
         date_formated = datetime.now().strftime("%m-%Y")
@@ -592,7 +647,7 @@ class Base(GObject.Object):
                 }
                 
                 if submission:
-                    listen_payload["listened_at"] = int(time.time() - (self.get_property('current-state').get_property('positionSeconds') or 0))
+                    listen_payload["listened_at"] = int(time.time() - playtime)
 
                 payload = {
                     "listen_type": "single" if submission else "playing_now",
@@ -600,6 +655,7 @@ class Base(GObject.Object):
                 }
                 headers = {
                     "Authorization": f"Token {token}",
+                    "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://jeffser.com/nocturne/ )",
                     "Content-Type": "application/json"
                 }
                 try:
@@ -607,6 +663,7 @@ class Base(GObject.Object):
                 except:
                     pass
 
+        return
         # Playlist Resume
         queue_origin_id = self.get_property('current-state').get_property('queueOrigin')
         current_timestamp = self.get_property('current-state').get_property('positionSeconds')
