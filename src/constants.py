@@ -374,7 +374,8 @@ TRANSLATORS = [
     "Milo Ivir (Croatian) https://github.com/milotype",
     "Aryan Karamtoth (Telugu) https://github.com/spaciouskarter78",
     "Rikelry Souza (Brazilian Portuguese) https://github.com/Rikelry",
-    "Federico Veronesi (Italian) https://github.com/vh45f"
+    "Federico Veronesi (Italian) https://github.com/vh45f",
+    "Vianney Pacaud (French) https://github.com/Vianney-conception"
 ]
 
 PLAYBACK_MODES = {
