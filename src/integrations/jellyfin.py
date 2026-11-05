@@ -1246,7 +1246,7 @@ class Jellyfin(Base):
                 "title": item.get("Name"),
                 "album": item.get("Album"),
                 "albumId": item.get("AlbumId"),
-                "artist": item.get("AlbumArtist"),
+                "artist": (artists or [{}])[0].get("Name"),
                 "artistId": (artists or [{}])[0].get("Id"),
                 "coverArt": cover_art,
                 "duration": duration,
