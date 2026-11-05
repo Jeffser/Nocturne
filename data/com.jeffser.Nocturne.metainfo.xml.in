@@ -97,6 +97,22 @@
   </keywords>
 
   <releases>
+    <release version="1.6.0" date="2026-11-05">
+      <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/1.6.0</url>
+      <description>
+        <p>New</p>
+        <ul>
+          <li>Ported Nocturne to the Gnome 51 Platform</li>
+          <li>Rewrite of most widgets to use direct GTK4 bindings instead of Python callbacks</li>
+          <li>Better stability and optimisations</li>
+          <li>Tweaks and fixes to multiple UI widgets</li>
+        </ul>
+        <p>Fixes</p>
+        <ul>
+          <li>New binding system fixes inconsistencies with UI and the playing track</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.5.2" date="2026-10-16">
       <url type="details">https://github.com/Jeffser/Nocturne/releases/tag/1.5.2</url>
       <description>
