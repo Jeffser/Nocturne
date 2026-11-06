@@ -22,14 +22,11 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
         )
         self.song_list_el.main_stack.set_visible_child_name('content')
 
-    def setup(self):
-        if root := self.get_root():
-            if app := root.get_application():
-                if player := app.get_property('player'):
-                    global_queue = player.get_property('queueModel')
-                    if len(list(self.song_list_el.list_el)) == 0:
-                        self.queue_changed(global_queue, 0, 0, global_queue.get_property('n-items'))
-                    global_queue.connect('items-changed', self.queue_changed)
+    def setup(self, player):
+        global_queue = player.get_property('queueModel')
+        if len(list(self.song_list_el.list_el)) == 0:
+            self.queue_changed(global_queue, 0, 0, global_queue.get_property('n-items'))
+        global_queue.connect('items-changed', self.queue_changed)
 
     def queue_changed(self, global_queue, position:int, removed:int, added:int):
         for _ in range(removed):
