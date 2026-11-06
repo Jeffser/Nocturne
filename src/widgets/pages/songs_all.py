@@ -51,6 +51,7 @@ class SongsAllPage(Adw.NavigationPage):
     def do_showing(self):
         if self.lazy_reload:
             self.reload()
+        Adw.NavigationPage.do_showing(self)
 
     def search(self, count=30):
         if self.searching:
