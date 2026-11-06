@@ -106,13 +106,10 @@ class PlayingLyricsPage(Gtk.Stack):
         context["remove"]["connection"] = self.go_to_main
         self.lrc_menu_popover.set_child(ContextContainer(context))
 
-    def setup(self):
+    def setup(self, player):
         # Called after login
-        if root := self.get_root():
-            if app := root.get_application():
-                if player := app.get_property('player'):
-                    player.connect_to_state('songId', self.song_changed)
-                    player.connect_to_state('positionSeconds', self.position_changed)
+        player.connect_to_state('songId', self.song_changed)
+        player.connect_to_state('positionSeconds', self.position_changed)
 
     def update_lyrics(self, song_id:str, attempt_download:bool):
         # We verify if the song requested and the current song are the same

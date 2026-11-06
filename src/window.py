@@ -207,20 +207,20 @@ class NocturneWindow(Adw.ApplicationWindow):
 
     def setup(self):
         # call using glib_add
+        if app := self.get_application():
+            if player := app.get_property('player'):
+                self.queue_page.setup(player)
+                self.sidebar_queue_page.setup(player)
+                self.lyrics_page.setup(player)
+                self.sidebar_lyrics_page.setup(player)
+                player.connect_to_state('buttonState', self.playback_changed)
+                player.connect_to_state('songId', self.song_changed)
         self.playing_page.setup()
-        self.lyrics_page.setup()
-        self.queue_page.setup()
         self.sidebar_playing_page.setup()
-        self.sidebar_lyrics_page.setup()
-        self.sidebar_queue_page.setup()
         self.downloads_button_el.setup()
         self.setup_sidebar()
         self.sidebar_playing_page.show_sidebar_el.set_visible(False)
         threading.Thread(target=self.notify_playback).start()
-        if app := self.get_application():
-            if player := app.get_property('player'):
-                player.connect_to_state('buttonState', self.playback_changed)
-                player.connect_to_state('songId', self.song_changed)
 
     def playback_changed(self, buttonState:str):
         if application := self.get_application():

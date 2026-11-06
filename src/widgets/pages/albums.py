@@ -42,6 +42,7 @@ class AlbumsPage(Adw.NavigationPage):
     def do_showing(self):
         if self.lazy_reload:
             self.reload()
+        Adw.NavigationPage.do_showing(self)
 
     def reset(self):
         GLib.idle_add(self.list_el.remove_all)
