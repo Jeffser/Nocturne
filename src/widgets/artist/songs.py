@@ -2,7 +2,7 @@
 # handles both starred artists and songs
 
 from gi.repository import Gtk, Adw, GLib, Gio
-from ...integrations import get_current_integration
+from ...integrations import secret
 from ..song import SongRow
 import re, threading, locale, random
 
@@ -15,10 +15,12 @@ class ArtistSongsPage(Adw.NavigationPage):
     main_stack = Gtk.Template.Child()
     scrolledwindow = Gtk.Template.Child()
     failed_status_el = Gtk.Template.Child()
+    sort_section_el = Gtk.Template.Child()
     offset = 0
     searching = False
     reorder = True
     song_list = []
+    listenbrainz_list = []
 
     def __init__(self, model_id:str):
         super().__init__()
@@ -40,13 +42,23 @@ class ArtistSongsPage(Adw.NavigationPage):
         self.action_group.add_action(sort_radios)
         self.insert_action_group("sort", self.action_group)
 
-        threading.Thread(target=self.fetch_songs, daemon=True).start()
+        #Add a ListenBrainz sort option if the user is logged into ListenBrainz
+        if secret.get_plain_password(schema_type="listenbrainz"):
+            listenbrainz_item = Gio.MenuItem.new("ListenBrainz Top Plays", "sort.sort-order('listenbrainz')")
+            self.sort_section_el.append_item(listenbrainz_item)
+
         self.scrolledwindow.get_vadjustment().connect('notify::upper', lambda va, ud: GLib.timeout_add(1000, self.check_scrollbar, va))
 
+    def do_showing(self):
+        threading.Thread(target=self.fetch_songs, daemon=True).start()
+        Adw.NavigationPage.do_showing(self)
+
     def fetch_songs(self):
-        integration = get_current_integration()
-        self.song_list = integration.getArtistSongs(self.id)
-        self.search()
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    self.song_list = integration.getArtistSongs(self.id)
+                    self.search()
 
     def search(self):
         def append_widgets(ids_to_add:list):
@@ -63,11 +75,17 @@ class ArtistSongsPage(Adw.NavigationPage):
 
         if self.searching:
             return
+
+        #Ensure integration is available
+        if root := self.get_root():
+            if app := root.get_application():
+                if not (integration := app.get_property('integration')):
+                    return
+
         if self.reorder:
             self.sort_list()
-
         self.searching = True
-        integration = get_current_integration()
+
         ids_to_show = []
         query = ""
         if query := self.search_entry_el.get_text():
@@ -123,30 +141,48 @@ class ArtistSongsPage(Adw.NavigationPage):
         threading.Thread(target=run, daemon=True).start()
 
     def sort_list(self):
+        #Ensure integration is available
+        if root := self.get_root():
+            if app := root.get_application():
+                if not (integration := app.get_property('integration')):
+                    return
+
         #Get popover menu item states
         sort_order = self.action_group.lookup_action("sort-order").get_state().get_string()
         favorites_only = self.action_group.lookup_action("favorites-only").get_state().get_boolean()
 
-        integration = get_current_integration()
-        if favorites_only:
-            filtered_list = [
-                song for song in self.song_list
-                if (model := integration.loaded_models.get(song)) and model.get_property("starred")
-            ]
-        else:
-            filtered_list = self.song_list
+        if sort_order != "listenbrainz":
+            if favorites_only:
+                filtered_list = [
+                    song for song in self.song_list
+                    if (model := integration.loaded_models.get(song)) and model.get_property("starred")
+                ]
+            else:
+                filtered_list = self.song_list
 
-        if sort_order == "random":
-            random.shuffle(self.item_ids)
+            if sort_order == "random":
+                random.shuffle(self.item_ids)
+            else:
+                self.item_ids = sorted(
+                    filtered_list,
+                    key=lambda item_id: (
+                        locale.strxfrm(result) if isinstance((result := integration.loaded_models.get(item_id).get_property(sort_order)), str)
+                        else result
+                    ),
+                    reverse=(sort_order == "playCount")
+                )
         else:
-            self.item_ids = sorted(
-                filtered_list,
-                key=lambda item_id: (
-                    locale.strxfrm(result) if isinstance((result := integration.loaded_models.get(item_id).get_property(sort_order)), str)
-                    else result
-                ),
-                reverse=(sort_order == "playCount")
-            )
+            if not self.listenbrainz_list:
+                self.listenbrainz_songs = integration.getListenBrainzTopSongs(self.id, count=100)
+            if self.listenbrainz_songs:
+                if favorites_only:
+                    filtered_list = [
+                        song for song in self.listenbrainz_songs
+                        if (model := integration.loaded_models.get(song)) and model.get_property("starred")
+                    ]
+                    self.item_ids = filtered_list
+                else:
+                    self.item_ids = self.listenbrainz_songs
         self.reorder = False
 
     def on_favorites_toggled(self, action, parameter):
