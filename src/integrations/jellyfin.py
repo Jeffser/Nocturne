@@ -1504,7 +1504,7 @@ class Jellyfin(Base):
             }
         ).get('Items', [])
         self.__bulk_compile(MediaType.SONG, songs)
-        return [{'id': song.get('Id'), 'name': song.get('Name'), 'album': song.get('Album')} for song in songs if song.get('Id')]
+        return [song.get('Id') for song in songs if song.get('Id')]
 
     def getArtistSongs(self, artist_id:str) -> list:
         def fetch_album(album_id) -> list:
