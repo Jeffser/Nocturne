@@ -284,6 +284,8 @@ class Navidrome(Base):
             album_dict = response.get('album', {})
             if album_dict.get('id'):
                 self.loaded_models.get(model_id).update_data(**album_dict)
+                for song in album_dict.get("song", []):
+                    self.verifySong(song.get("id"), use_threading=False, song_data=song)
             elif model_id in self.loaded_models:
                 del self.loaded_models[model_id]
 
@@ -320,10 +322,13 @@ class Navidrome(Base):
 
         self.threads.submit(self.updateCoverArt, model_id)
 
-    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
+    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False, song_data:dict={}):
         def update():
-            response = self.make_request('getSong', {'id': model_id})
-            song_dict = response.get('song', {})
+            if not song_data:
+                response = self.make_request('getSong', {'id': model_id})
+                song_dict = response.get('song', {})
+            else:
+                song_dict = song_data
             if song_dict.get('id'):
                 if 'artists' not in song_dict and song_dict.get('artistId'):
                     song_dict['artists'] = [{
