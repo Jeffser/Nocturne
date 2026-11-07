@@ -1,7 +1,7 @@
 # page.py
 
-from gi.repository import GObject, Gtk, Gdk, Adw, GLib, Pango
-from ...integrations import get_current_integration, models
+from gi.repository import GObject, Gtk, Gdk, Adw, GLib, Pango, Gio
+from ...integrations import get_current_integration, models, secret
 from ...constants import CONTEXT_ARTIST
 from ..containers import get_context_buttons_list
 from ..song import SongSmallRow
@@ -28,6 +28,10 @@ class ArtistPage(Adw.NavigationPage):
     rating_container = Gtk.Template.Child()
     context_wrap_el = Gtk.Template.Child()
 
+    #top song lists
+    local_top_songs = []
+    listenbrainz_top_songs = []
+
     def __init__(self, id:str):
         self.id = id
         integration = get_current_integration()
@@ -47,8 +51,39 @@ class ArtistPage(Adw.NavigationPage):
         self.top_songs_wrapbox.list_el.set_justify_last_line(True)
         self.top_songs_wrapbox.list_el.set_child_spacing(5)
         self.top_songs_wrapbox.list_el.set_line_spacing(5)
-        thread = threading.Thread(target=self.update_top_songs, daemon=True)
-        GLib.idle_add(thread.start)
+
+        if secret.get_plain_password(schema_type="listenbrainz"):
+            #Create toggle group for local vs ListenBrainz top songs
+            toggle_group = Adw.ToggleGroup()
+            local_button = Adw.Toggle(
+                name = "local",
+                icon_name = "person-symbolic",
+                tooltip = _("My Top Plays")
+            )
+            toggle_group.add(local_button)
+            listenbrainz_button = Adw.Toggle(
+                name = "listenbrainz",
+                icon_name = "globe-symbolic",
+                tooltip = _("ListenBrainz Top Plays")
+            )
+            toggle_group.add(listenbrainz_button)
+            self.top_songs_wrapbox.header_suffix.append(toggle_group)
+            toggle_group.connect("notify::active-name", self.top_song_source_changed)
+
+            self.settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+            self.settings.bind(
+                "default-view-mode-top-songs",
+                toggle_group,
+                "active-name",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+            self.top_songs_source = self.settings.get_string("default-view-mode-top-songs")
+        else:
+            self.top_songs_source = "local"
+
+    def do_showing(self):
+        threading.Thread(target=self.update_top_songs, daemon=True).start()
+        Adw.NavigationPage.do_showing(self)
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:
@@ -82,30 +117,47 @@ class ArtistPage(Adw.NavigationPage):
             self.update_background(paintable.save_to_png_bytes().get_data())
         return paintable
 
+    def top_song_source_changed(self, toggle_group, _):
+        self.top_songs_source = toggle_group.get_active_name()
+        threading.Thread(target=self.update_top_songs, daemon=True).start()
+
     def update_top_songs(self):
         # call update_top_songs on background thread
 
         def configure():
-            widgets = [SongSmallRow(song_id, show_album_name=True) for song_id in top_songs[:10]]
-            for row in widgets:
-                row.set_action_name(None)
-                row.set_action_target_value(GLib.Variant('a{sv}', {
-                    'songId': GLib.Variant('s', row.id),
-                    'songs': GLib.Variant('as', top_songs),
-                    'originId': GLib.Variant('s', self.id)
-                }))
-                row.set_action_name('app.play_song_from_list')
+            if top_songs:
+                widgets = [SongSmallRow(song_id, show_album_name=True) for song_id in top_songs[:10]]
+                for row in widgets:
+                    row.set_action_name(None)
+                    row.set_action_target_value(GLib.Variant('a{sv}', {
+                        'songId': GLib.Variant('s', row.id),
+                        'songs': GLib.Variant('as', top_songs),
+                        'originId': GLib.Variant('s', self.id)
+                    }))
+                    row.set_action_name('app.play_song_from_list')
+            else:
+                label = Gtk.Label(label=_("No Songs Found"))
+                label.add_css_class("title-3")
+                label.add_css_class("dimmed")
+                widgets = [label]
+
             self.top_songs_wrapbox.set_widgets(widgets)
 
         top_songs = None
         if root := self.get_root():
             if app := root.get_application():
                 if integration := app.get_property('integration'):
-                    top_songs = integration.getTopSongs(self.id, count=30)
-        if top_songs:
-            GLib.idle_add(configure)
-        else:
-            GLib.idle_add(self.top_songs_wrapbox.set_visible, False)
+                    if self.top_songs_source == "local":
+                        if not self.local_top_songs:
+                            GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
+                            self.local_top_songs = integration.getTopSongs(self.id, count=30)
+                        top_songs = self.local_top_songs
+                    elif self.top_songs_source == "listenbrainz":
+                        if not self.listenbrainz_top_songs:
+                            GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
+                            self.listenbrainz_top_songs = integration.getListenBrainzTopSongs(self.id, count=30)
+                        top_songs = self.listenbrainz_top_songs
+        GLib.idle_add(configure)
 
     def update_background(self, raw_bytes:bytes):
         def run():

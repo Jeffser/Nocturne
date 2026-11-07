@@ -7,15 +7,19 @@ class Wrapbox(Gtk.Box):
     __gtype_name__ = 'NocturneWrapbox'
 
     header_button = Gtk.Template.Child()
+    header_suffix = Gtk.Template.Child()
+    loading_spinner = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
     header_label = GObject.Property(type=str, default="")
     header_icon_name = GObject.Property(type=str, default="")
     header_action_target = GObject.Property(type=str, default="")
     header_action_name = GObject.Property(type=str, default="")
 
-    def remove_all(self):
+    def remove_all(self, loading:bool=False):
         for child in list(self.list_el):
             self.list_el.remove(child)
+        if loading:
+            self.set_widgets([self.loading_spinner])
 
     def set_widgets(self, widgets:list):
         if len(list(self.list_el)):

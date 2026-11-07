@@ -5,24 +5,34 @@ template $NocturneWrapbox: Gtk.Box {
   orientation: vertical;
   spacing: 10;
 
-  Gtk.Button header_button {
-    styles [
-      "flat",
-      "title-2",
-      "active_appearance_button"
-    ]
-    margin-start: 10;
-    margin-end: 10;
-    halign: start;
-    sensitive: false;
-    child: Adw.ButtonContent {
-      label: bind template.header-label;
-      icon-name: bind template.header-icon-name;
-    };
-    tooltip-text: bind template.header-label;
-    visible: bind $handle_visible_bind(template.header-label);
-    action-name: bind template.header-action-name;
-    action-target: bind $handle_action_target_bind(template.header-action-target);
+  Gtk.CenterBox {
+    [start]
+    Gtk.Button header_button {
+      styles [
+        "flat",
+        "title-2",
+        "active_appearance_button"
+      ]
+      margin-start: 10;
+      margin-end: 10;
+      halign: start;
+      sensitive: false;
+      child: Adw.ButtonContent {
+        label: bind template.header-label;
+        icon-name: bind template.header-icon-name;
+      };
+      tooltip-text: bind template.header-label;
+      visible: bind $handle_visible_bind(template.header-label);
+      action-name: bind template.header-action-name;
+      action-target: bind $handle_action_target_bind(template.header-action-target);
+    }
+
+    [end]
+    Gtk.Box header_suffix{
+      margin-start: 10;
+      margin-end: 10;
+      halign: end;
+    }
   }
 
   Adw.WrapBox list_el {
@@ -31,7 +41,7 @@ template $NocturneWrapbox: Gtk.Box {
     child-spacing: 10;
     line-spacing: 10;
 
-    Adw.Spinner {
+    Adw.Spinner loading_spinner {
       height-request: 240;
       width-request: 240;
     }
