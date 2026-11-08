@@ -19,7 +19,7 @@ class Wrapbox(Gtk.Box):
         for child in list(self.list_el):
             self.list_el.remove(child)
         if loading:
-            self.set_widgets([self.loading_spinner])
+            self.list_el.append(self.loading_spinner)
 
     def set_widgets(self, widgets:list):
         if len(list(self.list_el)):

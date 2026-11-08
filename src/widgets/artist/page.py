@@ -141,18 +141,20 @@ class ArtistPage(Adw.NavigationPage):
                 label.add_css_class("dimmed")
                 widgets = [label]
 
-            self.top_songs_wrapbox.set_widgets(widgets)
+            if source == self.top_songs_source: #ensure source hasn't changed since thread started
+                self.top_songs_wrapbox.set_widgets(widgets)
 
         top_songs = None
+        source = self.top_songs_source
         if root := self.get_root():
             if app := root.get_application():
                 if integration := app.get_property('integration'):
-                    if self.top_songs_source == "local":
+                    if source == "local":
                         if not self.local_top_songs:
                             GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
                             self.local_top_songs = integration.getTopSongs(self.id, count=30)
                         top_songs = self.local_top_songs
-                    elif self.top_songs_source == "listenbrainz":
+                    elif source == "listenbrainz":
                         if not self.listenbrainz_top_songs:
                             GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
                             self.listenbrainz_top_songs = integration.getListenBrainzTopSongs(self.id, count=30)

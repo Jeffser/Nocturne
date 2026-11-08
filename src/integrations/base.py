@@ -635,7 +635,7 @@ class Base(GObject.Object):
                             try:
                                 response = requests.get(f"https://api.listenbrainz.org/1/metadata/lookup", params={'artist_name':artist_name, 'recording_name':song_name}, headers=headers)
                             except Exception as e:
-                                print(e)
+                                logger.warning(f'ListenBrainz MBID lookup failed with {e}')
                             if mb_ids := response.json().get("artist_mbids", []):
                                 mb_id = mb_ids[0]
                             time.sleep(1.2) #prevent API flood protection
@@ -644,7 +644,7 @@ class Base(GObject.Object):
                 try:
                     response = requests.get(f"https://api.listenbrainz.org/1/popularity/top-recordings-for-artist/{mb_id}", headers=headers)
                 except Exception as e:
-                    print(e)
+                    logger.warning(f'ListenBrainz popularity lookup failed with {e}')
 
                 listenbrainz_songs = response.json()
                 local_songs = [self.loaded_models.get(song_id) for song_id in self.getArtistSongs(artist_id)]
