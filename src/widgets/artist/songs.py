@@ -44,7 +44,7 @@ class ArtistSongsPage(Adw.NavigationPage):
 
         #Add a ListenBrainz sort option if the user is logged into ListenBrainz
         if secret.get_plain_password(schema_type="listenbrainz"):
-            listenbrainz_item = Gio.MenuItem.new("ListenBrainz Top Plays", "sort.sort-order('listenbrainz')")
+            listenbrainz_item = Gio.MenuItem.new(_("ListenBrainz Top Plays"), "sort.sort-order('listenbrainz')")
             self.sort_section_el.append_item(listenbrainz_item)
 
         self.scrolledwindow.get_vadjustment().connect('notify::upper', lambda va, ud: GLib.timeout_add(1000, self.check_scrollbar, va))
@@ -174,15 +174,14 @@ class ArtistSongsPage(Adw.NavigationPage):
         else:
             if not self.listenbrainz_list:
                 self.listenbrainz_songs = integration.getListenBrainzTopSongs(self.id, count=100)
-            if self.listenbrainz_songs:
-                if favorites_only:
-                    filtered_list = [
-                        song for song in self.listenbrainz_songs
-                        if (model := integration.loaded_models.get(song)) and model.get_property("starred")
-                    ]
-                    self.item_ids = filtered_list
-                else:
-                    self.item_ids = self.listenbrainz_songs
+            if favorites_only:
+                filtered_list = [
+                    song for song in self.listenbrainz_songs
+                    if (model := integration.loaded_models.get(song)) and model.get_property("starred")
+                ]
+                self.item_ids = filtered_list
+            else:
+                self.item_ids = self.listenbrainz_songs
         self.reorder = False
 
     def on_favorites_toggled(self, action, parameter):

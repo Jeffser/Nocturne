@@ -666,13 +666,12 @@ class Navidrome(Base):
 
     def getArtistSongs(self, artist_id:str) -> list:
         def fetch_album(album_id) -> list:
-            self.verifyAlbum(album_id, use_threading=False)
+            self.verifyAlbum(album_id, force_update=True, use_threading=False)
             if album_model := self.loaded_models.get(album_id):
-                songs = [s.get('id') for s in album_model.get_property('song')]
-                return songs
+                return [s.get('id') for s in album_model.get_property('song')]
             return []
 
-        self.verifyArtist(artist_id, use_threading=False)
+        self.verifyArtist(artist_id, force_update=True, use_threading=False)
         songs = []
         if model := self.loaded_models.get(artist_id):
             with ThreadPoolExecutor() as executor:

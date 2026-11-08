@@ -1542,8 +1542,7 @@ class Jellyfin(Base):
         def fetch_album(album_id) -> list:
             self.verifyAlbum(album_id, use_threading=False)
             if album_model := self.loaded_models.get(album_id):
-                songs = [s.get('id') for s in album_model.get_property('song')]
-                return songs
+                return [s.get('id') for s in album_model.get_property('song')]
             return []
 
         def fetch_guest_tracks(album_id) -> list:
