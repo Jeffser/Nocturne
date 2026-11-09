@@ -116,6 +116,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     use_sidebar_player_el = Gtk.Template.Child()
     hide_singles_el = Gtk.Template.Child()
     button_size_el = Gtk.Template.Child()
+    cover_quality_el = Gtk.Template.Child()
     sidebar_decoration_stack_el = Gtk.Template.Child()
 
     ## Dynamic Background
@@ -300,6 +301,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
         settings.bind(
             "button-size",
             self.button_size_el,
+            "active-name",
+            Gio.SettingsBindFlags.DEFAULT
+        )
+        settings.bind(
+            "cover-quality",
+            self.cover_quality_el,
             "active-name",
             Gio.SettingsBindFlags.DEFAULT
         )
@@ -666,6 +673,11 @@ class NocturnePreferences(Adw.PreferencesDialog):
                 dialog.choose(self.get_root(), None, lambda *_, st=settings, ky=key: st.set_boolean(ky, False))
 
     @Gtk.Template.Callback()
+    def cover_quality_changed(self, toggle_group, gparam):
+        #TODO - reset image cache
+        pass
+
+    @Gtk.Template.Callback()
     def sidebar_decoration_add_requested(self, button):
         def response(dialog, task):
             settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
@@ -691,5 +703,6 @@ class NocturnePreferences(Adw.PreferencesDialog):
             os.remove(SIDEBAR_DECORATION_PATH)
         Gio.Settings(schema_id="com.jeffser.Nocturne").set_boolean('show-sidebar-decoration', False)
         self.sidebar_decoration_stack_el.set_visible_child_name('add')
+
 
 

@@ -704,7 +704,7 @@ CONTEXT_LYRICS = {
 }
 
 COVER_SIZE = {
-    "gdkPaintableBig": 720,
-    "gdkPaintableMedium": 480,
-    "gdkPaintableSmall": 240
+    "gdkPaintableBig": 600,
+    "gdkPaintableMedium": 240,
+    "gdkPaintableSmall": 48
 }
