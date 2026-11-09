@@ -683,7 +683,7 @@ class Navidrome(Base):
         except:
             pass
 
-    def scrobble(self, model_id:str, playtime:int, submission:bool = True):
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool = True):
         # Registers the song as played, useful for keeping track of "most played" albums and the sorts
         if model := self.loaded_models.get(model_id) :
             if not model.isExternalFile:
