@@ -187,11 +187,9 @@ class Local(Base):
 
     def updateCoverArt(self, model_id:str):
         if model := self.loaded_models.get(model_id):
-            sizes = {
-                'gdkPaintableBig': 720,
-                'gdkPaintable': 240
-            }
             for property_name, size in COVER_SIZE.items():
+                if self.settings.get_string('cover-quality') == "high":
+                    size *= 2
                 if not model.get_property(property_name):
                     try:
                         if response_bytes := self.getCoverArtBytes(model_id, size):

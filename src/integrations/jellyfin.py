@@ -404,8 +404,11 @@ class Jellyfin(Base):
                 local.Local.updateCoverArt(self, model_id)
                 return
 
-            size = COVER_SIZE['gdkPaintableBig']
             if not model.get_property('gdkPaintableBig') or not model.get_property('gdkPaintableMedium') or not model.get_property('gdkPaintableSmall'):
+                multiplier = 1 if self.settings.get_string('cover-quality') == "low" else 2
+
+                #Get gdkPaintableBig as a base to resize from
+                size = COVER_SIZE['gdkPaintableBig'] * multiplier
                 full_bytes = self.get_cache_image(model_id, size)
                 if not full_bytes:
                     if model.get_property('coverArt'):
@@ -416,8 +419,11 @@ class Jellyfin(Base):
                         self.save_cache_image(model_id, size, full_bytes)
                     else:
                         return #return if API didn't provide any cover art
+
+                #Resize gdkPaintableMedium and gdkPaintableSmall and write all images to the model
                 paintable_dict = {}
                 for key, size in COVER_SIZE.items():
+                    size *= multiplier
                     if key == 'gdkPaintableBig':
                         paintable_bytes = full_bytes
                     else:

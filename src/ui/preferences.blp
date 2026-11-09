@@ -191,6 +191,28 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
       }
 
       Adw.ActionRow {
+        title: _("Cover Art Quality");
+        subtitle: _("Choose the quality of cover art, can increase cache size");
+
+        [suffix]
+        Adw.ToggleGroup cover_quality_el {
+          valign: center;
+          notify::active-name => $cover_quality_changed();
+
+          Adw.Toggle {
+            tooltip: _("Low");
+            label: _("Low");
+            name: "low";
+          }
+          Adw.Toggle {
+            tooltip: _("High");
+            label: _("High");
+            name: "high";
+          }
+        }
+      }
+
+      Adw.ActionRow {
         title: _("Sidebar Decoration");
         subtitle: _("Add a small image to the bottom of the left sidebar");
         [suffix]

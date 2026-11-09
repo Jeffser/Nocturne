@@ -132,6 +132,8 @@ class Navidrome(Base):
                 return
 
             for property_name, size in COVER_SIZE.items():
+                if self.settings.get_string('cover-quality') == "high":
+                    size *= 2
                 if not model.get_property(property_name):
                     raw_bytes = self.get_cache_image(model_id, size)
                     save_cache = not raw_bytes
