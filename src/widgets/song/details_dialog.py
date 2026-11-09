@@ -39,7 +39,7 @@ class SongDetailsDialog(Adw.Dialog):
 
         paintable = None
         if model := integration.loaded_models.get(self.id):
-            paintable = model.get_property('gdkPaintable')
+            paintable = model.get_property('gdkPaintableMedium')
         self.cover_el.set_paintable(paintable)
         self.cover_el.set_visible(paintable)
         property_list = song_details.list_properties()

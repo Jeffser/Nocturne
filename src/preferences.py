@@ -3,7 +3,7 @@
 from gi.repository import GObject, Gtk, Adw, GLib, Gio, Gdk, Pango, Xdp, XdpGtk4, Gly
 
 from .integrations import secret
-from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, CACHE_DIR, DATA_DIR, SIDEBAR_DECORATION_PATH
+from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, DATA_DIR, SIDEBAR_DECORATION_PATH
 import os, threading, shutil
 
 # Handles sections and items of sidebar
@@ -116,6 +116,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     use_sidebar_player_el = Gtk.Template.Child()
     hide_singles_el = Gtk.Template.Child()
     button_size_el = Gtk.Template.Child()
+    cover_quality_el = Gtk.Template.Child()
     sidebar_decoration_stack_el = Gtk.Template.Child()
 
     ## Dynamic Background
@@ -148,6 +149,9 @@ class NocturnePreferences(Adw.PreferencesDialog):
     visualizer_auto_color_el = Gtk.Template.Child()
     visualizer_invert_auto_color_el = Gtk.Template.Child()
     visualizer_manual_color_el = Gtk.Template.Child()
+
+    #Track changes
+    cover_quality = ""
 
     def __init__(self):
         super().__init__()
@@ -303,6 +307,13 @@ class NocturnePreferences(Adw.PreferencesDialog):
             "active-name",
             Gio.SettingsBindFlags.DEFAULT
         )
+        settings.bind(
+            "cover-quality",
+            self.cover_quality_el,
+            "active-name",
+            Gio.SettingsBindFlags.DEFAULT
+        )
+        self.cover_quality = settings.get_string('cover-quality')
 
         if settings.get_value('show-sidebar-decoration').unpack() and not os.path.isfile(SIDEBAR_DECORATION_PATH):
             settings.set_boolean('show-sidebar-decoration', False)
@@ -597,11 +608,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
 
     @Gtk.Template.Callback()
     def delete_image_cache_requested(self, button):
-        db_path = os.path.join(CACHE_DIR, 'cache_database.db')
-        if os.path.isfile(db_path):
-            os.remove(db_path)
-        button.set_end_icon_name('check-plain-symbolic')
-        button.set_sensitive(False)
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    integration.reset_image_cache()
+                    button.set_end_icon_name('check-plain-symbolic')
+                    button.set_sensitive(False)
 
     @Gtk.Template.Callback()
     def home_mode_changed(self, toggle_group, gparam):
@@ -666,6 +678,15 @@ class NocturnePreferences(Adw.PreferencesDialog):
                 dialog.choose(self.get_root(), None, lambda *_, st=settings, ky=key: st.set_boolean(ky, False))
 
     @Gtk.Template.Callback()
+    def cover_quality_changed(self, toggle_group, gparam):
+        if self.cover_quality:
+            if toggle_group.get_active_name() != self.cover_quality:
+                if root := self.get_root():
+                    if app := root.get_application():
+                        if integration := app.get_property('integration'):
+                            integration.reset_image_cache()
+
+    @Gtk.Template.Callback()
     def sidebar_decoration_add_requested(self, button):
         def response(dialog, task):
             settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
@@ -691,5 +712,6 @@ class NocturnePreferences(Adw.PreferencesDialog):
             os.remove(SIDEBAR_DECORATION_PATH)
         Gio.Settings(schema_id="com.jeffser.Nocturne").set_boolean('show-sidebar-decoration', False)
         self.sidebar_decoration_stack_el.set_visible_child_name('add')
+
 
 

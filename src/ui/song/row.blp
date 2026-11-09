@@ -43,7 +43,7 @@ template $NocturneSongRow: Adw.ActionRow {
       transition-type: crossfade;
       visible-child-name: bind $format_cover_stack_visible_child_name(
         template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId,
-        template.model as <$NocturneModelSong> .gdkPaintable,
+        template.model as <$NocturneModelSong> .gdkPaintableSmall,
         template.draggable,
         template.cover-visible
       );
@@ -91,7 +91,7 @@ template $NocturneSongRow: Adw.ActionRow {
             overflow: hidden;
             valign: center;
             halign: center;
-            paintable: bind template.model as <$NocturneModelSong> .gdkPaintable;
+            paintable: bind template.model as <$NocturneModelSong> .gdkPaintableSmall;
           };
           [overlay]
           Gtk.Image {
