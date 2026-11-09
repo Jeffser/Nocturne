@@ -59,10 +59,10 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               ]
             }
 
-            Adw.WrapBox {
-              child-spacing: 5;
-              line-spacing: 5;
-              justify: fill;
+            Gtk.Box {
+              orientation: vertical;
+              spacing: 5;
+              margin-bottom: 10;
               sensitive: bind $format_to_bool(
                 template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile,
                 true
