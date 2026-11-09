@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, GLib, Gdk, Gtk, Gio
 from . import models, secret, sql_instance
-from ..constants import get_nocturne_version, INTEGRATIONS_DIR, DATA_DIR
+from ..constants import get_nocturne_version, INTEGRATIONS_DIR, DATA_DIR, CACHE_DIR
 import requests, urllib3, time, os, json, threading, logging
 from datetime import datetime
 from requests.adapters import HTTPAdapter, Retry
@@ -290,6 +290,13 @@ class Base(GObject.Object):
         widget._nocturne_model_connections = []
         widget._nocturne_removed_from_tree = True
 
+    def reset_image_cache(self):
+        db_path = os.path.join(CACHE_DIR, 'cache_database.db')
+        if os.path.isfile(db_path):
+            os.remove(db_path)
+        sql_instance.ensure_schema(self)
+        sql_instance.ensure_cache_schema()
+
     def save_cache_image(self, model_id:str, size:int, image_data:bytes):
         # do not modify this function, it works as is in any instance
         # should be called in updateCoverArt
@@ -305,15 +312,19 @@ class Base(GObject.Object):
         # do not modify this function, it works as is in any instance
         # should be called in updateCoverArt
         conn, cursor = sql_instance.get_cache_connection()
-        cursor.execute(
-            "SELECT image from images WHERE integration=? AND model=? AND size=?",
-            (self.__gtype_name__, model_id, size)
-        )
         result = b''
-        if row := cursor.fetchone():
-            result = row[0] or b''
-        conn.commit()
-        conn.close()
+        try:
+            cursor.execute(
+                "SELECT image from images WHERE integration=? AND model=? AND size=?",
+                (self.__gtype_name__, model_id, size)
+            )
+            if row := cursor.fetchone():
+                result = row[0] or b''
+            conn.commit()
+        except Exception as e:
+            logger.warning(f"Could not retrieve cache image for {model_id}: {e}")
+        finally:
+            conn.close()
         return result
 
     def wrap_id(self, model_id:str, prefix:str) -> str:

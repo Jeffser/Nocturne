@@ -3,7 +3,7 @@
 from gi.repository import GObject, Gtk, Adw, GLib, Gio, Gdk, Pango, Xdp, XdpGtk4, Gly
 
 from .integrations import secret
-from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, CACHE_DIR, DATA_DIR, SIDEBAR_DECORATION_PATH
+from .constants import SIDEBAR_MENU, BITRATE_OPTIONS, IN_FLATPAK, DATA_DIR, SIDEBAR_DECORATION_PATH
 import os, threading, shutil
 
 # Handles sections and items of sidebar
@@ -149,6 +149,9 @@ class NocturnePreferences(Adw.PreferencesDialog):
     visualizer_auto_color_el = Gtk.Template.Child()
     visualizer_invert_auto_color_el = Gtk.Template.Child()
     visualizer_manual_color_el = Gtk.Template.Child()
+
+    #Track changes
+    cover_quality = ""
 
     def __init__(self):
         super().__init__()
@@ -310,6 +313,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
             "active-name",
             Gio.SettingsBindFlags.DEFAULT
         )
+        self.cover_quality = settings.get_string('cover-quality')
 
         if settings.get_value('show-sidebar-decoration').unpack() and not os.path.isfile(SIDEBAR_DECORATION_PATH):
             settings.set_boolean('show-sidebar-decoration', False)
@@ -604,11 +608,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
 
     @Gtk.Template.Callback()
     def delete_image_cache_requested(self, button):
-        db_path = os.path.join(CACHE_DIR, 'cache_database.db')
-        if os.path.isfile(db_path):
-            os.remove(db_path)
-        button.set_end_icon_name('check-plain-symbolic')
-        button.set_sensitive(False)
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    integration.reset_image_cache()
+                    button.set_end_icon_name('check-plain-symbolic')
+                    button.set_sensitive(False)
 
     @Gtk.Template.Callback()
     def home_mode_changed(self, toggle_group, gparam):
@@ -674,8 +679,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
 
     @Gtk.Template.Callback()
     def cover_quality_changed(self, toggle_group, gparam):
-        #TODO - reset image cache
-        pass
+        if self.cover_quality:
+            if toggle_group.get_active_name() != self.cover_quality:
+                if root := self.get_root():
+                    if app := root.get_application():
+                        if integration := app.get_property('integration'):
+                            integration.reset_image_cache()
 
     @Gtk.Template.Callback()
     def sidebar_decoration_add_requested(self, button):
