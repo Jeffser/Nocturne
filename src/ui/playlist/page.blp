@@ -46,8 +46,8 @@ template $NocturnePlaylistPage: Adw.NavigationPage {
               height-request: 240;
               overflow: hidden;
               halign: center;
-              paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintable;
-              pixel-size: bind $format_paintable_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintable);
+              paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintableBig;
+              pixel-size: bind $format_paintable_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintableBig);
               accessibility {
                 label: _("Playlist cover art");
               }

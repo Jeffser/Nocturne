@@ -779,7 +779,7 @@ class Player(GObject.Object):
                                 self.rg_volume.set_property('album-mode', False)
 
                             # Paintable
-                            threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintable'),), daemon=True).start()
+                            threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintableSmall'),), daemon=True).start()
 
                             # Misc
                             self.set_property('currentSong', model)

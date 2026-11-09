@@ -6,7 +6,7 @@ from .base import Base
 import random, threading, io, pathlib, re, os, time, uuid, pwd, getpass, shutil, logging
 from PIL import Image
 from tinytag import TinyTag
-from ..constants import DOWNLOADS_DIR, COMPATIBLE_EXTENSIONS, get_song_info_from_file, parse_year_tag
+from ..constants import DOWNLOADS_DIR, COMPATIBLE_EXTENSIONS, COVER_SIZE, get_song_info_from_file, parse_year_tag
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 logger = logging.getLogger(__name__)
@@ -191,7 +191,7 @@ class Local(Base):
                 'gdkPaintableBig': 720,
                 'gdkPaintable': 240
             }
-            for property_name, size in sizes.items():
+            for property_name, size in COVER_SIZE.items():
                 if not model.get_property(property_name):
                     try:
                         if response_bytes := self.getCoverArtBytes(model_id, size):
