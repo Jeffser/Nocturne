@@ -51,7 +51,7 @@ template $NocturnePlaylistButton: Gtk.Box {
         overflow: hidden;
         hexpand: true;
         icon-name: "music-note-symbolic";
-        paintable: bind $format_paintable(template.model as <$NocturneModelPlaylist> .gdkPaintable);
+        paintable: bind $format_paintable(template.model as <$NocturneModelPlaylist> .gdkPaintableMedium);
         accessibility {
           label: _("Playlist cover art");
         }

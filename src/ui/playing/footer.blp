@@ -36,7 +36,7 @@ template $NocturnePlayingFooter: Adw.BreakpointBin {
         height-request: bind $format_cover_art_size(template.forceHugeMode);
         width-request: bind $format_cover_art_size(template.forceHugeMode);
         pixel-size: bind $format_cover_art_pixel_size(template.forceHugeMode, cover_el.paintable);
-        paintable: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .gdkPaintable;
+        paintable: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .gdkPaintableSmall;
         overflow: hidden;
         valign: center;
       }
