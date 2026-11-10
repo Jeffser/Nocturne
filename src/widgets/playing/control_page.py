@@ -44,7 +44,9 @@ class PlayingControlPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant:str) -> GLib.Variant:
-        return GLib.Variant(variant, value)
+        if value:
+            return GLib.Variant(variant, value)
+        return None
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value, inverse:bool) -> bool:

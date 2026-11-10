@@ -67,9 +67,9 @@ class PlayerMprisAdapter(MprisAdapter):
                 self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
 
         if song.get_property('radioStreamUrl'):
-            if not (title := self.get_property("displaySongTitle")):
+            if not (title := self.player.gst_player.get_property("displaySongTitle")):
                 title = song.get_property('title')
-            if not (artist := self.get_property("displaySongArtist")):
+            if not (artist := self.player.gst_player.get_property("displaySongArtist")):
                 artist = song.get_property('title') #sets station name to artist if the song has a title
             if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
                 artist = urlparse(song.get_property('radioStreamUrl')).netloc
@@ -244,10 +244,6 @@ class PlayerEventAdapter(EventAdapter):
         self.mpris = Server("com.jeffser.Nocturne", adapter=self.adapter)
         super().__init__(root=self.mpris.root, player=self.mpris.player)
         self.interface = MprisInterface("Nocturne", self.adapter)
-        try:
-            self.mpris.publish()
-        except Exception as e:
-            logger.error(e)
 
 class Player(GObject.Object):
     __gtype_name__ = 'NocturnePlayer'
@@ -464,6 +460,11 @@ class Player(GObject.Object):
                         self.set_property('songId', id_list[next_index])
                     elif self.settings.get_value('auto-play').unpack():
                         self.auto_play()
+                    else:
+                        #close the player when queue finishes
+                        self.set_property('songId', None)
+                        self.event_adapter.mpris.unpublish()
+                        self.last_song = None
                 elif mode == 'repeat-all':
                     if next_index < len(id_list) and next_index >= 0:
                         self.set_property('songId', id_list[next_index])
@@ -633,7 +634,6 @@ class Player(GObject.Object):
     def handle_stream_start(self, bus, message):
         if preloaded_id := self.get_property('preloadedSongId'):
             self.set_property('songId', preloaded_id)
-            self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus'])
 
     def restore_play_queue(self):
         if integration := self.get_property('application').get_property('integration'):
@@ -717,6 +717,10 @@ class Player(GObject.Object):
             if integration := self.get_property('application').get_property('integration'):
                 if not self.last_song:
                     threading.Thread(target=integration.report.start, args=(song_id,)).start()
+                    try:
+                        self.event_adapter.mpris.publish()
+                    except Exception as e:
+                        logger.error(e)
                 else:
                     threading.Thread(target = integration.report.change_song,
                         kwargs = {
@@ -786,6 +790,7 @@ class Player(GObject.Object):
                             self.discord_rpc.update()
                     else:
                         self.gst.set_state(Gst.State.NULL)
+                self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus', 'Position'])
         else:
             self.gst.set_state(Gst.State.NULL)
         self.set_property('preloadedSongId', "")
