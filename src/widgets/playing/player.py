@@ -245,18 +245,6 @@ class PlayerEventAdapter(EventAdapter):
         super().__init__(root=self.mpris.root, player=self.mpris.player)
         self.interface = MprisInterface("Nocturne", self.adapter)
 
-    def publish(self):
-        try:
-            self.mpris.publish()
-        except Exception as e:
-            logger.error(e)
-
-    def unpublish(self):
-        try:
-            self.mpris.unpublish()
-        except Exception as e:
-            logger.error(e)
-
 class Player(GObject.Object):
     __gtype_name__ = 'NocturnePlayer'
 
@@ -475,7 +463,7 @@ class Player(GObject.Object):
                     else:
                         #close the player when queue finishes
                         self.set_property('songId', None)
-                        self.event_adapter.unpublish()
+                        self.event_adapter.mpris.unpublish()
                         self.last_song = None
                 elif mode == 'repeat-all':
                     if next_index < len(id_list) and next_index >= 0:
@@ -729,7 +717,10 @@ class Player(GObject.Object):
             if integration := self.get_property('application').get_property('integration'):
                 if not self.last_song:
                     threading.Thread(target=integration.report.start, args=(song_id,)).start()
-                    self.event_adapter.publish()
+                    try:
+                        self.event_adapter.mpris.publish()
+                    except Exception as e:
+                        logger.error(e)
                 else:
                     threading.Thread(target = integration.report.change_song,
                         kwargs = {
@@ -799,6 +790,7 @@ class Player(GObject.Object):
                             self.discord_rpc.update()
                     else:
                         self.gst.set_state(Gst.State.NULL)
+                self.event_adapter.emit_changes(self.event_adapter.mpris.player, changes=['Metadata', 'PlaybackStatus', 'Position'])
         else:
             self.gst.set_state(Gst.State.NULL)
         self.set_property('preloadedSongId', "")
