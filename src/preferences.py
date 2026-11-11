@@ -107,6 +107,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     library_expander_el = Gtk.Template.Child()
     discord_rpc_el = Gtk.Template.Child()
     discord_coverart_share_el = Gtk.Template.Child()
+    listenbrainz_scrobbling_el = Gtk.Template.Child()
 
     # Customization
     ## Interface
@@ -253,7 +254,20 @@ class NocturnePreferences(Adw.PreferencesDialog):
             settings.connect("changed::discord-rpc-enabled", self.show_discord_flatpak_warning)
             GLib.idle_add(self.show_discord_flatpak_warning, settings, "discord-rpc-enabled")
 
-        self.listenbrainz_stack_el.set_visible_child_name("unlink" if secret.get_plain_password(schema_type="listenbrainz") else "link")
+        #ListenBrainz Expander Row
+        if secret.get_plain_password(schema_type="listenbrainz"):
+            self.listenbrainz_stack_el.set_visible_child_name("unlink")
+            self.listenbrainz_scrobbling_el.set_sensitive(True)
+            settings.bind(
+                "scrobble-listenbrainz",
+                self.listenbrainz_scrobbling_el,
+                "active",
+                Gio.SettingsBindFlags.DEFAULT
+            )
+        else:
+            self.listenbrainz_stack_el.set_visible_child_name("link")
+            self.listenbrainz_scrobbling_el.set_sensitive(False)
+
 
         ### Instance Row
         self.instance_el.set_visible(False)
@@ -560,6 +574,14 @@ class NocturnePreferences(Adw.PreferencesDialog):
                         schema_type="listenbrainz"
                     )
                     self.listenbrainz_stack_el.set_visible_child_name("unlink")
+                    self.listenbrainz_scrobbling_el.set_sensitive(True)
+                    settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+                    settings.bind(
+                        "scrobble-listenbrainz",
+                        self.listenbrainz_scrobbling_el,
+                        "active",
+                        Gio.SettingsBindFlags.DEFAULT
+                    )
 
         container = Gtk.Box(
             orientation=Gtk.Orientation.VERTICAL,
@@ -592,8 +614,11 @@ class NocturnePreferences(Adw.PreferencesDialog):
     def listenbrainz_unlink_requested(self, button):
         secret.remove_password(
             schema_type="listenbrainz",
-            callback=lambda: self.listenbrainz_stack_el.set_visible_child_name("link")
+            callback=lambda *args: self.listenbrainz_stack_el.set_visible_child_name("link")
         )
+        Gio.Settings.unbind(self.listenbrainz_scrobbling_el, "active")
+        self.listenbrainz_scrobbling_el.set_active(False)
+        self.listenbrainz_scrobbling_el.set_sensitive(False)
 
     @Gtk.Template.Callback()
     def delete_image_cache_requested(self, button):
