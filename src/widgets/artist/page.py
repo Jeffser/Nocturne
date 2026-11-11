@@ -29,7 +29,7 @@ class ArtistPage(Adw.NavigationPage):
     context_wrap_el = Gtk.Template.Child()
 
     #top song lists
-    local_top_songs = []
+    instance_top_songs = []
     listenbrainz_top_songs = []
 
     def __init__(self, id:str):
@@ -53,14 +53,14 @@ class ArtistPage(Adw.NavigationPage):
         self.top_songs_wrapbox.list_el.set_line_spacing(5)
 
         if secret.get_plain_password(schema_type="listenbrainz"):
-            #Create toggle group for local vs ListenBrainz top songs
+            #Create toggle group for instance vs ListenBrainz top songs
             toggle_group = Adw.ToggleGroup()
-            local_button = Adw.Toggle(
-                name = "local",
+            instance_button = Adw.Toggle(
+                name = "instance",
                 icon_name = "person-symbolic",
                 tooltip = _("My Top Plays")
             )
-            toggle_group.add(local_button)
+            toggle_group.add(instance_button)
             listenbrainz_button = Adw.Toggle(
                 name = "listenbrainz",
                 icon_name = "globe-symbolic",
@@ -79,7 +79,7 @@ class ArtistPage(Adw.NavigationPage):
             )
             self.top_songs_source = self.settings.get_string("default-view-mode-top-songs")
         else:
-            self.top_songs_source = "local"
+            self.top_songs_source = "instance"
 
     def do_showing(self):
         threading.Thread(target=self.update_top_songs, daemon=True).start()
@@ -149,11 +149,11 @@ class ArtistPage(Adw.NavigationPage):
         if root := self.get_root():
             if app := root.get_application():
                 if integration := app.get_property('integration'):
-                    if source == "local":
-                        if not self.local_top_songs:
+                    if source == "instance":
+                        if not self.instance_top_songs:
                             GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
-                            self.local_top_songs = integration.getTopSongs(self.id, count=30)
-                        top_songs = self.local_top_songs
+                            self.instance_top_songs = integration.getTopSongs(self.id, count=30)
+                        top_songs = self.instance_top_songs
                     elif source == "listenbrainz":
                         if not self.listenbrainz_top_songs:
                             GLib.idle_add(self.top_songs_wrapbox.remove_all, True)

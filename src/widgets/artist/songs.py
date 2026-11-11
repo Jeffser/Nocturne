@@ -26,6 +26,16 @@ class ArtistSongsPage(Adw.NavigationPage):
         super().__init__()
         self.id = model_id
 
+        default_str = "playCount" #default sort order, either instance or listenbrainz
+        #Add a ListenBrainz sort option if the user is logged into ListenBrainz
+        if secret.get_plain_password(schema_type="listenbrainz"):
+            listenbrainz_item = Gio.MenuItem.new(_("ListenBrainz Top Plays"), "sort.sort-order('listenbrainz')")
+            self.sort_section_el.append_item(listenbrainz_item)
+
+            settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+            if settings.get_string('default-view-mode-top-songs') == 'listenbrainz':
+                default_str = "listenbrainz"
+
         #Create popover actions
         self.action_group = Gio.SimpleActionGroup.new()
         favorites_check = Gio.SimpleAction.new_stateful(
@@ -36,16 +46,11 @@ class ArtistSongsPage(Adw.NavigationPage):
         sort_radios = Gio.SimpleAction.new_stateful(
             "sort-order",
             GLib.VariantType.new('s'),
-            GLib.Variant.new_string("playCount")
+            GLib.Variant.new_string(default_str)
         )
         sort_radios.connect("activate", self.on_sort_changed)
         self.action_group.add_action(sort_radios)
         self.insert_action_group("sort", self.action_group)
-
-        #Add a ListenBrainz sort option if the user is logged into ListenBrainz
-        if secret.get_plain_password(schema_type="listenbrainz"):
-            listenbrainz_item = Gio.MenuItem.new(_("ListenBrainz Top Plays"), "sort.sort-order('listenbrainz')")
-            self.sort_section_el.append_item(listenbrainz_item)
 
         self.scrolledwindow.get_vadjustment().connect('notify::upper', lambda va, ud: GLib.timeout_add(1000, self.check_scrollbar, va))
 
