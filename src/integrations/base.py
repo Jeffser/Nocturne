@@ -706,35 +706,36 @@ class Base(GObject.Object):
         # ListenBrainz
         if model := self.loaded_models.get(model_id):
             if token := secret.get_plain_password("listenbrainz"):
-                listen_payload = {
-                    "track_metadata": {
-                        "artist_name": model.get_property("artist"),
-                        "track_name": model.get_property("title"),
-                        "release_name": model.get_property("album"),
-                        "additional_info": {
-                            "submission_client": "com.jeffser.Nocturne",
-                            "submission_client_version": get_nocturne_version(),
-                            "media_player": "Nocturne"
+                if self.settings.get_boolean('scrobble-listenbrainz'):
+                    listen_payload = {
+                        "track_metadata": {
+                            "artist_name": model.get_property("artist"),
+                            "track_name": model.get_property("title"),
+                            "release_name": model.get_property("album"),
+                            "additional_info": {
+                                "submission_client": "com.jeffser.Nocturne",
+                                "submission_client_version": get_nocturne_version(),
+                                "media_player": "Nocturne"
+                            }
                         }
                     }
-                }
-                
-                if submission:
-                    listen_payload["listened_at"] = int(time.time() - playtime)
 
-                payload = {
-                    "listen_type": "single" if submission else "playing_now",
-                    "payload": [listen_payload]
-                }
-                headers = {
-                    "Authorization": f"Token {token}",
-                    "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://jeffser.com/nocturne/ )",
-                    "Content-Type": "application/json"
-                }
-                try:
-                    response = requests.post("https://api.listenbrainz.org/1/submit-listens", json=payload, headers=headers)
-                except:
-                    pass
+                    if submission:
+                        listen_payload["listened_at"] = int(time.time() - playtime)
+
+                    payload = {
+                        "listen_type": "single" if submission else "playing_now",
+                        "payload": [listen_payload]
+                    }
+                    headers = {
+                        "Authorization": f"Token {token}",
+                        "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://jeffser.com/nocturne/ )",
+                        "Content-Type": "application/json"
+                    }
+                    try:
+                        response = requests.post("https://api.listenbrainz.org/1/submit-listens", json=payload, headers=headers)
+                    except:
+                        pass
 
         return
         # Playlist Resume
