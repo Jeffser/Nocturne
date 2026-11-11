@@ -69,9 +69,15 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
         subtitle-lines: 2;
       }
 
-      Adw.ActionRow {
+      Adw.ExpanderRow {
         title: _("ListenBrainz Link");
-        subtitle: _("Keep track of your playback history");
+        subtitle: _("Fetch song statistics and scrobble your playback history");
+
+        Adw.SwitchRow listenbrainz_scrobbling_el {
+          title: _("Scrobbling");
+          subtitle: _("Save your song history to ListenBrainz");
+        }
+
         [suffix]
         Gtk.Stack listenbrainz_stack_el {
           Gtk.StackPage {

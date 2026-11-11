@@ -7,14 +7,19 @@ class Wrapbox(Gtk.Box):
     __gtype_name__ = 'NocturneWrapbox'
 
     header_button = Gtk.Template.Child()
+    header_suffix = Gtk.Template.Child()
+    loading_spinner = Gtk.Template.Child()
     list_el = Gtk.Template.Child()
     header_label = GObject.Property(type=str, default="")
     header_icon_name = GObject.Property(type=str, default="")
-    header_page_tag = GObject.Property(type=str, default="")
+    header_action_target = GObject.Property(type=str, default="")
+    header_action_name = GObject.Property(type=str, default="")
 
-    def remove_all(self):
+    def remove_all(self, loading:bool=False):
         for child in list(self.list_el):
             self.list_el.remove(child)
+        if loading:
+            self.list_el.append(self.loading_spinner)
 
     def set_widgets(self, widgets:list):
         if len(list(self.list_el)):
@@ -26,10 +31,6 @@ class Wrapbox(Gtk.Box):
     @Gtk.Template.Callback()
     def handle_visible_bind(self, carousel, value) -> bool:
         return bool(value)
-
-    @Gtk.Template.Callback()
-    def handle_action_name_bind(self, carousel, value) -> str:
-        return str("app.replace_root_page") if value else str("")
 
     @Gtk.Template.Callback()
     def handle_action_target_bind(self, carousel, value) -> GLib.Variant:

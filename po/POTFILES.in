@@ -27,6 +27,7 @@ src/ui/album/row.blp
 src/ui/artist/button.blp
 src/ui/artist/page.blp
 src/ui/artist/row.blp
+src/ui/artist/songs.blp
 src/ui/containers/carousel.blp
 src/ui/containers/download_row.blp
 src/ui/containers/downloads_queue_button.blp
@@ -76,6 +77,7 @@ src/widgets/artist/button.py
 src/widgets/artist/__init__.py
 src/widgets/artist/page.py
 src/widgets/artist/row.py
+src/widgets/artist/songs.py
 src/widgets/containers/carousel.py
 src/widgets/containers/context.py
 src/widgets/containers/download_row.py

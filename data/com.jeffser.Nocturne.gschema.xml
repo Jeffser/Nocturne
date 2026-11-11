@@ -214,6 +214,12 @@
 	  <key name="default-view-mode-playlists" type="s">
 	    <default>'list'</default>
 	  </key>
+	  <key name="default-view-mode-top-songs" type="s">
+	    <default>'instance'</default>
+	  </key>
+	  <key name="scrobble-listenbrainz" type="b">
+	    <default>true</default>
+	  </key>
 	</schema>
 </schemalist>
 

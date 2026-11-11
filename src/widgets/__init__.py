@@ -3,7 +3,7 @@
 from .playing import PlayingFooter, PlayingControlPage, PopoutWindow, PlayingCoverArt
 from .pages import HomePage, LoginDialog, ArtistsPage, PlaylistsPage, StarredPage, SongsAllPage, AlbumsPage, AlbumsAllPage, RadiosPage, WelcomePage, SetupPage, PlaybackPage
 from .album import AlbumButton, AlbumPage, AlbumRow
-from .artist import ArtistButton, ArtistPage, ArtistRow
+from .artist import ArtistButton, ArtistPage, ArtistRow, ArtistSongsPage
 from .playlist import PlaylistButton, PlaylistPage, PlaylistRow, PlaylistDialog, PlaylistSelectorRow
 from .song import SongRow, SongQueue, SongSmallRow, SongDetailsDialog, SongButton
 from .containers import Carousel, Wrapbox, PageDialog
