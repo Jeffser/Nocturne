@@ -215,7 +215,7 @@
 	    <default>'list'</default>
 	  </key>
 	  <key name="default-view-mode-top-songs" type="s">
-	    <default>'local'</default>
+	    <default>'instance'</default>
 	  </key>
 	</schema>
 </schemalist>
