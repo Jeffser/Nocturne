@@ -142,10 +142,10 @@ class NocturneApplication(Adw.Application):
             set_current_integration(integration)
             self.set_property('integration', integration)
             integration.on_login()
-            GLib.idle_add(self.main_window.main_stack.set_visible_child_name, "content")
-            GLib.idle_add(self.main_window.setup)
             if not self.player:
                 self.set_property('player', Player(application=self))
+            GLib.idle_add(self.main_window.main_stack.set_visible_child_name, "content")
+            GLib.idle_add(self.main_window.setup)
             settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
             default_page = settings.get_value('default-page-tag').unpack() or 'home'
             self.main_window.activate_action("app.replace_root_page", GLib.Variant('s', default_page))

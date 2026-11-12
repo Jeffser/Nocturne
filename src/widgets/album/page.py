@@ -42,7 +42,6 @@ class AlbumPage(Adw.NavigationPage):
         super().__init__(
             model=integration.loaded_models.get(self.id)
         )
-        integration.connect_to_model(self.id, 'song', self.update_song_list)
         context = CONTEXT_ALBUM.copy()
         del context['show-artist']
         if 'no-downloads' in integration.limitations:
@@ -52,7 +51,13 @@ class AlbumPage(Adw.NavigationPage):
             if btn.get_name() != 'show-artist':
                 self.context_wrap_el.append(btn)
 
-        self.song_list_el.list_el.set_sort_func(self.song_list_sort_func)
+    def do_showing(self):
+        if root := self.get_root():
+            if app := root.get_application():
+                if integration := app.get_property('integration'):
+                    integration.connect_to_model(self.id, 'song', self.update_song_list)
+                    self.song_list_el.list_el.set_sort_func(self.song_list_sort_func)
+        Adw.NavigationPage.do_showing(self)
 
     def song_list_sort_func(self, r1, r2):
         trackN1 = 0
