@@ -683,7 +683,7 @@ class Navidrome(Base):
         except:
             pass
 
-    def scrobble(self, model_id:str, playtime:int, submission:bool = True):
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool = True):
         # Registers the song as played, useful for keeping track of "most played" albums and the sorts
         if model := self.loaded_models.get(model_id) :
             if not model.isExternalFile:
@@ -691,7 +691,7 @@ class Navidrome(Base):
                     'id': model_id,
                     'submission': submission
                 })
-        super().scrobble(model_id, submission)
+        super().scrobble(model_id, playtime=playtime, submission=submission)
 
     def getSongDetails(self, model_id:str) -> models.SongDetails:
         if model := self.loaded_models.get(model_id):
@@ -983,7 +983,7 @@ class Bandcamp(Navidrome):
 
     # Implementation of Scrobble / album pages
 
-    def scrobble(self, model_id:str, playtime:int, submission:bool = True):
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool = True):
         if not model_id:
             return
         if model := self.loaded_models.get(model_id):
@@ -1004,7 +1004,7 @@ class Bandcamp(Navidrome):
                 cursor.execute(query, (model_id, int(time.time()), model.get_property('albumId'), model.get_property('artistId')))
                 conn.commit()
                 conn.close()
-        super().scrobble(model_id, submission)
+        super().scrobble(model_id, playtime=playtime, submission=submission)
 
     def getAlbumList(self, list_type:str="recent", size:int=10, offset:int=0) -> list:
         if list_type in ("frequent", "recent"):

@@ -67,9 +67,9 @@ class PlayerMprisAdapter(MprisAdapter):
                 self.last_cover_art['url'] = integration.getCoverArtUrl(song.get_property('id'))
 
         if song.get_property('radioStreamUrl'):
-            if not (title := self.get_property("displaySongTitle")):
+            if not (title := self.player.gst_player.get_property("displaySongTitle")):
                 title = song.get_property('title')
-            if not (artist := self.get_property("displaySongArtist")):
+            if not (artist := self.player.gst_player.get_property("displaySongArtist")):
                 artist = song.get_property('title') #sets station name to artist if the song has a title
             if artist == title: #fall back to stream URL for artist so MPRIS widgets don't show duplicate labels
                 artist = urlparse(song.get_property('radioStreamUrl')).netloc

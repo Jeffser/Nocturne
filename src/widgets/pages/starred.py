@@ -100,6 +100,7 @@ class StarredPage(Adw.NavigationPage):
         if self.lazy_reload:
             self.lazy_reload = False
             GLib.idle_add(self.reload)
+        Adw.NavigationPage.do_showing(self)
 
     def load(self):
         self.reload()

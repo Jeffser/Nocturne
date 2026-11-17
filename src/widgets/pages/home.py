@@ -132,6 +132,7 @@ class HomePage(Adw.NavigationPage):
     def do_showing(self):
         if self.lazy_reload:
             self.reload()
+        Adw.NavigationPage.do_showing(self)
 
     def reset(self):
         threading.Thread(target=self.frequent_album_carousel.set_widgets, args=([],), daemon=True).start()

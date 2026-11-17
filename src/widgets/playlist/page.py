@@ -52,7 +52,7 @@ class PlaylistPage(Adw.NavigationPage):
 
     @Gtk.Template.Callback()
     def format_song_count(self, obj, count:int) -> str:
-        return ngettext("{} Song", "{} Songs", songCount).format(songCount)
+        return ngettext("{} Song", "{} Songs", count).format(count)
 
     @Gtk.Template.Callback()
     def format_duration(self, obj, duration:int) -> str:

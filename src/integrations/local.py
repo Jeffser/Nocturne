@@ -616,7 +616,7 @@ class Local(Base):
             shutil.copy2(source_path, os.path.join(DOWNLOADS_DIR, '{}{}'.format(file_title, extension)))
             progress_callback(1)
 
-    def scrobble(self, model_id:str, playtime:int, submission:bool=True):
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool=True):
         if not model_id:
             return
         if model := self.loaded_models.get(model_id):
@@ -637,7 +637,7 @@ class Local(Base):
                 cursor.execute(query, (model_id, int(time.time()), model.get_property('albumId'), model.get_property('artistId')))
                 conn.commit()
                 conn.close()
-        super().scrobble(model_id, submission=submission)
+        super().scrobble(model_id, playtime=playtime, submission=submission)
 
     def setRating(self, model_id:str, rating:int=0) -> bool:
         conn, cursor = sql_instance.get_connection(self)
