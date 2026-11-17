@@ -504,7 +504,7 @@ class Player(GObject.Object):
         channels_str = serialized.split('< < ')[1].split(' > >;')[0].replace('(float)', '').split(' >, < ')
         channels = []
         for c in channels_str:
-            channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands')/1 if force_mono else 2)]])
+            channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands') / (1 if force_mono else 2))]])
         timestamp = struct.get_uint64('stream-time')[1] / 1000000000
         if not force_mono and len(channels) > 1: #stereo spectrum
             magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
