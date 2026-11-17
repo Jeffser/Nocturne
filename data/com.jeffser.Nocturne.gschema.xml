@@ -124,6 +124,10 @@
 	  <key name="show-visualizer" type="b">
 	    <default>false</default>
 	  </key>
+	  <key name="visualizer-capture-mode" type="s">
+	    <default>'stereo'</default>
+	  </key>
+	  <!--### Section: Appearance -->
 	  <key name="visualizer-bar-n" type="i">
 	    <default>18</default>
 	  </key>

@@ -138,6 +138,7 @@ class NocturnePreferences(Adw.PreferencesDialog):
     # Visualizer
     ## Preferences
     visualizer_el = Gtk.Template.Child()
+    visualizer_capture_el = Gtk.Template.Child()
 
     ## Appearance
     visualizer_bar_n_el = Gtk.Template.Child()
@@ -402,6 +403,12 @@ class NocturnePreferences(Adw.PreferencesDialog):
             "show-visualizer",
             self.visualizer_el,
             "active",
+            Gio.SettingsBindFlags.DEFAULT
+        )
+        settings.bind(
+            "visualizer-capture-mode",
+            self.visualizer_capture_el,
+            "active-name",
             Gio.SettingsBindFlags.DEFAULT
         )
 

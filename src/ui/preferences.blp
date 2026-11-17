@@ -387,6 +387,27 @@ template $NocturnePreferencesDialog: Adw.PreferencesDialog {
         title: _("Show Visualizer in Player");
         subtitle: _("Show an audio spectrum visualizer on top of the album art in the player");
       }
+
+      Adw.ActionRow {
+        sensitive: bind visualizer_el.active;
+        title: _("Audio Capture Mode");
+        subtitle: _("Controls the way the spectrum is calculated, does not affect audio playback");
+
+        [suffix]
+        Adw.ToggleGroup visualizer_capture_el {
+          valign: center;
+          Adw.Toggle {
+            tooltip: _("Mono");
+            label: _("Mono");
+            name: "mono";
+          }
+          Adw.Toggle {
+            tooltip: _("Stereo");
+            label: _("Stereo");
+            name: "stereo";
+          }
+        }
+      }
     }
 
     Adw.PreferencesGroup {
