@@ -503,17 +503,18 @@ class Player(GObject.Object):
         serialized = struct.serialize_full(Gst.SerializeFlags.NONE)
         channels_str = serialized.split('< < ')[1].split(' > >;')[0].replace('(float)', '').split(' >, < ')
         channels = []
+        divide_channel = len(channels_str) > 1 and not force_mono
         for c in channels_str:
-            channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands') / (1 if force_mono else 2))]])
-        timestamp = struct.get_uint64('stream-time')[1] / 1000000000
-        if not force_mono and len(channels) > 1: #stereo spectrum
-            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
-        else: #mono spectrum
-            magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0]]
-        if timestamp and magnitudes:
-            if not self.get_property('magnitudes'):
-                self.set_property('magnitudes', {})
-            self.magnitudes[timestamp] = magnitudes
+            channels.append([float(m.strip()) for m in c.split(', ')[:int(self.spectrum.get_property('bands') / (2 if divide_channel else 1))]])
+        if timestamp := struct.get_uint64('stream-time')[1] / 1000000000:
+            if not force_mono and len(channels) > 1: #stereo spectrum
+                magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0] + list(reversed(channels[1]))]
+            else: #mono spectrum
+                magnitudes = [(60-abs(m)) / 60 * self.settings.get_value("volume").unpack() for m in channels[0]]
+            if magnitudes:
+                if not self.get_property('magnitudes'):
+                    self.set_property('magnitudes', {})
+                self.magnitudes[timestamp] = magnitudes
 
     def handle_message_element(self, bus, message):
         if message.src == self.spectrum:
