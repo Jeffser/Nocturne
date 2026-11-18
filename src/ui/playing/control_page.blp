@@ -304,15 +304,15 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                   1
                 );
                 tooltip-text: _("Rate");
-                visible: bind $format_to_bool(
+                visible: bind $format_any_false(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
-                  true
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                 );
                 popover: Gtk.Popover {
                   child: Gtk.Box rating_container {
                     hexpand: true;
                     halign: center;
-                    visible: bind $format_all_false(
+                    visible: bind $format_any_false(
                       template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                       template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                     );
@@ -388,7 +388,7 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong
                 );
                 action-target: bind $format_action_target(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId, 's');
-                visible: bind $format_all_false(
+                visible: bind $format_any_false(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                 );

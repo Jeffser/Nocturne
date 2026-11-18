@@ -127,9 +127,9 @@ class PlayingControlPage(Adw.NavigationPage):
             return homepage_url
 
     @Gtk.Template.Callback()
-    def format_all_false(self, obj, *values) -> bool:
-        # returns true if all values are false
-        return not all([bool(value) for value in values])
+    def format_any_false(self, obj, *values) -> bool:
+        # returns true if any values are false
+        return not any([bool(value) for value in values])
 
     @Gtk.Template.Callback()
     def format_rating_icon_name(self, obj, rating:int, index):
