@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturneArtistPage: Adw.NavigationPage {
-  title: bind template.model as <$NocturneModelArtist> .name;
+  title: bind $format_page_title(_("Artist"), template.model as <$NocturneModelArtist> .name);
   name: bind template.model as <$NocturneModelArtist> .name;
 
   child: Adw.ToolbarView {

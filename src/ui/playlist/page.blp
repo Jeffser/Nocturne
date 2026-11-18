@@ -2,8 +2,8 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturnePlaylistPage: Adw.NavigationPage {
+  title: bind $format_page_title(_("Playlist"), template.model as <$NocturneModelPlaylist> .name);
   name: bind template.model as <$NocturneModelPlaylist> .name;
-  title: bind template.model as <$NocturneModelPlaylist> .name;
 
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;

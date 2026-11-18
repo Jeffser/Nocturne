@@ -162,6 +162,10 @@ class AlbumPage(Adw.NavigationPage):
                 GLib.idle_add(set_action, row)
 
     @Gtk.Template.Callback()
+    def format_page_title(self, obj, default_title, value) -> GLib.Variant:
+        return default_title if not value else value
+
+    @Gtk.Template.Callback()
     def format_rating_icon_name(self, obj, rating:int, index):
         return "starred-symbolic" if rating >= index else "non-starred-symbolic"
 

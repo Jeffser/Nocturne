@@ -2,7 +2,7 @@ using Gtk 4.0;
 using Adw 1;
 
 template $NocturneAlbumPage: Adw.NavigationPage {
-  title: bind template.model as <$NocturneModelAlbum> .name;
+  title: bind $format_page_title(_("Album"), template.model as <$NocturneModelAlbum> .name);
   name: bind template.model as <$NocturneModelAlbum> .name;
   child: Adw.ToolbarView {
     extend-content-to-top-edge: true;
