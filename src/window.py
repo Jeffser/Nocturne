@@ -27,8 +27,8 @@ from datetime import datetime, timedelta
 
 class SidebarItem(Adw.SidebarItem):
     __gtype_name__ = 'NocturneSidebarItem'
-    page_tag = GObject.Property(type=str)
-    playlist_id = GObject.Property(type=str) # optional
+    page_tag = GObject.Property(type=str, default="")
+    playlist_id = GObject.Property(type=str, default="") # optional
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/window.ui')
 class NocturneWindow(Adw.ApplicationWindow):

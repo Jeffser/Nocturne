@@ -254,17 +254,17 @@ class Player(GObject.Object):
     # State
     # User plays song -> songId changes -> player updates currentSong and videoId -> UI gets info from those two updates
     currentSong = GObject.Property(type=models.Song)
-    songId = GObject.Property(type=str)
-    videoId = GObject.Property(type=str)
-    preloadedSongId = GObject.Property(type=str)
+    songId = GObject.Property(type=str, default="")
+    videoId = GObject.Property(type=str, default="")
+    preloadedSongId = GObject.Property(type=str, default="")
 
     positionSeconds = GObject.Property(type=float, default=0.0)
     playtimeSeconds = GObject.Property(type=int, default=0) #seconds the user has actively listened to the track
     buttonState = GObject.Property(type=str, default="play")
     magnitudes = GObject.Property(type=GObject.TYPE_PYOBJECT) # dict
     seeking = GObject.Property(type=bool, default=False)
-    displaySongTitle = GObject.Property(type=str)
-    displaySongArtist = GObject.Property(type=str)
+    displaySongTitle = GObject.Property(type=str, default="")
+    displaySongArtist = GObject.Property(type=str, default="")
     accentColor = GObject.Property(type=GObject.TYPE_PYOBJECT) # [r,g,b]
     queueOrigin = GObject.Property(type=str, default="") # set to the id of playlist / album where the queue originated from
     generatingQueue = GObject.Property(type=bool, default=False)
