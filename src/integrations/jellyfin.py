@@ -731,7 +731,7 @@ class Jellyfin(Base):
                     lock.wait(timeout=60.0) #pause thread until verification is complete
                 return #return if ongoing request is present or not minimal
             else:
-                self.ongoing_requests[model_id]["minimal"] = True
+                self.ongoing_requests[model_id]["minimal"] = False
         else:
             self.ongoing_requests[model_id] = {
                 "minimal": minimal,
@@ -816,7 +816,7 @@ class Jellyfin(Base):
                     lock.wait(timeout=60.0) #pause thread until verification is complete
                 return #return if ongoing request is present or not minimal
             else:
-                self.ongoing_requests[model_id]["minimal"] = True
+                self.ongoing_requests[model_id]["minimal"] = False
         else:
             self.ongoing_requests[model_id] = {
                 "minimal": minimal,
@@ -906,7 +906,7 @@ class Jellyfin(Base):
                     lock.wait(timeout=60.0) #pause thread until verification is complete
                 return #return if ongoing request is present or not minimal
             else:
-                self.ongoing_requests[model_id]["minimal"] = True
+                self.ongoing_requests[model_id]["minimal"] = False
         else:
             self.ongoing_requests[model_id] = {
                 "minimal": minimal,
@@ -955,7 +955,7 @@ class Jellyfin(Base):
                         )
                         if primary_tag := album.get('ImageTags', {}).get('Primary', ''):
                             cover_art = f"Items/{model.get_property('albumId')}/Images/Primary?={primary_tag}"
-                self.__write_to_model(model_id, {"coverArt" : cover_art, "verified": True}, wait=True)
+            self.__write_to_model(model_id, {"coverArt" : cover_art, "verified": True}, wait=True)
             if cover_art:
                 self.updateCoverArt(model_id)
 
@@ -982,7 +982,7 @@ class Jellyfin(Base):
                     lock.wait(timeout=60.0) #pause thread until verification is complete
                 return #return if ongoing request is present or not minimal
             else:
-                self.ongoing_requests[model_id]["minimal"] = True
+                self.ongoing_requests[model_id]["minimal"] = False
         else:
             self.ongoing_requests[model_id] = {
                 "minimal": minimal,
@@ -1396,10 +1396,14 @@ class Jellyfin(Base):
                     raw_url = radio_metadata[0].get('Path')
                 if not raw_url:
                     raw_url = self.get_stream_url(radio_id)
-                radio_dict.update({"radioStreamUrl": raw_url})
+                radio_dict.update({
+                    "radioStreamUrl": raw_url,
+                    "verified": True
+                })
 
                 id_list.append(radio_id)
-                self.__write_to_model(radio_id, radio_dict)
+                self.__write_to_model(radio_id, radio_dict, wait=True)
+                self.updateCoverArt(radio_id)
 
         return id_list
 
