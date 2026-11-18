@@ -8,15 +8,14 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
     __gtype_name__ = 'NocturnePlayingQueuePage'
 
     song_list_el = Gtk.Template.Child()
-    autoplay_row_el = Gtk.Template.Child()
-    autoplay_spinner_el = Gtk.Template.Child()
+    autoplay_switch_el = Gtk.Template.Child()
     list_bin_el = Gtk.Template.Child()
 
     def __init__(self):
         super().__init__()
         Gio.Settings(schema_id="com.jeffser.Nocturne").bind(
             'auto-play',
-            self.autoplay_row_el,
+            self.autoplay_switch_el,
             'active',
             Gio.SettingsBindFlags.DEFAULT
         )
@@ -44,3 +43,7 @@ class PlayingQueuePage(Gtk.ScrolledWindow):
                     removable=True
                 )
                 self.song_list_el.list_el.insert(row, position + i)
+
+    @Gtk.Template.Callback()
+    def format_loading_stack(self, obj, value):
+        return "spinner" if value else "switch"
