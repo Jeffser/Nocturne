@@ -5,13 +5,13 @@ from gi.repository import GObject, Gtk, Gdk, Gio
 class Album(GObject.Object):
     __gtype_name__ = 'NocturneModelAlbum'
 
-    id = GObject.Property(type=str)
-    coverArt = GObject.Property(type=str)
+    id = GObject.Property(type=str, default="")
+    coverArt = GObject.Property(type=str, default="")
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
-    name = GObject.Property(type=str)
-    artist = GObject.Property(type=str)
-    artistId = GObject.Property(type=str)
+    name = GObject.Property(type=str, default="")
+    artist = GObject.Property(type=str, default="")
+    artistId = GObject.Property(type=str, default="")
     songCount = GObject.Property(type=int)
     duration = GObject.Property(type=int)
     artists = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
@@ -40,17 +40,17 @@ class Album(GObject.Object):
 class Artist(GObject.Object):
     __gtype_name__ = 'NocturneModelArtist'
 
-    id = GObject.Property(type=str)
-    coverArt = GObject.Property(type=str)
+    id = GObject.Property(type=str, default="")
+    coverArt = GObject.Property(type=str, default="")
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
-    name = GObject.Property(type=str)
+    name = GObject.Property(type=str, default="")
     albumCount = GObject.Property(type=int, default=-1)
     album = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     guestAlbum = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     guestAlbumCount = GObject.Property(type=int, default=-1)
     starred = GObject.Property(type=bool, default=False)
-    biography = GObject.Property(type=str)
+    biography = GObject.Property(type=str, default="")
     similarArtist = GObject.Property(type=GObject.TYPE_PYOBJECT) #list
     userRating = GObject.Property(type=int)
 
@@ -74,11 +74,11 @@ class Artist(GObject.Object):
 class Playlist(GObject.Object):
     __gtype_name__ = 'NocturneModelPlaylist'
 
-    id = GObject.Property(type=str)
-    coverArt = GObject.Property(type=str)
+    id = GObject.Property(type=str, default="")
+    coverArt = GObject.Property(type=str, default="")
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
-    name = GObject.Property(type=str)
+    name = GObject.Property(type=str, default="")
     songCount = GObject.Property(type=int)
     duration = GObject.Property(type=int)
     readonly = GObject.Property(type=bool, default=False)
@@ -104,32 +104,32 @@ class Playlist(GObject.Object):
 class Song(GObject.Object):
     __gtype_name__ = 'NocturneModelSong'
 
-    id = GObject.Property(type=str)
-    coverArt = GObject.Property(type=str)
+    id = GObject.Property(type=str, default="")
+    coverArt = GObject.Property(type=str, default="")
     gdkPaintable = GObject.Property(type=Gdk.Paintable)
     gdkPaintableBig = GObject.Property(type=Gdk.Paintable)
-    title = GObject.Property(type=str)
-    album = GObject.Property(type=str)
-    artist = GObject.Property(type=str)
+    title = GObject.Property(type=str, default="")
+    album = GObject.Property(type=str, default="")
+    artist = GObject.Property(type=str, default="")
     duration = GObject.Property(type=int)
-    albumId = GObject.Property(type=str)
+    albumId = GObject.Property(type=str, default="")
     discNumber = GObject.Property(type=int)
     albumGain = GObject.Property(type=float)
     trackGain = GObject.Property(type=float)
-    artistId = GObject.Property(type=str)
+    artistId = GObject.Property(type=str, default="")
     artists = GObject.Property(type=GObject.TYPE_PYOBJECT) # list
     starred = GObject.Property(type=bool, default=False)
     track = GObject.Property(type=int) #Track N in album
     isExternalFile = GObject.Property(type=bool, default=False)
     userRating = GObject.Property(type=int)
     deleted = GObject.Property(type=bool, default=False)
-    radioStreamUrl = GObject.Property(type=str)
-    container = GObject.Property(type=str)
-    codec = GObject.Property(type=str)
+    radioStreamUrl = GObject.Property(type=str, default="")
+    container = GObject.Property(type=str, default="")
+    codec = GObject.Property(type=str, default="")
 
     verified = GObject.Property(type=bool, default=False)
 
-    path = GObject.Property(type=str) # For use in Local
+    path = GObject.Property(type=str, default="") # For use in Local
 
     def __init__(self, **kwargs):
         super().__init__()
@@ -149,12 +149,12 @@ class Song(GObject.Object):
 class SongDetails(GObject.Object):
     __gtype_name__ = 'NocturneSongDetails'
 
-    id = GObject.Property(type=str)
-    title = GObject.Property(type=str)
+    id = GObject.Property(type=str, default="")
+    title = GObject.Property(type=str, default="")
     album = GObject.Property(type=str, nick=_("Album"))
-    albumId = GObject.Property(type=str)
+    albumId = GObject.Property(type=str, default="")
     artist = GObject.Property(type=str, nick=_("Display Artist"))
-    artistId = GObject.Property(type=str)
+    artistId = GObject.Property(type=str, default="")
     musicBrainzId = GObject.Property(type=str, nick=_("MusicBrainz ID"))
     track = GObject.Property(type=int, nick=_("Track Number"))
     year = GObject.Property(type=int, nick=_("Year"))
@@ -196,6 +196,6 @@ class SongDetails(GObject.Object):
 class SongDownload(GObject.Object):
     __gtype_name__ = 'NocturneSongDownload'
 
-    songId = GObject.Property(type=str)
+    songId = GObject.Property(type=str, default="")
     progress = GObject.Property(type=float, default=0.0) # 0-1
 

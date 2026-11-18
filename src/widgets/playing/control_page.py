@@ -43,10 +43,23 @@ class PlayingControlPage(Adw.NavigationPage):
         return get_display_time(positionSeconds)
 
     @Gtk.Template.Callback()
+    def action_name_check(self, obj, action_name, song_model) -> str:
+        #checks that the currentSong model is set
+        return action_name if song_model else ""
+
+    @Gtk.Template.Callback()
+    def action_name_check_list(self, obj, action_name, song_model, *values) -> str:
+        # checks that the currentSong model is set while checking that a list of additional values aren't set
+        # currently in use for:
+        #   the artist_el to ensure the currentSong isn't a radio or external file
+        #   the album_el to ensure the currentSong isn't an external file
+        return action_name if song_model and not any([bool(value) for value in values]) else ""
+
+    @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant:str) -> GLib.Variant:
-        if value:
-            return GLib.Variant(variant, value)
-        return None
+        if value is None:
+            return None
+        return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value, inverse:bool) -> bool:
@@ -114,9 +127,9 @@ class PlayingControlPage(Adw.NavigationPage):
             return homepage_url
 
     @Gtk.Template.Callback()
-    def format_all_false(self, obj, *values) -> bool:
-        # returns true if all values are false
-        return not all([bool(value) for value in values])
+    def format_any_false(self, obj, *values) -> bool:
+        # returns true if any values are false
+        return not any([bool(value) for value in values])
 
     @Gtk.Template.Callback()
     def format_rating_icon_name(self, obj, rating:int, index):
@@ -132,6 +145,3 @@ class PlayingControlPage(Adw.NavigationPage):
             self.star_el.add_css_class('dim-label')
         return "heart-filled-symbolic" if starred else "heart-outline-thick-symbolic"
 
-    @Gtk.Template.Callback()
-    def format_show_artist(self, obj, value) -> str:
-        return "" if bool(value) else "app.show_artist"

@@ -47,6 +47,10 @@ class PlaylistPage(Adw.NavigationPage):
         self.loading = False
 
     @Gtk.Template.Callback()
+    def format_page_title(self, obj, default_title, value) -> GLib.Variant:
+        return default_title if not value else value
+
+    @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
         return bool(value)
 

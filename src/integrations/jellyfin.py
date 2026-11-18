@@ -174,8 +174,8 @@ class Jellyfin(Base):
     url = GObject.Property(type=str, default="http://127.0.0.1:8096")
 
     # Loaded by API
-    accessToken = GObject.Property(type=str)
-    userId = GObject.Property(type=str)
+    accessToken = GObject.Property(type=str, default="")
+    userId = GObject.Property(type=str, default="")
 
     # Playback reporting class
     report_manager_class = JellyfinReportManager

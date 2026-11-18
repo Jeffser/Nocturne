@@ -143,13 +143,13 @@ class Base(GObject.Object):
 
     loaded_models = {}
 
-    url = GObject.Property(type=str)
+    url = GObject.Property(type=str, default="")
     trustServer = GObject.Property(type=bool, default=False)
-    user = GObject.Property(type=str)
-    libraryDir = GObject.Property(type=str)
+    user = GObject.Property(type=str, default="")
+    libraryDir = GObject.Property(type=str, default="")
 
     # Show spinner in sidebar with message as tooltip text if set
-    loadingMessage = GObject.Property(type=str)
+    loadingMessage = GObject.Property(type=str, default="")
 
     # See example in get_sql_schema
     sqlSchema = {}

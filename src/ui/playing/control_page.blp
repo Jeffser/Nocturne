@@ -71,11 +71,17 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               Gtk.Button artist_el {
                 halign: center;
                 hexpand: true;
+                action-name: bind $action_name_check_list(
+                  "app.show_artist",
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
+                );
                 action-target: bind $format_action_target(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .artistId,
                   's'
                 );
-                action-name: bind $format_show_artist(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl);
+
                 tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .displaySongArtist;
                 sensitive: bind $format_to_bool(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
@@ -100,11 +106,14 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               Gtk.Button radio_homepage_el {
                 halign: center;
                 hexpand: true;
+                action-name: bind $action_name_check(
+                  "app.visit_url",
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong
+                );
                 action-target: bind $format_radio_homepage(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   true
                 );
-                action-name: "app.visit_url";
                 visible: bind $format_to_bool(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   false
@@ -133,11 +142,15 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               Gtk.Button album_el {
                 halign: center;
                 hexpand: true;
+                action-name: bind $action_name_check_list(
+                  "app.show_album",
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong,
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
+                );
                 action-target: bind $format_action_target(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .albumId,
                   's'
                 );
-                action-name: "app.show_album";
                 tooltip-text: bind template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .album;
                 visible: bind $format_to_bool(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .album,
@@ -291,15 +304,15 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
                   1
                 );
                 tooltip-text: _("Rate");
-                visible: bind $format_to_bool(
+                visible: bind $format_any_false(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
-                  true
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                 );
                 popover: Gtk.Popover {
                   child: Gtk.Box rating_container {
                     hexpand: true;
                     halign: center;
-                    visible: bind $format_all_false(
+                    visible: bind $format_any_false(
                       template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                       template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                     );
@@ -370,9 +383,12 @@ template $NocturnePlayingControlPage: Adw.NavigationPage {
               Gtk.Button star_el {
                 icon-name: bind $format_starred_icon_name(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .starred);
                 tooltip-text: _("Star");
+                action-name: bind $action_name_check(
+                  "app.toggle_star",
+                  template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong
+                );
                 action-target: bind $format_action_target(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .songId, 's');
-                action-name: "app.toggle_star";
-                visible: bind $format_all_false(
+                visible: bind $format_any_false(
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .radioStreamUrl,
                   template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .isExternalFile
                 );

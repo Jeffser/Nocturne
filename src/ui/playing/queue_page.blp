@@ -13,16 +13,56 @@ template $NocturnePlayingQueuePage: Gtk.ScrolledWindow {
       orientation: vertical;
       spacing: 5;
 
-      Adw.SwitchRow autoplay_row_el {
-        [prefix]
-        Adw.Spinner autoplay_spinner_el {
-          tooltip-text: _("Generating Next Queue");
-          visible: bind template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .generatingQueue;
+      Gtk.Box {
+        orientation: horizontal;
+        spacing: 12;
+        margin-start: 12;
+        margin-end: 12;
+
+        Gtk.Box {
+          orientation: vertical;
+          hexpand: true;
+          valign: center;
+          spacing: 2;
+
+          Gtk.Label {
+            label: _("Autoplay");
+            xalign: 0;
+          }
+
+          Gtk.Label {
+            label: _("Generate a new queue when the current one ends");
+            xalign: 0;
+            wrap: true;
+
+            styles [
+              "dim-label",
+              "caption",
+            ]
+          }
         }
 
-        activatable: false;
-        title: _("Autoplay");
-        subtitle: _("Generate a new queue when the current one ends");
+        Gtk.Stack loading_stack{
+          valign: center;
+          transition-type: crossfade;
+          transition-duration: 150;
+          visible-child-name: bind $format_loading_stack(template.root as <Adw.ApplicationWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .generatingQueue);
+
+          Gtk.StackPage {
+            name: "switch";
+            child: Gtk.Switch autoplay_switch_el {
+              valign: center;
+            };
+          }
+
+          Gtk.StackPage {
+            name: "spinner";
+            child: Adw.Spinner {
+              tooltip-text: _("Generating Next Queue");
+              valign: center;
+            };
+          }
+        }
       }
 
       Adw.Bin list_bin_el {
