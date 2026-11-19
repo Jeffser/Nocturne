@@ -229,6 +229,10 @@ window.fullscreen dialog headerbar {
   padding: 30px;
 }
 
+.p100{
+  padding: 100px;
+}
+
 .big-album-title {
 	font-size: 3rem;
 	font-weight: 800;
