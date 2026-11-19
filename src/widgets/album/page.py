@@ -34,6 +34,7 @@ class AlbumPage(Adw.NavigationPage):
     star_el = Gtk.Template.Child()
     song_list_el = Gtk.Template.Child()
     context_wrap_el = Gtk.Template.Child()
+    cover_el = Gtk.Template.Child()
 
     def __init__(self, id:str):
         self.id = id
@@ -173,7 +174,23 @@ class AlbumPage(Adw.NavigationPage):
     def format_cover_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
         if paintable:
             self.update_background(paintable.save_to_png_bytes().get_data())
-        return 240 if paintable else -1
+        return 240 if paintable else 120
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+        if paintable is not None:
+            self.cover_el.remove_css_class('p60')
+            return paintable
+        else:
+            self.cover_el.add_css_class('p60')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-queue-symbolic',
+                None,
+                120,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:
