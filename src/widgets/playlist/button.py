@@ -17,6 +17,7 @@ class PlaylistButton(Gtk.Box):
     name_el = Gtk.Template.Child()
     name_label_el = Gtk.Template.Child()
     song_count_label_el = Gtk.Template.Child()
+    uses_icon = False
 
     def __init__(self, id:str):
         self.id = id
@@ -31,20 +32,37 @@ class PlaylistButton(Gtk.Box):
     def update_size(self):
         isBig = self.settings.get_value('button-size').unpack() == 'big'
         size = 240 if isBig else 180
-        pixel_size = size if self.cover_el.get_paintable() is not None else -1
+        pixel_size = size/2 if self.uses_icon else size
         self.cover_el.set_size_request(size, size)
         self.cover_el.set_pixel_size(pixel_size)
+        self.cover_el.remove_css_class('p45')
+        self.cover_el.remove_css_class('p60')
         if isBig:
+            if self.uses_icon:
+                self.cover_el.add_css_class('p60')
             self.name_label_el.remove_css_class('title-4')
             self.name_label_el.add_css_class('title-3')
         else:
+            if self.uses_icon:
+                self.cover_el.add_css_class('p45')
             self.name_label_el.remove_css_class('title-3')
             self.name_label_el.add_css_class('title-4')
 
     @Gtk.Template.Callback()
     def format_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+        self.uses_icon = not paintable
         GLib.idle_add(self.update_size)
-        return paintable
+        if paintable is not None:
+            return paintable
+        else:
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'playlist-symbolic',
+                None,
+                120,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:

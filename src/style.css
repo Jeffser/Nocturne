@@ -213,8 +213,24 @@ window.fullscreen dialog headerbar {
   margin-bottom: 0;
 }
 
+.p12 {
+  padding: 12px;
+}
+
+.p45{
+  padding: 45px;
+}
+
 .p50 {
   padding:50px;
+}
+
+.p60{
+  padding: 30px;
+}
+
+.p100{
+  padding: 100px;
 }
 
 .big-album-title {

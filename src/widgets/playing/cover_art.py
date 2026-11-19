@@ -115,14 +115,14 @@ class PlayingCoverArt(Gtk.Box, Adw.Swipeable):
     @Gtk.Template.Callback()
     def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
         if paintable:
-            self.cover_el.remove_css_class('p50')
+            self.cover_el.remove_css_class('p100')
             return paintable
         else:
-            self.cover_el.add_css_class('p50')
+            self.cover_el.add_css_class('p100')
             return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
                 'music-note-symbolic',
                 None,
-                64,
+                240,
                 1,
                 Gtk.TextDirection.NONE,
                 0

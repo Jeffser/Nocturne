@@ -35,8 +35,24 @@ class SongSmallRow(Gtk.Button):
         return album if show_album_name else artist
 
     @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+        if paintable:
+            self.cover_el.remove_css_class('p12')
+            return paintable
+        else:
+            self.cover_el.add_css_class('p12')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-note-symbolic',
+                None,
+                24,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
+
+    @Gtk.Template.Callback()
     def format_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
-        return 48 if paintable else -1
+        return 48 if paintable else 24
 
     def delete_status_changed(self, status:bool):
         if status:

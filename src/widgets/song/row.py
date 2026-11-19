@@ -48,7 +48,7 @@ class SongRow(Adw.ActionRow):
 
     @Gtk.Template.Callback()
     def format_cover_stack_visible_child_name(self, obj, currentSongId:str, cover:Gdk.Paintable, draggable:bool, cover_visible:bool) -> str:
-        if cover_visible and cover:
+        if cover_visible:
             return 'cover'
         elif self.id == currentSongId:
             return 'play-indicator'
@@ -333,5 +333,25 @@ class SongRow(Adw.ActionRow):
         )
         popover.set_parent(self)
         popover.popup()
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+        if paintable:
+            self.cover_el.remove_css_class('p12')
+            return paintable
+        else:
+            self.cover_el.add_css_class('p12')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-note-symbolic',
+                None,
+                24,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
+
+    @Gtk.Template.Callback()
+    def format_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
+        return 48 if paintable else 24
 
 
