@@ -603,6 +603,10 @@ class Base(GObject.Object):
         logger.warning('method not implemented')
         return []
 
+    def getArtistSongs(self, artist_id:str) -> list:
+        # returns a list of song IDs of every song for an artist
+        return []
+
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         # from constants.py
         # file_title does NOT include extension (.mp3, .flac, etc)
@@ -611,18 +615,81 @@ class Base(GObject.Object):
         # see navidrome.py for example
         logger.warning('method not implemented')
 
-    def scrobble(self, model_id:str, playtime:int=0, submission:bool=True):
-        if submission and not playtime:
-            logger.warning("Invalid scrobble, submissions must include the playtime for ListenBrainz")
-            return
+    def getListenBrainzTopSongs(self, artist_id, count=20) -> list:
+        if model := self.loaded_models.get(artist_id):
+            if token := secret.get_plain_password("listenbrainz"):
+                self.verifyArtist(artist_id, use_threading=False)
 
+                headers = {
+                    "Authorization": f"Token {token}",
+                    "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://github.com/MattKercher/Nocturne )",
+                    "Content-Type": "application/json"
+                }
+
+                if not (mb_id := model.get_property("musicBrainzId")):
+                    if song_ids := self.getTopSongs(artist_id, count=1):
+                        song_id = song_ids[0]
+                        if song_id not in self.loaded_models:
+                            self.verifySong(song_id, use_threading=False)
+                        if (song_name := self.loaded_models.get(song_id).get_property('title')) and (artist_name := model.get_property("name")):
+                            try:
+                                response = requests.get(f"https://api.listenbrainz.org/1/metadata/lookup", params={'artist_name':artist_name, 'recording_name':song_name}, headers=headers)
+                            except Exception as e:
+                                logger.warning(f'ListenBrainz MBID lookup failed with {e}')
+                            if mb_ids := response.json().get("artist_mbids", []):
+                                mb_id = mb_ids[0]
+                            time.sleep(1.2) #prevent API flood protection
+                if not mb_id: return []
+
+                try:
+                    response = requests.get(f"https://api.listenbrainz.org/1/popularity/top-recordings-for-artist/{mb_id}", headers=headers)
+                except Exception as e:
+                    logger.warning(f'ListenBrainz popularity lookup failed with {e}')
+
+                listenbrainz_songs = response.json()
+                local_songs = [self.loaded_models.get(song_id) for song_id in self.getArtistSongs(artist_id)]
+
+                album_lookup = {
+                    (
+                        (song.get_property("title") or "").lower(),
+                        (song.get_property("album") or "").lower()
+                    ):
+                    song.get_property("id") for song in local_songs
+                }
+                title_lookup = {(song.get_property("title") or "").lower(): song.get_property('id') for song in local_songs}
+
+                top_songs = []
+                for track in listenbrainz_songs:
+                    if len(top_songs) >= count: break
+
+                    # Check for exact title and album match
+                    # Avoids a lot of live music clutter to include album
+                    album_key = (
+                        (track.get("recording_name") or "").lower(),
+                        (track.get("release_name") or "").lower()
+                    )
+                    # Fall back to just the title if title + album not found
+                    title_key = (track.get("recording_name") or "").lower()
+
+                    if album_key in album_lookup:
+                        top_songs.append(album_lookup.get(album_key))
+                    elif title_key in title_lookup:
+                        top_songs.append(title_lookup.get(title_key))
+
+                return top_songs
+        return []
+
+    def scrobble(self, model_id:str, playtime:int=0, submission:bool=True):
         # the id is for a Song, this is how views are stored
         # called when a song is played
         # if you need to inherit this, also call super().scrobble(id) so that listenbrainz can also get the scrobble
 
+        if submission and not playtime:
+            logger.warning("Invalid scrobble, submissions must include the playtime for ListenBrainz")
+            return
+
         # TODO IMPORTANT: current-state is no longer available at an integration-level
         # the values requested should be parsed to scrobble (also affects other integrations functions)
-
         # Playback (monthly scrobble)
         date_formated = datetime.now().strftime("%m-%Y")
         conn, cursor = sql_instance.get_connection(self)
@@ -639,35 +706,36 @@ class Base(GObject.Object):
         # ListenBrainz
         if model := self.loaded_models.get(model_id):
             if token := secret.get_plain_password("listenbrainz"):
-                listen_payload = {
-                    "track_metadata": {
-                        "artist_name": model.get_property("artist"),
-                        "track_name": model.get_property("title"),
-                        "release_name": model.get_property("album"),
-                        "additional_info": {
-                            "submission_client": "com.jeffser.Nocturne",
-                            "submission_client_version": get_nocturne_version(),
-                            "media_player": "Nocturne"
+                if self.settings.get_boolean('scrobble-listenbrainz'):
+                    listen_payload = {
+                        "track_metadata": {
+                            "artist_name": model.get_property("artist"),
+                            "track_name": model.get_property("title"),
+                            "release_name": model.get_property("album"),
+                            "additional_info": {
+                                "submission_client": "com.jeffser.Nocturne",
+                                "submission_client_version": get_nocturne_version(),
+                                "media_player": "Nocturne"
+                            }
                         }
                     }
-                }
-                
-                if submission:
-                    listen_payload["listened_at"] = int(time.time() - playtime)
 
-                payload = {
-                    "listen_type": "single" if submission else "playing_now",
-                    "payload": [listen_payload]
-                }
-                headers = {
-                    "Authorization": f"Token {token}",
-                    "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://jeffser.com/nocturne/ )",
-                    "Content-Type": "application/json"
-                }
-                try:
-                    response = requests.post("https://api.listenbrainz.org/1/submit-listens", json=payload, headers=headers)
-                except:
-                    pass
+                    if submission:
+                        listen_payload["listened_at"] = int(time.time() - playtime)
+
+                    payload = {
+                        "listen_type": "single" if submission else "playing_now",
+                        "payload": [listen_payload]
+                    }
+                    headers = {
+                        "Authorization": f"Token {token}",
+                        "User-Agent": f"com.jeffser.Nocturne/{get_nocturne_version()} ( https://jeffser.com/nocturne/ )",
+                        "Content-Type": "application/json"
+                    }
+                    try:
+                        response = requests.post("https://api.listenbrainz.org/1/submit-listens", json=payload, headers=headers)
+                    except:
+                        pass
 
         return
         # Playlist Resume
@@ -745,5 +813,6 @@ class Base(GObject.Object):
         # link : str
         logger.warning('method not implemented')
         return {}
+
 
 

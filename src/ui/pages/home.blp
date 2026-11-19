@@ -127,7 +127,8 @@ template $NocturneHomePage: Adw.NavigationPage {
               $NocturneWrapbox song_wrapbox {
                 header-label: _("Songs");
                 header-icon-name: "music-note-symbolic";
-                header-page-tag: "songs-all";
+                header-action-name: "app.replace_root_page";
+                header-action-target: "songs-all";
               }
 
               $NocturneCarousel album_carousel {

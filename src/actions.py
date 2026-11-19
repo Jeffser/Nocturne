@@ -782,6 +782,9 @@ def delete_playlist(app, model_id:str):
 def show_artist(app, model_id:str):
     __show_page(app, Widgets.ArtistPage(model_id))
 
+def show_artist_songs(window, model_id:str):
+    __show_page(window, Widgets.ArtistSongsPage(model_id))
+
 def show_artist_from_song(app, model_id:str):
     if model := app.get_property('integration').loaded_models.get(model_id):
         if artist_id := model.get_property('artistId'):

@@ -609,6 +609,14 @@ class Local(Base):
         conn.close()
         return sorted(artist_scrobbles, key=artist_scrobbles.get, reverse=True)[:count]
 
+    def getArtistSongs(self, artist_id:str) -> list:
+        songs = []
+        if model := self.loaded_models.get(artist_id):
+            for album in model.get_property('album'):
+                if album_model := self.loaded_models.get(album.get('id')):
+                    songs.extend([s.get('id') for s in album_model.get_property('song')])
+        return songs
+
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         if model := self.loaded_models.get(model_id):
             source_path = model.get_property('path')

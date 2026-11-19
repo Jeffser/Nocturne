@@ -6,6 +6,7 @@ from ..constants import get_navidrome_path, get_navidrome_env, CONTEXT_MANAGED_N
 from .base import Base
 import random, threading, subprocess, os, re, logging, time, uuid
 from urllib.parse import urlencode, urlparse
+from concurrent.futures import ThreadPoolExecutor, wait
 
 logger = logging.getLogger(__name__)
 
@@ -283,6 +284,8 @@ class Navidrome(Base):
             album_dict = response.get('album', {})
             if album_dict.get('id'):
                 self.loaded_models.get(model_id).update_data(**album_dict)
+                for song in album_dict.get("song", []):
+                    self.verifySong(song.get("id"), use_threading=False, song_data=song)
             elif model_id in self.loaded_models:
                 del self.loaded_models[model_id]
 
@@ -319,10 +322,13 @@ class Navidrome(Base):
 
         self.threads.submit(self.updateCoverArt, model_id)
 
-    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False):
+    def verifySong(self, model_id:str, force_update:bool=False, use_threading:bool=True, minimal:bool=False, song_data:dict={}):
         def update():
-            response = self.make_request('getSong', {'id': model_id})
-            song_dict = response.get('song', {})
+            if not song_data:
+                response = self.make_request('getSong', {'id': model_id})
+                song_dict = response.get('song', {})
+            else:
+                song_dict = song_data
             if song_dict.get('id'):
                 if 'artists' not in song_dict and song_dict.get('artistId'):
                     song_dict['artists'] = [{
@@ -657,6 +663,25 @@ class Navidrome(Base):
             'musicFolderId': self.library_ids
         }).get('topSongs', {}).get('song', [])
         return [song.get('id') for song in top_songs if song.get('id')]
+
+    def getArtistSongs(self, artist_id:str) -> list:
+        def fetch_album(album_id) -> list:
+            self.verifyAlbum(album_id, force_update=True, use_threading=False)
+            if album_model := self.loaded_models.get(album_id):
+                return [s.get('id') for s in album_model.get_property('song')]
+            return []
+
+        self.verifyArtist(artist_id, force_update=True, use_threading=False)
+        songs = []
+        if model := self.loaded_models.get(artist_id):
+            with ThreadPoolExecutor() as executor:
+                futures = []
+                for album in model.get_property('album'):
+                    futures.append(executor.submit(fetch_album, album.get('id')))
+                wait(futures)
+                for future in futures:
+                    songs.extend(future.result())
+        return songs
 
     def downloadSong(self, model_id:str, file_title:str, progress_callback:callable):
         params = {
