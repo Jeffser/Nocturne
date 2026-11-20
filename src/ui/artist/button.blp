@@ -22,7 +22,7 @@ template $NocturneArtistButton: Gtk.Button {
     spacing: 5;
 
     Adw.Avatar avatar_el {
-      custom-image: bind $format_gdkPaintable(template.model as <$NocturneModelArtist> .gdkPaintable);
+      custom-image: bind $format_gdkPaintable(template.model as <$NocturneModelArtist> .gdkPaintableMedium);
       icon-name: "music-artist-symbolic";
     }
 

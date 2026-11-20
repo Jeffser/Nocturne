@@ -48,8 +48,8 @@ template $NocturneAlbumPage: Adw.NavigationPage {
               overflow: hidden;
               halign: center;
               valign: start;
-              pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelAlbum> .gdkPaintable);
-              paintable: bind template.model as <$NocturneModelAlbum> .gdkPaintable;
+              pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelAlbum> .gdkPaintableMedium);
+              paintable: bind template.model as <$NocturneModelAlbum> .gdkPaintableMedium;
               icon-name: "music-queue-symbolic";
             }
 

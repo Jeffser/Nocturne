@@ -2,7 +2,7 @@
 
 from gi.repository import GLib, GObject, Gdk, Gio
 from . import secret, models, local, sql_instance
-from ..constants import get_navidrome_path, get_navidrome_env, CONTEXT_MANAGED_NAVIDROME_SERVER, DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP
+from ..constants import get_navidrome_path, get_navidrome_env, CONTEXT_MANAGED_NAVIDROME_SERVER, DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, COVER_SIZE
 from .base import Base
 import random, threading, subprocess, os, re, logging, time, uuid
 from urllib.parse import urlencode, urlparse
@@ -131,11 +131,9 @@ class Navidrome(Base):
                 local.Local.updateCoverArt(self, model_id)
                 return
 
-            sizes = {
-                'gdkPaintableBig': 720,
-                'gdkPaintable': 240
-            }
-            for property_name, size in sizes.items():
+            for property_name, size in COVER_SIZE.items():
+                if self.settings.get_string('cover-quality') == "high":
+                    size *= 2
                 if not model.get_property(property_name):
                     raw_bytes = self.get_cache_image(model_id, size)
                     save_cache = not raw_bytes
