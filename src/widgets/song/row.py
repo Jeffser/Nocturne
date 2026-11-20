@@ -4,7 +4,7 @@ from gi.repository import GObject, Gtk, Adw, Gdk, GLib, Pango, Gio
 from .queue import SongQueue
 from ...integrations import get_current_integration, models
 from ..containers import ContextContainer
-from ...constants import CONTEXT_SONG, get_display_time
+from ...constants import CONTEXT_SONG, get_display_time, get_cover_art, get_cover_size
 from urllib.parse import urlparse
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/row.ui')
@@ -335,23 +335,24 @@ class SongRow(Adw.ActionRow):
         popover.popup()
 
     @Gtk.Template.Callback()
-    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        if paintable:
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size_key:str) -> Gdk.Paintable:
+        if has_paintable:
             self.cover_el.remove_css_class('p12')
-            return paintable
+            return get_cover_art(model_id, size_key)
         else:
             self.cover_el.add_css_class('p12')
             return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
                 'music-note-symbolic',
                 None,
-                24,
+                get_cover_size(size_key) / 2,
                 1,
                 Gtk.TextDirection.NONE,
                 0
             )
 
     @Gtk.Template.Callback()
-    def format_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
-        return 48 if paintable else 24
+    def format_pixel_size(self, obj, has_paintable:bool, size_key:str) -> int:
+        size = get_cover_size(size_key, dp=True)
+        return size if has_paintable else size/2
 
 

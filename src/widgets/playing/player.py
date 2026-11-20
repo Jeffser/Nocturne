@@ -9,6 +9,7 @@ from mpris_server import Metadata, ValidMetadata, Track, Position, Volume, Rate,
 
 from ...integrations import models
 from ...integrations.discord_rpc import DiscordRPC
+from ...constants import get_cover_art
 from urllib.parse import urlparse
 import threading, io, base64, logging, gc
 from PIL import Image, ImageFilter
@@ -785,7 +786,7 @@ class Player(GObject.Object):
                                 self.rg_volume.set_property('album-mode', False)
 
                             # Paintable
-                            threading.Thread(target=self.update_palette, args=(model.get_property('gdkPaintableMedium'),), daemon=True).start()
+                            threading.Thread(target=self.update_palette, args=(get_cover_art(model.get_property('id'), "medium"),), daemon=True).start()
 
                             # Misc
                             self.set_property('currentSong', model)

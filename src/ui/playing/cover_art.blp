@@ -44,7 +44,11 @@ template $NocturnePlayingCoverArt: Gtk.Box{
             accessibility {
               label: _("Song Cover");
             }
-            paintable: bind $format_cover_paintable(template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .gdkPaintableBig);
+            paintable: bind $format_cover_paintable(
+              template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .hasCover,
+              template.root as <$NocturneWindow> .application as <$NocturneApplication> .player as <$NocturnePlayer> .currentSong as <$NocturneModelSong> .id,
+              "big"
+            );
           };
         }
 

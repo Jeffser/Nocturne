@@ -24,7 +24,11 @@ template $NocturneArtistRow: Adw.ActionRow {
       "p10"
     ]
     size: 48;
-    custom-image: bind template.model as <$NocturneModelArtist> .gdkPaintableSmall;
+    custom-image: bind $format_cover_paintable(
+        template.model as <$NocturneModelArtist> .hasCover,
+        template.model as <$NocturneModelArtist> .id,
+        "small"
+      );
     icon-name: "music-artist-symbolic";
   }
 

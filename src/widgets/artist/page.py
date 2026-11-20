@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Gdk, Adw, GLib, Pango
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_ARTIST
+from ...constants import CONTEXT_ARTIST, get_cover_art
 from ..containers import get_context_buttons_list
 from ..song import SongSmallRow
 from ..album import AlbumButton
@@ -80,10 +80,10 @@ class ArtistPage(Adw.NavigationPage):
         return "heart-filled-symbolic" if starred else "heart-outline-thick-symbolic"
 
     @Gtk.Template.Callback()
-    def format_avatar_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        if paintable:
-            self.update_background(paintable.save_to_png_bytes().get_data())
-        return paintable
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            return get_cover_art(model_id, size)
+        return None
 
     def update_top_songs(self):
         # call update_top_songs on background thread

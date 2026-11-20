@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Gdk, Adw, GLib
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_PLAYLIST, get_display_time
+from ...constants import CONTEXT_PLAYLIST, get_display_time, get_cover_art, get_cover_size
 from ..containers import get_context_buttons_list
 from ..song import SongRow
 import threading, io
@@ -59,10 +59,28 @@ class PlaylistPage(Adw.NavigationPage):
         return get_display_time(duration)
 
     @Gtk.Template.Callback()
-    def format_paintable_pixel_size(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        if data := paintable.save_to_png_bytes().get_data():
-            threading.Thread(target=self.update_background, args=(data,), daemon=True).start()
-        return 240 if paintable else -1
+    def format_pixel_size(self, obj, has_paintable:bool, size_key:str) -> int:
+        size = get_cover_size(size_key, dp=True)
+        return size if has_paintable else size/2
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            self.cover_el.remove_css_class('p60')
+            paintable = get_cover_art(model_id, size)
+            if data := paintable.save_to_png_bytes().get_data():
+                threading.Thread(target=self.update_background, args=(data,), daemon=True).start()
+            return paintable
+        else:
+            self.cover_el.add_css_class('p60')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'playlist-symbolic',
+                None,
+                get_cover_size(size) / 2,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
 
     def update_background(self, raw_bytes:bytes):
         img_io = io.BytesIO(raw_bytes)

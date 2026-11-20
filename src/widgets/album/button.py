@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Adw, GLib, Gdk, Gio
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_ALBUM, CONTEXT_ARTIST
+from ...constants import CONTEXT_ALBUM, CONTEXT_ARTIST, get_cover_art, get_cover_size
 from ..containers import ContextContainer
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/album/button.ui')
@@ -48,16 +48,16 @@ class AlbumButton(Gtk.Box):
             self.name_el.add_css_class('title-4')
 
     @Gtk.Template.Callback()
-    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        self.uses_icon = not paintable
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        self.uses_icon = not has_paintable
         GLib.idle_add(self.update_size)
-        if paintable is not None:
-            return paintable
+        if has_paintable:
+            return get_cover_art(model_id, size)
         else:
             return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
                 'music-queue-symbolic',
                 None,
-                120,
+                get_cover_size(size) / 2,
                 1,
                 Gtk.TextDirection.NONE,
                 0
