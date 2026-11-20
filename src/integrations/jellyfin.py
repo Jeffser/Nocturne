@@ -392,12 +392,19 @@ class Jellyfin(Base):
     def updateCoverArt(self, model_id:str=''):
         def resize_image(image_bytes:b'', size):
             in_stream = io.BytesIO(image_bytes)
-            image = Image.open(in_stream)
-            image_format = image.format
-            image.thumbnail((size, size))
-            out_stream = io.BytesIO()
-            image.save(out_stream, format=image_format)
-            return out_stream.getvalue()
+            with Image.open(in_stream) as image:
+                if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+                    rgba = image.convert("RGBA")
+                    background = Image.new("RGB", rgba.size, (0, 0, 0))
+                    background.paste(rgba, mask=rgba.getchannel("A"))
+                    image = background
+                elif image.mode != "RGB":
+                    image = image.convert("RGB")
+
+                image.thumbnail((size, size))
+                out_stream = io.BytesIO()
+                image.save(out_stream, format="JPEG", quality=90)
+                return out_stream.getvalue()
 
         if model := self.loaded_models.get(model_id):
             if isinstance(model, models.Song) and model.get_property('isExternalFile'):
