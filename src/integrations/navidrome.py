@@ -130,28 +130,23 @@ class Navidrome(Base):
             if isinstance(model, models.Song) and model.get_property('isExternalFile'):
                 local.Local.updateCoverArt(self, model_id)
                 return
+            if model.get_property("hasCover"):
+                return
 
+            bytes_checker = True
             for property_name, size in COVER_SIZE.items():
                 if self.settings.get_string('cover-quality') == "high":
                     size *= 2
-                if not model.get_property(property_name):
-                    raw_bytes = self.get_cache_image(model_id, size)
-                    save_cache = not raw_bytes
+                if not (raw_bytes := self.get_cache_image(model_id, size)):
                     if not raw_bytes:
                         raw_bytes = self.getCoverArtBytes(model_id, size)
                         if not raw_bytes and isinstance(model, models.Song):
                             raw_bytes = self.getCoverArtBytes(model.get_property('albumId'), size)
-                            if raw_bytes:
-                                model.set_property('coverArt', model.get_property('albumId')) # For getCoverArtUrl
-                    if raw_bytes:
-                        try:
-                            gbytes = GLib.Bytes.new(raw_bytes)
-                            texture = Gdk.Texture.new_from_bytes(gbytes)
-                            model.set_property(property_name, texture)
-                            if save_cache:
-                                self.save_cache_image(model_id, size, raw_bytes)
-                        except Exception as e:
-                            logger.error(f"can't convert image from {model_id} (size {size}): {e}")
+                if raw_bytes:
+                    self.save_cache_image(model_id, size, raw_bytes)
+                else:
+                    bytes_checker = False
+            GLib.idle_add(model.set_property, "hasCover", bytes_checker)
 
     def getCoverArtUrl(self, model_id:str) -> str:
         if model := self.loaded_models.get(model_id):

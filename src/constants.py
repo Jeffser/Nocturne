@@ -704,7 +704,57 @@ CONTEXT_LYRICS = {
 }
 
 COVER_SIZE = {
-    "gdkPaintableBig": 600,
-    "gdkPaintableMedium": 240,
-    "gdkPaintableSmall": 48
+    "big": 600,
+    "medium": 240,
+    "small": 48
 }
+
+def get_cover_size(size:str, dp=False) -> int:
+    # Get the standard cover art sizes
+    # size - string representing the three sizes a cover can be
+    #   'big': the largest cover, used on the player control_page
+    #   'medium': the medium sized cover, used in buttons and page headers
+    #   'small': the smallest, used in rows and in the player footer
+    # dp - boolean for using display-independent pixels (for HiDPI displays)
+    #   True: returns the display-independent pixel size (used for widget sizes)
+    #   False: returns the actual cover resolution
+    if dp:
+        return COVER_SIZE.get(size, 0)
+    else:
+        from gi.repository import Gio, GLib, Gdk
+        settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+        multiplier = 1 if settings.get_string('cover-quality') == "low" else 2
+        return COVER_SIZE.get(size, 0) * multiplier
+
+def get_cover_art(model_id:str, size_str:str) -> bytes:
+    #Retrieve cover art from the cache
+
+    from gi.repository import Gio, GLib, Gdk
+    from .integrations import sql_instance
+
+    settings = Gio.Settings(schema_id="com.jeffser.Nocturne")
+    multiplier = 1 if settings.get_string('cover-quality') == "low" else 2
+
+    size = COVER_SIZE[size_str] * multiplier
+    # do not modify this function, it works as is in any instance
+    # should be called in updateCoverArt
+    conn, cursor = sql_instance.get_cache_connection()
+    raw_bytes = b''
+    try:
+        cursor.execute(
+            "SELECT image from images WHERE model=? AND size=?",
+            (model_id, size)
+        )
+        if row := cursor.fetchone():
+            raw_bytes = row[0] or b''
+        conn.commit()
+    except Exception as e:
+        print(f"Could not retrieve cache image for {model_id}: {e}")
+    finally:
+        conn.close()
+    if raw_bytes:
+        try:
+            gbytes = GLib.Bytes.new(raw_bytes)
+            return Gdk.Texture.new_from_bytes(gbytes)
+        except Exception as e:
+            logger.error(f"can't convert image from {model_id} (size {size}): {e}")

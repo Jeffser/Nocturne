@@ -26,7 +26,10 @@ template $NocturneSongButton: Gtk.Box {
         icon-size: large;
         overflow: hidden;
         hexpand: true;
-        paintable: bind $format_cover_paintable(template.model as <$NocturneModelSong> .gdkPaintableMedium);
+        paintable: bind $format_cover_paintable(
+          template.model as <$NocturneModelSong> .hasCover,
+          template.model as <$NocturneModelSong> .id,
+          "medium");
         accessibility {
           label: _("Song cover art");
         }

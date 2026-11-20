@@ -30,8 +30,11 @@ template $NocturneAlbumRow: Adw.ActionRow {
     valign: center;
     halign: center;
     icon-name: "music-queue-symbolic";
-    paintable: bind $format_cover_paintable(template.model as <$NocturneModelAlbum> .gdkPaintableSmall);
-    pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelAlbum> .gdkPaintableSmall);
+    pixel-size: bind $format_pixel_size(template.model as <$NocturneModelAlbum> .hasCover, "small");
+    paintable: bind $format_cover_paintable(
+      template.model as <$NocturneModelAlbum> .hasCover,
+      template.model as <$NocturneModelAlbum> .id,
+      "small");
     accessibility {
       label: _("Album cover art");
     }

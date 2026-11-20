@@ -61,7 +61,11 @@ template $NocturneAlbumButton: Gtk.Box {
         overflow: hidden;
         hexpand: true;
         icon-name: "music-queue-symbolic";
-        paintable: bind $format_cover_paintable(template.model as <$NocturneModelAlbum> .gdkPaintableMedium);
+        paintable: bind $format_cover_paintable(
+          template.model as <$NocturneModelAlbum> .hasCover,
+          template.model as <$NocturneModelAlbum> .id,
+          "medium"
+        );
         accessibility {
           label: _("Album cover art");
         }

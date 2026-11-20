@@ -36,8 +36,12 @@ template $NocturneSongSmallRow: Gtk.Button {
       overflow: hidden;
       valign: center;
       halign: center;
-      paintable: bind $format_cover_paintable(template.model as <$NocturneModelSong> .gdkPaintableSmall);
-      pixel-size: bind $format_pixel_size(template.model as <$NocturneModelSong> .gdkPaintableSmall);
+      pixel-size: bind $format_pixel_size(template.model as <$NocturneModelSong> .hasCover, "small");
+      paintable: bind $format_cover_paintable(
+        template.model as <$NocturneModelSong> .hasCover,
+        template.model as <$NocturneModelSong> .id,
+        "small"
+      );
     }
 
     Gtk.Box {

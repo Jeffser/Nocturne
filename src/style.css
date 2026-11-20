@@ -213,6 +213,10 @@ window.fullscreen dialog headerbar {
   margin-bottom: 0;
 }
 
+.p8{
+  padding: 8px;
+}
+
 .p12 {
   padding: 12px;
 }
