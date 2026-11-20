@@ -87,11 +87,11 @@ template $NocturneSongRow: Adw.ActionRow {
             accessibility {
               label: _("Song cover art");
             }
-            pixel-size: 48;
             overflow: hidden;
             valign: center;
             halign: center;
-            paintable: bind template.model as <$NocturneModelSong> .gdkPaintableSmall;
+            paintable: bind $format_cover_paintable(template.model as <$NocturneModelSong> .gdkPaintableSmall);
+            pixel-size: bind $format_pixel_size(template.model as <$NocturneModelSong> .gdkPaintableSmall);
           };
           [overlay]
           Gtk.Image {
