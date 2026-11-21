@@ -21,6 +21,7 @@ class ArtistSongsPage(Adw.NavigationPage):
     reorder = True
     song_list = []
     listenbrainz_list = []
+    item_ids = []
 
     def __init__(self, model_id:str):
         super().__init__()
@@ -88,7 +89,9 @@ class ArtistSongsPage(Adw.NavigationPage):
                     return
 
         if self.reorder:
-            self.sort_list()
+            success = self.sort_list()
+            if not success:
+                return
         self.searching = True
 
         ids_to_show = []
@@ -178,7 +181,14 @@ class ArtistSongsPage(Adw.NavigationPage):
                 )
         else:
             if not self.listenbrainz_list:
-                self.listenbrainz_songs = integration.getListenBrainzTopSongs(self.id, count=100)
+                success, self.listenbrainz_songs = integration.getListenBrainzTopSongs(self.id, count=100)
+                if sort_order != self.action_group.lookup_action("sort-order").get_state().get_string():
+                    #Ensure sort hasn't changed during request
+                    return
+                if not success:
+                    self.listenbrainz_list = []
+                    GLib.idle_add(self.main_stack.set_visible_child_name, 'network-failure')
+                    return False
             if favorites_only:
                 filtered_list = [
                     song for song in self.listenbrainz_songs
@@ -188,6 +198,7 @@ class ArtistSongsPage(Adw.NavigationPage):
             else:
                 self.item_ids = self.listenbrainz_songs
         self.reorder = False
+        return True
 
     def on_favorites_toggled(self, action, parameter):
         self.reorder = True
@@ -213,6 +224,10 @@ class ArtistSongsPage(Adw.NavigationPage):
     def scroll_edge_reached(self, scrolledwindow, pos):
         if pos == Gtk.PositionType.BOTTOM and self.offset < len(self.item_ids):
             threading.Thread(target=self.search, daemon=True).start()
+
+    @Gtk.Template.Callback()
+    def on_refresh_clicked(self, button):
+        self.reload()
 
     def update_visibility(self):
         for row in list(self.list_el.list_el):

@@ -615,7 +615,14 @@ class Base(GObject.Object):
         # see navidrome.py for example
         logger.warning('method not implemented')
 
-    def getListenBrainzTopSongs(self, artist_id, count=20) -> list:
+    def getListenBrainzTopSongs(self, artist_id, count=20) -> tuple[bool, list]:
+        # get a list of an artist's songs sorted by ListenBrainz top song order
+        # tries to match each instance song to the ListenBrainz song with
+        # the song title and album, then falls back to only the song title
+        # returns a tuple
+        #   bool - whether the network request was successful
+        #   list - a list of song IDs sorted by ListenBrainz top songs for an artist
+
         if model := self.loaded_models.get(artist_id):
             if token := secret.get_plain_password("listenbrainz"):
                 self.verifyArtist(artist_id, use_threading=False)
@@ -636,15 +643,18 @@ class Base(GObject.Object):
                                 response = requests.get(f"https://api.listenbrainz.org/1/metadata/lookup", params={'artist_name':artist_name, 'recording_name':song_name}, headers=headers)
                             except Exception as e:
                                 logger.warning(f'ListenBrainz MBID lookup failed with {e}')
+                                return False, []
                             if mb_ids := response.json().get("artist_mbids", []):
                                 mb_id = mb_ids[0]
                             time.sleep(1.2) #prevent API flood protection
-                if not mb_id: return []
+                if not mb_id:
+                    return True, []
 
                 try:
                     response = requests.get(f"https://api.listenbrainz.org/1/popularity/top-recordings-for-artist/{mb_id}", headers=headers)
                 except Exception as e:
                     logger.warning(f'ListenBrainz popularity lookup failed with {e}')
+                    return False, []
 
                 listenbrainz_songs = response.json()
                 local_songs = [self.loaded_models.get(song_id) for song_id in self.getArtistSongs(artist_id)]
@@ -676,8 +686,8 @@ class Base(GObject.Object):
                     elif title_key in title_lookup:
                         top_songs.append(title_lookup.get(title_key))
 
-                return top_songs
-        return []
+                return True, top_songs
+        return True, []
 
     def scrobble(self, model_id:str, playtime:int=0, submission:bool=True):
         # the id is for a Song, this is how views are stored

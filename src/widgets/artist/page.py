@@ -121,11 +121,34 @@ class ArtistPage(Adw.NavigationPage):
         self.top_songs_source = toggle_group.get_active_name()
         threading.Thread(target=self.update_top_songs, daemon=True).start()
 
+    def on_refresh_top_songs(self, button):
+        threading.Thread(target=self.update_top_songs, daemon=True).start()
+
     def update_top_songs(self):
         # call update_top_songs on background thread
 
         def configure():
-            if top_songs:
+            if not success:
+                box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=20)
+                box.set_halign(Gtk.Align.CENTER)
+                box.set_valign(Gtk.Align.CENTER)
+
+                image = Gtk.Image.new_from_icon_name("network-offline-symbolic")
+                image.set_pixel_size(64)
+
+                label = Gtk.Label(label=_("Network Request Failed"))
+                label.add_css_class("title-3")
+                label.add_css_class("dimmed")
+
+                button = Gtk.Button(label=_("Retry"))
+                button.connect("clicked", self.on_refresh_top_songs)
+
+                box.append(image)
+                box.append(label)
+                box.append(button)
+
+                widgets = [box]
+            elif top_songs:
                 widgets = [SongSmallRow(song_id, show_album_name=True) for song_id in top_songs[:10]]
                 for row in widgets:
                     row.set_action_name(None)
@@ -145,6 +168,7 @@ class ArtistPage(Adw.NavigationPage):
                 self.top_songs_wrapbox.set_widgets(widgets)
 
         top_songs = None
+        success = True
         source = self.top_songs_source
         if root := self.get_root():
             if app := root.get_application():
@@ -157,7 +181,7 @@ class ArtistPage(Adw.NavigationPage):
                     elif source == "listenbrainz":
                         if not self.listenbrainz_top_songs:
                             GLib.idle_add(self.top_songs_wrapbox.remove_all, True)
-                            self.listenbrainz_top_songs = integration.getListenBrainzTopSongs(self.id, count=30)
+                            success, self.listenbrainz_top_songs = integration.getListenBrainzTopSongs(self.id, count=30)
                         top_songs = self.listenbrainz_top_songs
         GLib.idle_add(configure)
 

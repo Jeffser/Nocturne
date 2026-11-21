@@ -34,6 +34,33 @@ template $NocturneArtistSongsPage: Adw.NavigationPage {
         child: Adw.Spinner {};
       }
       Gtk.StackPage {
+        name: "network-failure";
+        child: Gtk.Box {
+          orientation: vertical;
+          spacing: 20;
+          halign: center;
+          valign: center;
+          Gtk.Image{
+            icon-name: "network-offline-symbolic";
+            pixel-size: 64;
+
+            accessibility {
+              label: _("Network failure");
+            }
+          }
+
+          Gtk.Label{
+            label: _("Network Request Failed");
+            styles ['title-3', 'dimmed']
+          }
+
+          Gtk.Button{
+            label: _("Retry");
+            clicked => $on_refresh_clicked();
+          }
+        };
+      }
+      Gtk.StackPage {
         name: "content";
         child: Gtk.ScrolledWindow scrolledwindow {
           propagate-natural-width: true;
