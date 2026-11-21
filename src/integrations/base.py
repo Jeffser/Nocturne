@@ -639,12 +639,14 @@ class Base(GObject.Object):
                             if mb_ids := response.json().get("artist_mbids", []):
                                 mb_id = mb_ids[0]
                             time.sleep(1.2) #prevent API flood protection
-                if not mb_id: return []
+                if not mb_id:
+                    return []
 
                 try:
                     response = requests.get(f"https://api.listenbrainz.org/1/popularity/top-recordings-for-artist/{mb_id}", headers=headers)
                 except Exception as e:
                     logger.warning(f'ListenBrainz popularity lookup failed with {e}')
+                    return []
 
                 listenbrainz_songs = response.json()
                 local_songs = [self.loaded_models.get(song_id) for song_id in self.getArtistSongs(artist_id)]
