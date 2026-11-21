@@ -30,9 +30,12 @@ template $NocturnePlaylistRow: Adw.ActionRow {
     overflow: hidden;
     valign: center;
     halign: center;
-    icon-name: "music-note-symbolic";
-    pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelPlaylist> .gdkPaintable);
-    paintable: bind template.model as <$NocturneModelPlaylist> .gdkPaintable;
+    pixel-size: bind $format_pixel_size(template.model as <$NocturneModelPlaylist> .hasCover, "small");
+    paintable: bind $format_cover_paintable(
+      template.model as <$NocturneModelPlaylist> .hasCover,
+      template.model as <$NocturneModelPlaylist> .id,
+      "small"
+    );
     accessibility {
       label: _("Playlist cover art");
     }

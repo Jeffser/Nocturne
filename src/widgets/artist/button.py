@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Adw, GLib, Gdk, Gio
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_ARTIST
+from ...constants import CONTEXT_ARTIST, get_cover_art
 from ..containers import ContextContainer
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/artist/button.ui')
@@ -51,9 +51,11 @@ class ArtistButton(Gtk.Button):
         return ngettext("{} Album", "{} Albums", albumCount).format(albumCount)
 
     @Gtk.Template.Callback()
-    def format_gdkPaintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
         GLib.idle_add(self.update_size)
-        return paintable
+        if has_paintable:
+            return get_cover_art(model_id, size)
+        return None
 
     @Gtk.Template.Callback()
     def show_popover(self, *args):

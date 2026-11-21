@@ -2,7 +2,7 @@
 
 from gi.repository import Gtk, Adw, GLib
 from ...integrations import get_current_integration
-from ...constants import get_display_time
+from ...constants import get_display_time, get_cover_art
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/details_dialog.ui')
 class SongDetailsDialog(Adw.Dialog):
@@ -39,7 +39,7 @@ class SongDetailsDialog(Adw.Dialog):
 
         paintable = None
         if model := integration.loaded_models.get(self.id):
-            paintable = model.get_property('gdkPaintable')
+            paintable = get_cover_art(self.id, "medium")
         self.cover_el.set_paintable(paintable)
         self.cover_el.set_visible(paintable)
         property_list = song_details.list_properties()

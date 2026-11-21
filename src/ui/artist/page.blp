@@ -39,7 +39,11 @@ template $NocturneArtistPage: Adw.NavigationPage {
             Adw.Avatar avatar_el {
               size: 240;
               valign: start;
-              custom-image: bind $format_avatar_paintable(template.model as <$NocturneModelArtist> .gdkPaintable);
+              custom-image: bind $format_cover_paintable(
+                template.model as <$NocturneModelArtist> .hasCover,
+                template.model as <$NocturneModelArtist> .id,
+                "medium"
+              );
               icon-name: "music-artist-symbolic";
             }
 

@@ -3,7 +3,7 @@
 from gi.repository import GObject, Gtk, Gdk, Adw, GLib
 from ..song import SongRow
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_ALBUM
+from ...constants import CONTEXT_ALBUM, get_cover_art, get_cover_size
 from ..containers import get_context_buttons_list
 import threading, io
 from colorthief import ColorThief
@@ -34,6 +34,7 @@ class AlbumPage(Adw.NavigationPage):
     star_el = Gtk.Template.Child()
     song_list_el = Gtk.Template.Child()
     context_wrap_el = Gtk.Template.Child()
+    cover_el = Gtk.Template.Child()
 
     def __init__(self, id:str):
         self.id = id
@@ -170,10 +171,27 @@ class AlbumPage(Adw.NavigationPage):
         return GLib.Variant(variant, value)
 
     @Gtk.Template.Callback()
-    def format_cover_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
-        if paintable:
+    def format_pixel_size(self, obj, has_paintable:bool, size_key:str) -> int:
+        size = get_cover_size(size_key, dp=True)
+        return size if has_paintable else size/2
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            self.cover_el.remove_css_class('p60')
+            paintable = get_cover_art(model_id, size)
             self.update_background(paintable.save_to_png_bytes().get_data())
-        return 240 if paintable else -1
+            return paintable
+        else:
+            self.cover_el.add_css_class('p60')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-queue-symbolic',
+                None,
+                get_cover_size(size) / 2,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
 
     @Gtk.Template.Callback()
     def format_to_bool(self, obj, value) -> bool:

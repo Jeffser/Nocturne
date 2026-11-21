@@ -2,7 +2,7 @@
 
 from gi.repository import GObject, Gtk, Adw, GLib, Gdk, Gio
 from ...integrations import get_current_integration, models
-from ...constants import CONTEXT_ARTIST
+from ...constants import CONTEXT_ARTIST, get_cover_art
 from ..containers import ContextContainer
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/artist/row.ui')
@@ -28,6 +28,12 @@ class ArtistRow(Adw.ActionRow):
             "visible",
             Gio.SettingsBindFlags.DEFAULT
         )
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            return get_cover_art(model_id, size)
+        return None
 
     @Gtk.Template.Callback()
     def format_action_target(self, obj, value, variant) -> GLib.Variant:

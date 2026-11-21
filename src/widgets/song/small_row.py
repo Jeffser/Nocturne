@@ -3,7 +3,7 @@
 from gi.repository import GObject, Gtk, Adw, Gdk, GLib
 from ...integrations import get_current_integration, models
 from ..containers import ContextContainer
-from ...constants import CONTEXT_SONG
+from ...constants import CONTEXT_SONG, get_cover_art, get_cover_size
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/song/small_row.ui')
 class SongSmallRow(Gtk.Button):
@@ -35,8 +35,25 @@ class SongSmallRow(Gtk.Button):
         return album if show_album_name else artist
 
     @Gtk.Template.Callback()
-    def format_pixel_size(self, obj, paintable:Gdk.Paintable) -> int:
-        return 48 if paintable else -1
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            self.cover_el.remove_css_class('p12')
+            return get_cover_art(model_id, size)
+        else:
+            self.cover_el.add_css_class('p12')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-note-symbolic',
+                None,
+                get_cover_size(size) / 2,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
+
+    @Gtk.Template.Callback()
+    def format_pixel_size(self, obj, has_paintable:bool, size_key:str) -> int:
+        size = get_cover_size(size_key, dp=True)
+        return  size if has_paintable else size/2
 
     def delete_status_changed(self, status:bool):
         if status:

@@ -2,7 +2,7 @@
 
 from gi.repository import GLib, GObject, Gdk, Gio
 from . import secret, models, local, sql_instance
-from ..constants import get_navidrome_path, get_navidrome_env, CONTEXT_MANAGED_NAVIDROME_SERVER, DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP
+from ..constants import get_navidrome_path, get_navidrome_env, CONTEXT_MANAGED_NAVIDROME_SERVER, DOWNLOAD_QUEUE_DIR, DOWNLOADS_DIR, DOWNLOAD_MIME_MAP, COVER_SIZE
 from .base import Base
 import random, threading, subprocess, os, re, logging, time, uuid
 from urllib.parse import urlencode, urlparse
@@ -130,30 +130,23 @@ class Navidrome(Base):
             if isinstance(model, models.Song) and model.get_property('isExternalFile'):
                 local.Local.updateCoverArt(self, model_id)
                 return
+            if model.get_property("hasCover"):
+                return
 
-            sizes = {
-                'gdkPaintableBig': 720,
-                'gdkPaintable': 240
-            }
-            for property_name, size in sizes.items():
-                if not model.get_property(property_name):
-                    raw_bytes = self.get_cache_image(model_id, size)
-                    save_cache = not raw_bytes
+            bytes_checker = True
+            for property_name, size in COVER_SIZE.items():
+                if self.settings.get_string('cover-quality') == "high":
+                    size *= 2
+                if not (raw_bytes := self.get_cache_image(model_id, size)):
                     if not raw_bytes:
                         raw_bytes = self.getCoverArtBytes(model_id, size)
                         if not raw_bytes and isinstance(model, models.Song):
                             raw_bytes = self.getCoverArtBytes(model.get_property('albumId'), size)
-                            if raw_bytes:
-                                model.set_property('coverArt', model.get_property('albumId')) # For getCoverArtUrl
-                    if raw_bytes:
-                        try:
-                            gbytes = GLib.Bytes.new(raw_bytes)
-                            texture = Gdk.Texture.new_from_bytes(gbytes)
-                            model.set_property(property_name, texture)
-                            if save_cache:
-                                self.save_cache_image(model_id, size, raw_bytes)
-                        except Exception as e:
-                            logger.error(f"can't convert image from {model_id} (size {size}): {e}")
+                if raw_bytes:
+                    self.save_cache_image(model_id, size, raw_bytes)
+                else:
+                    bytes_checker = False
+            GLib.idle_add(model.set_property, "hasCover", bytes_checker)
 
     def getCoverArtUrl(self, model_id:str) -> str:
         if model := self.loaded_models.get(model_id):

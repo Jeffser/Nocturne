@@ -17,11 +17,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GLib, Gio, GObject, Pango, Gly
+from gi.repository import Gtk, Adw, GLib, Gio, GObject, Pango, Gly, Gdk
 
 from . import actions
 from .integrations import models
-from .constants import SIDEBAR_MENU, SIDEBAR_DECORATION_PATH
+from .constants import SIDEBAR_MENU, SIDEBAR_DECORATION_PATH, get_cover_art
 import threading, os
 from datetime import datetime, timedelta
 
@@ -181,15 +181,31 @@ class NocturneWindow(Adw.ApplicationWindow):
         if integration.get_property('loadingMessage'):
             self.update_loading_message(integration)
 
-        def update_row_paintable(row, paintable):
+        def update_row_paintable(row, model_id:str, has_paintable:bool):
+            if has_paintable:
+                size = 32
+                paintable = get_cover_art(model_id, "small")
+                classes = ['rounded-corner']
+            else:
+                size = 16
+                paintable = Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                    'playlist-symbolic',
+                    None,
+                    size,
+                    1,
+                    Gtk.TextDirection.NONE,
+                    0
+                )
+                classes = ['p8', 'card']
             picture = Gtk.Image(
                 paintable=paintable,
                 margin_top=2,
                 margin_bottom=2,
-                height_request=32,
-                pixel_size=32,
+                height_request=size,
+                width_request=size,
+                pixel_size=size,
                 overflow=Gtk.Overflow.HIDDEN,
-                css_classes=['rounded-corner']
+                css_classes=classes
             )
             row.set_prefix(picture)
 
@@ -203,7 +219,7 @@ class NocturneWindow(Adw.ApplicationWindow):
                 integration.connect_to_model(playlistId, "name", lambda name, row=item: row.set_title(name))
                 integration.connect_to_model(playlistId, "name", lambda name, row=item: row.set_tooltip(name))
                 integration.connect_to_model(playlistId, "songCount", lambda n, row=item: row.set_subtitle(ngettext("{} Song", "{} Songs", n).format(n)))
-                integration.connect_to_model(playlistId, "gdkPaintable", lambda paintable, row=item: update_row_paintable(row, paintable))
+                integration.connect_to_model(playlistId, "hasCover", lambda has_paintable, model_id=playlistId, row=item: update_row_paintable(row, model_id, has_paintable))
 
     def setup(self):
         # call using glib_add

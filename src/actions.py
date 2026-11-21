@@ -46,9 +46,9 @@ def __show_custom_toast(app, model_id:str, title_property:str, subtitle:str, ico
             pixel_size=32
         )
         if model:
-            if paintable := model.get_property('gdkPaintable'):
+            if paintable := get_cover_art(model_id, "small"):
                 GLib.idle_add(album_art.set_from_paintable, paintable)
-                GLib.idle_add(album_art.set_pixel_size, 48)
+                GLib.idle_add(album_art.set_pixel_size, get_cover_pixels("small"))
         GLib.idle_add(custom_widget.add_prefix, album_art)
     toast = Adw.Toast(
         custom_title=custom_widget,

@@ -1,18 +1,36 @@
 # footer.py
 
 from gi.repository import Gtk, Adw, GLib, GObject, Gst, Gio, Gdk
+from ...constants import get_cover_art, get_cover_size
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/footer.ui')
 class PlayingFooter(Adw.BreakpointBin):
     __gtype_name__ = 'NocturnePlayingFooter'
 
     forceHugeMode = GObject.Property(type=bool, default=False)
+    cover_el = Gtk.Template.Child()
 
     @Gtk.Template.Callback()
     def format_progress_el_visibility(self, obj, model) -> bool:
         if model:
             return not bool(model.get_property('radioStreamUrl'))
         return False
+
+    @Gtk.Template.Callback()
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            self.cover_el.remove_css_class('p12')
+            return get_cover_art(model_id, size)
+        else:
+            self.cover_el.add_css_class('p12')
+            return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
+                'music-note-symbolic',
+                None,
+                get_cover_size(size) / 2,
+                1,
+                Gtk.TextDirection.NONE,
+                0
+            )
 
     @Gtk.Template.Callback()
     def format_cover_art_size(self, obj, huge_mode:bool) -> int:
