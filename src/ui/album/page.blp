@@ -48,9 +48,11 @@ template $NocturneAlbumPage: Adw.NavigationPage {
               overflow: hidden;
               halign: center;
               valign: start;
-              pixel-size: bind $format_cover_pixel_size(template.model as <$NocturneModelAlbum> .gdkPaintable);
-              paintable: bind template.model as <$NocturneModelAlbum> .gdkPaintable;
-              icon-name: "music-queue-symbolic";
+              pixel-size: bind $format_pixel_size(template.model as <$NocturneModelAlbum> .hasCover, "medium");
+              paintable: bind $format_cover_paintable(
+                template.model as <$NocturneModelAlbum> .hasCover,
+                template.model as <$NocturneModelAlbum> .id,
+                "medium");
             }
 
             Gtk.Box {

@@ -376,64 +376,57 @@ class Jellyfin(Base):
             logger.error(f"can't get image from {model_id}: {e}")
         return b''
 
-    def getCachedCoverArt(self, model_id:str=''):
-        sizes = {
-            'gdkPaintableBig': COVER_SIZE["big"],
-            'gdkPaintable': COVER_SIZE["small"]
-        }
-        for property_name, size in sizes.items():
-            covers = {}
-            raw_bytes = self.get_cache_image(model_id, size)
-            if raw_bytes:
-                try:
-                    gbytes = GLib.Bytes.new(raw_bytes)
-                    texture = Gdk.Texture.new_from_bytes(gbytes)
-                    covers.update({property_name: texture})
-                except Exception as e:
-                    logger.error(f"can't convert image from {model_id} (size {size}): {e}")
-        return covers
-
     def updateCoverArt(self, model_id:str=''):
         def resize_image(image_bytes:b'', size):
             in_stream = io.BytesIO(image_bytes)
-            image = Image.open(in_stream)
-            image_format = image.format
-            image.thumbnail((size, size))
-            out_stream = io.BytesIO()
-            image.save(out_stream, format=image_format)
-            return out_stream.getvalue()
+            with Image.open(in_stream) as image:
+                #remove any transparency
+                if image.mode in ("RGBA", "LA") or (image.mode == "P" and "transparency" in image.info):
+                    rgba = image.convert("RGBA")
+                    background = Image.new("RGB", rgba.size, (0, 0, 0))
+                    background.paste(rgba, mask=rgba.getchannel("A"))
+                    image = background
+                elif image.mode != "RGB":
+                    image = image.convert("RGB")
 
-        if model := self.loaded_models.get(model_id):
-            if isinstance(model, models.Song) and model.get_property('isExternalFile'):
-                local.Local.updateCoverArt(self, model_id)
-                return
+                #resize and convert to JPEG
+                image.thumbnail((size, size))
+                out_stream = io.BytesIO()
+                image.save(out_stream, format="JPEG", quality=90)
+                return out_stream.getvalue()
 
-            size = COVER_SIZE
-            if not model.get_property('gdkPaintableBig') or not model.get_property('gdkPaintable'):
-                gdkPaintable_bytes = self.get_cache_image(model_id, size["small"])
-                gdkPaintableBig_bytes = self.get_cache_image(model_id, size["big"])
-                save_cache_small = not gdkPaintable_bytes
-                save_cache_big = not gdkPaintableBig_bytes
-                if not gdkPaintableBig_bytes:
-                    if model.get_property('coverArt'):
-                        gdkPaintableBig_bytes = self.getCoverArtBytes(model_id, size["big"])
-                    elif isinstance(model, models.Song) and not model.get_property("verified"):
-                        gdkPaintableBig_bytes = self.getCoverArtBytes(model.get_property('albumId'), size["big"])
-                if gdkPaintableBig_bytes:
-                    if not gdkPaintable_bytes:
-                        gdkPaintable_bytes = resize_image(gdkPaintableBig_bytes, size["small"])
-                    try:
-                        gbytes_small = GLib.Bytes.new(gdkPaintable_bytes)
-                        gdkPaintable = Gdk.Texture.new_from_bytes(gbytes_small)
-                        if save_cache_small:
-                            self.save_cache_image(model_id, size["small"], gdkPaintable_bytes)
-                        gbytes_big = GLib.Bytes.new(gdkPaintableBig_bytes)
-                        gdkPaintableBig = Gdk.Texture.new_from_bytes(gbytes_big)
-                        if save_cache_big:
-                            self.save_cache_image(model_id, size["big"], gdkPaintableBig_bytes)
-                        self.__write_to_model(model_id, dict(gdkPaintable=gdkPaintable, gdkPaintableBig=gdkPaintableBig))
-                    except Exception as e:
-                        logger.error(f"can't convert image from {model_id}: {e}")
+        #Preconditions - model exists, doesn't yet have cover art, and isn't an external file
+        if (not (model := self.loaded_models.get(model_id))) or model.get_property('hasCover'):
+            return
+        if isinstance(model, models.Song) and model.get_property('isExternalFile'):
+            local.Local.updateCoverArt(self, model_id)
+            return
+
+        #Retrieve large cover art
+        multiplier = 1 if self.settings.get_string('cover-quality') == "low" else 2
+        big_size = COVER_SIZE['big'] * multiplier
+        if not (big_bytes := self.get_cache_image(model_id, big_size)):
+            if model.get_property('coverArt'):
+                big_bytes = self.getCoverArtBytes(model_id, big_size)
+            elif isinstance(model, models.Song) and not model.get_property("verified"):
+                big_bytes = self.getCoverArtBytes(model.get_property('albumId'), big_size)
+            if big_bytes:
+                self.save_cache_image(model_id, big_size, big_bytes)
+            else:
+                return #API didn't return any cover art
+
+        #Resize medium and small covers and write all images to the cache
+        sizes = COVER_SIZE.copy()
+        sizes.pop("big")
+        byte_checker = True
+        for key, size in sizes.items():
+            size *= multiplier
+            if not (paintable_bytes := self.get_cache_image(model_id, size)):
+                paintable_bytes = resize_image(big_bytes, size)
+                self.save_cache_image(model_id, size, paintable_bytes)
+            if not paintable_bytes:
+                byte_checker = False
+        self.__write_to_model(model_id, {'hasCover':byte_checker})
 
 
     def getCoverArtUrl(self, model_id) -> str:
@@ -706,7 +699,7 @@ class Jellyfin(Base):
                 elif guest_count == -1 or (guest_count > 0 and not model.get_property("guestAlbum")):
                     #if album request was successful but guest_albums request failed
                     futures.append(self.threads.submit(fetch_guest_albums))
-                if (not model.get_property("gdkPaintable") or not model.get_property("gdkPaintableBig")) and model.get_property("coverArt"):
+                if model.get_property("coverArt") and not model.get_property("hasCover"):
                     futures.append(self.threads.submit(self.updateCoverArt(model_id)))
                 if not model.get_property("similarArtist") and not minimal:
                     futures.append(self.threads.submit(fetch_similar))
@@ -785,7 +778,7 @@ class Jellyfin(Base):
                 futures = []
                 if not model.get_property("song") and not minimal:
                     futures.append(self.threads.submit(fetch_songs))
-                if (not model.get_property("gdkPaintable") or not model.get_property("gdkPaintableBig")) and model.get_property("coverArt"):
+                if model.get_property("coverArt") and not model.get_property("hasCover"):
                     futures.append(self.threads.submit(self.updateCoverArt(model_id)))
                 wait(futures)
                 if verified_check:
@@ -868,7 +861,7 @@ class Jellyfin(Base):
                 futures = []
                 if not model.get_property("entry"):
                     futures.append(self.threads.submit(fetch_songs))
-                if (not model.get_property("gdkPaintable") or not model.get_property("gdkPaintableBig")) and model.get_property("coverArt"):
+                if model.get_property("coverArt") and not model.get_property("hasCover"):
                     futures.append(self.threads.submit(self.updateCoverArt(model_id)))
                 wait(futures)
                 if verified_check:
@@ -915,7 +908,6 @@ class Jellyfin(Base):
         def fetch_cover():
             model = self.loaded_models[model_id]
             cover_art = model.get_property("coverArt")
-            covers = {}
             if not cover_art:
                 cover_art = ""
                 if model.get_property("albumId"): #check for loaded model
@@ -930,7 +922,8 @@ class Jellyfin(Base):
                         )
                         if primary_tag := album.get('ImageTags', {}).get('Primary', ''):
                             cover_art = f"Items/{model.get_property('albumId')}/Images/Primary?={primary_tag}"
-                self.__write_to_model(model_id, {"coverArt" : cover_art, "verified": True}, wait=True)
+            #Mark model as verified even if cover_art is empty
+            self.__write_to_model(model_id, {"coverArt" : cover_art, "verified": True}, wait=True)
             if cover_art:
                 self.updateCoverArt(model_id)
 
@@ -939,7 +932,7 @@ class Jellyfin(Base):
             if not model.get_property("title"):
                 fetch_song()
             if model_id in self.loaded_models:
-                if (not model.get_property("gdkPaintable") or not model.get_property("gdkPaintableBig")) and (model.get_property("coverArt") or not model.get_property("verified")):
+                if not model.get_property("verified"):
                     fetch_cover()
             if model_id in self.ongoing_requests and self.ongoing_requests[model_id] == minimal:
                 del self.ongoing_requests[model_id]
@@ -1155,8 +1148,7 @@ class Jellyfin(Base):
         # Pre-compiles a list of response objects into the Models
         compiled = []
         for item in items:
-            cover = self.getCachedCoverArt(item.get("Id"))
-            compiled.append(self.__compile_response_json(item, item_type) | cover)
+            compiled.append(self.__compile_response_json(item, item_type))
 
         #Write to models
         lock = threading.Event()

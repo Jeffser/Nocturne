@@ -1,6 +1,7 @@
 # coverArt.py
 
 from gi.repository import GObject, Adw, Gtk, Gdk, GLib
+from ...constants import get_cover_art
 
 @Gtk.Template(resource_path='/com/jeffser/Nocturne/playing/cover_art.ui')
 class PlayingCoverArt(Gtk.Box, Adw.Swipeable):
@@ -113,16 +114,16 @@ class PlayingCoverArt(Gtk.Box, Adw.Swipeable):
                         self.video_el.set_paintable(video_sink.get_property('paintable'))
 
     @Gtk.Template.Callback()
-    def format_cover_paintable(self, obj, paintable:Gdk.Paintable) -> Gdk.Paintable:
-        if paintable:
-            self.cover_el.remove_css_class('p50')
-            return paintable
+    def format_cover_paintable(self, obj, has_paintable:bool, model_id:str, size:str) -> Gdk.Paintable:
+        if has_paintable:
+            self.cover_el.remove_css_class('p100')
+            return get_cover_art(model_id, size)
         else:
-            self.cover_el.add_css_class('p50')
+            self.cover_el.add_css_class('p100')
             return Gtk.IconTheme.get_for_display(Gdk.Display.get_default()).lookup_icon(
                 'music-note-symbolic',
                 None,
-                64,
+                get_cover_size(size) / 2,
                 1,
                 Gtk.TextDirection.NONE,
                 0
