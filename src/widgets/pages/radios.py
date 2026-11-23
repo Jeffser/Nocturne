@@ -13,22 +13,24 @@ class RadiosPage(Adw.NavigationPage):
 
     def load(self):
         # call in different thread
-        GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
-        radios = []
-        if root := self.get_root():
-            if app := root.get_application():
-                if integration := app.get_property('integration'):
-                    radios = integration.getInternetRadioStations()
-        GLib.idle_add(self.reset)
-        for id in radios:
-            GLib.idle_add(self.list_el.append, SongRow(id))
-        GLib.idle_add(self.update_visibility)
+        if len(list(self.list_el)) <= 1:
+            GLib.idle_add(self.main_stack.set_visible_child_name, 'loading')
+            radios = []
+            if root := self.get_root():
+                if app := root.get_application():
+                    if integration := app.get_property('integration'):
+                        radios = integration.getInternetRadioStations()
+            GLib.idle_add(self.reset)
+            for id in radios:
+                GLib.idle_add(self.list_el.append, SongRow(id))
+            GLib.idle_add(self.update_visibility)
 
     def reload(self):
+        self.reset()
         self.load()
 
     def reset(self):
-        self.list_el.remove_all()
+        GLib.idle_add(self.list_el.remove_all)
 
     @Gtk.Template.Callback()
     def on_search(self, search_entry):
